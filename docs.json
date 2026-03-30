@@ -57,7 +57,8 @@
       "group": "Getting Started",
       "pages": [
         { "title": "📖 Overview", "href": "/" },
-        { "title": "🚀 Quick Start", "href": "/getting-started" }
+        { "title": "🚀 Quick Start", "href": "/getting-started" },
+        { "title": "📝 License", "href": "/license" }
       ]
     },
     {
