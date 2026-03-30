@@ -2,6 +2,10 @@
   "$schema": "https://docs.page/schema.json",
   "name": "xRay (inspector)",
   "description": "A comprehensive Flutter debugging toolkit for inspecting network calls, logs, and key-value storage.",
+  "theme":{
+    "primaryLight": "#7d64f2",
+    "primaryDark": "#7d64f2"
+  },
   "tabs": [
     {
       "id": "docs",
