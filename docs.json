@@ -1,53 +1,18 @@
 {
   "$schema": "https://docs.page/schema.json",
-  "name": "Jaspr",
-  "logo": {
-    "light": "https://raw.githubusercontent.com/schultek/jaspr/refs/heads/main/assets/logo.png",
-    "dark": "https://raw.githubusercontent.com/schultek/jaspr/refs/heads/main/assets/logo_outline.png"
-  },
-  "favicon": "https://raw.githubusercontent.com/schultek/jaspr/refs/heads/main/assets/favicon.png",
-  "anchors": [
-    {
-      "title": "Website",
-      "icon": "globe",
-      "href": "https://jaspr.site"
-    },
-    {
-      "title": "Discord",
-      "icon": "discord",
-      "href": "https://discord.gg/XGXrGEk4c6"
-    },
-    {
-      "title": "Playground",
-      "icon": "code",
-      "href": "https://playground.jaspr.site"
-    }
-  ],
-  "social": {
-    "x": "@schultek_dev",
-    "github": "schultek",
-    "website": "https://jaspr.site",
-    "discord": "XGXrGEk4c6"
-  },
-  "theme": {
-    "primary": "#01589B",
-    "primaryDark": "#41C3FE"
-  },
+  "name": "Impaktfull Inspector",
+  "description": "A comprehensive Flutter debugging toolkit for inspecting network calls, logs, and key-value storage.",
+  "logo": "https://raw.githubusercontent.com/impaktfull/impaktfull_inspector/main/images/logo.png",
   "tabs": [
     {
-      "id": "root",
+      "id": "docs",
       "title": "Docs",
       "href": "/"
     },
     {
       "id": "guides",
       "title": "Guides",
-      "href": "/guides"
-    },
-    {
-      "id": "content",
-      "title": "Content",
-      "href": "/content"
+      "href": "/guides/network-inspection"
     },
     {
       "id": "packages",
@@ -57,7 +22,7 @@
   ],
   "sidebar": [
     {
-      "tab": "root",
+      "tab": "docs",
       "group": "Getting Started",
       "pages": [
         { "title": "📖 Overview", "href": "/" },
