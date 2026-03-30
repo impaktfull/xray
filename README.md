@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/impaktfull/xray_inspector/main/images/logo.png" alt="Impaktfull Inspector" height="120" />
+  <img src="https://raw.githubusercontent.com/impaktfull/xray_inspector/main/images/logo.png" alt="xRay (inspector)" height="120" />
 </p>
 
 <p align="center">
@@ -15,11 +15,11 @@
   <a href="https://docs.page/impaktfull/xray/guides/remote-ui">Remote UI</a>
 </p>
 
-# Impaktfull Inspector
+# xRay (inspector)
 
 > A comprehensive Flutter debugging toolkit that captures and displays **network calls**, **logs**, and **key-value storage** — all inspectable in real-time via a remote UI.
 
-- 🔍 **Why?**: Debugging Flutter apps shouldn't require print statements or platform-specific tools. Impaktfull Inspector gives you a live, structured view of everything happening inside your app.
+- 🔍 **Why?**: Debugging Flutter apps shouldn't require print statements or platform-specific tools. xRay (inspector) gives you a live, structured view of everything happening inside your app.
 - 👥 **Who?**: Built for Flutter developers who need deep insight into network traffic, app logs, and persistent storage during development and QA.
 - 🚀 **What?**: A composable, dependency-injection-friendly inspection layer that runs an HTTP/WebSocket server inside your app and lets any remote UI connect to it in real-time.
 
@@ -34,15 +34,15 @@
 
 ## Packages
 
-| Package | Description |
-|---|---|
-| [`xray_inspector`](https://pub.dev/packages/xray_inspector) | Core package — inspectors + HTTP/WebSocket server |
-| [`xray_network_dio_interceptor`](https://pub.dev/packages/xray_network_dio_interceptor) | Dio HTTP interceptor |
-| [`xray_network_serverpod_interceptor`](https://pub.dev/packages/xray_network_serverpod_interceptor) | Serverpod HTTP client interceptor |
-| [`xray_shared_preferences_inspector`](https://pub.dev/packages/xray_shared_preferences_inspector) | SharedPreferences key-value inspector |
-| [`xray_secure_storage_inspector`](https://pub.dev/packages/xray_secure_storage_inspector) | flutter_secure_storage inspector |
-| [`xray_inspector_ui`](https://pub.dev/packages/xray_inspector_ui) | Flutter UI that connects to a running inspector server |
-| [`xray_inspector_core`](https://pub.dev/packages/xray_inspector_core) | Pure Dart models and protocol constants (no Flutter dependency) |
+| Package                                                                                             | Description                                                     |
+| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| [`xray_inspector`](https://pub.dev/packages/xray_inspector)                                         | Core package — inspectors + HTTP/WebSocket server               |
+| [`xray_network_dio_interceptor`](https://pub.dev/packages/xray_network_dio_interceptor)             | Dio HTTP interceptor                                            |
+| [`xray_network_serverpod_interceptor`](https://pub.dev/packages/xray_network_serverpod_interceptor) | Serverpod HTTP client interceptor                               |
+| [`xray_shared_preferences_inspector`](https://pub.dev/packages/xray_shared_preferences_inspector)   | SharedPreferences key-value inspector                           |
+| [`xray_secure_storage_inspector`](https://pub.dev/packages/xray_secure_storage_inspector)           | flutter_secure_storage inspector                                |
+| [`xray_inspector_ui`](https://pub.dev/packages/xray_inspector_ui)                                   | Flutter UI that connects to a running inspector server          |
+| [`xray_inspector_core`](https://pub.dev/packages/xray_inspector_core)                               | Pure Dart models and protocol constants (no Flutter dependency) |
 
 ## Architecture
 
@@ -70,10 +70,10 @@ Add the packages you need:
 ```yaml
 dependencies:
   xray_inspector: ^0.0.1
-  xray_network_dio_interceptor: ^0.0.1        # if you use Dio
-  xray_shared_preferences_inspector: ^0.0.1   # optional
-  xray_secure_storage_inspector: ^0.0.1       # optional
-  xray_inspector_ui: ^0.0.1                   # for the remote UI
+  xray_network_dio_interceptor: ^0.0.1 # if you use Dio
+  xray_shared_preferences_inspector: ^0.0.1 # optional
+  xray_secure_storage_inspector: ^0.0.1 # optional
+  xray_inspector_ui: ^0.0.1 # for the remote UI
 ```
 
 Set up inspectors at app startup:

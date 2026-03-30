@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.page/schema.json",
-  "name": "Impaktfull Inspector",
+  "name": "xRay (inspector)",
   "description": "A comprehensive Flutter debugging toolkit for inspecting network calls, logs, and key-value storage.",
   "tabs": [
     {
