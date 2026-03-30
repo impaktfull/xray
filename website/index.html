@@ -333,18 +333,20 @@
             <span class="code-dot red"></span>
             <span class="code-dot yellow"></span>
             <span class="code-dot green"></span>
-            <span class="code-filename">main.dart</span>
+            <span class="code-filename">setup.dart</span>
           </div>
           <div class="code-body">
-            <code class="code-import">import 'package:xRay/xRay.dart';</code>
+            <code class="code-import">import 'package:xray_inspector/xray_inspector.dart';</code>
             <code class="code-default"> </code>
-            <code class="code-default">void main() {</code>
-            <code class="code-primary">  xRay.init(</code>
-            <code class="code-default">    enabled: true,</code>
-            <code class="code-default">    port: 4040,</code>
-            <code class="code-default">  );</code>
-            <code class="code-primary">  runApp(MyApp());</code>
-            <code class="code-default">}</code>
+            <code class="code-primary">final networkInspector = XRayNetworkInspector();</code>
+            <code class="code-primary">final logInspector = XRayLogInspector();</code>
+            <code class="code-default"> </code>
+            <code class="code-primary">final server = XRayInspectorServer(</code>
+            <code class="code-default">  config: XRayInspectorServerConfig(</code>
+            <code class="code-default">    inspectors: [networkInspector, logInspector],</code>
+            <code class="code-default">  ),</code>
+            <code class="code-default">);</code>
+            <code class="code-primary">await server.start();</code>
           </div>
         </div>
 
