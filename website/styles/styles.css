@@ -102,8 +102,7 @@ img {
 .nav-logo {
   width: 28px;
   height: 28px;
-  border-radius: 7px;
-  background: linear-gradient(180deg, #7C3AED 0%, #5B21B6 100%);
+  background: url('https://xrayinspector.dev/assets/logo_dark.svg') center/cover no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -536,8 +535,7 @@ footer {
 .foot-logo {
   width: 20px;
   height: 20px;
-  border-radius: 5px;
-  background: linear-gradient(180deg, #7C3AED 0%, #5B21B6 100%);
+  background: url('https://xrayinspector.dev/assets/logo_dark.svg') center/cover no-repeat;
   flex-shrink: 0;
 }
 
