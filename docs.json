@@ -42,13 +42,13 @@
       "tab": "packages",
       "group": "Packages",
       "pages": [
-        { "title": "📦 impaktfull_inspector", "href": "/packages/impaktfull-inspector" },
-        { "title": "🔌 impaktfull_network_dio_interceptor", "href": "/packages/impaktfull-network-dio-interceptor" },
-        { "title": "🔌 impaktfull_network_serverpod_interceptor", "href": "/packages/impaktfull-network-serverpod-interceptor" },
-        { "title": "💾 impaktfull_shared_preferences_inspector", "href": "/packages/impaktfull-shared-preferences-inspector" },
-        { "title": "🔐 impaktfull_secure_storage_inspector", "href": "/packages/impaktfull-secure-storage-inspector" },
-        { "title": "🎨 impaktfull_inspector_ui", "href": "/packages/impaktfull-inspector-ui" },
-        { "title": "🧩 impaktfull_inspector_core", "href": "/packages/impaktfull-inspector-core" }
+        { "title": "📦 xray_inspector", "href": "/packages/xray-inspector" },
+        { "title": "🔌 xray_network_dio_interceptor", "href": "/packages/xray-network-dio-interceptor" },
+        { "title": "🔌 xray_network_serverpod_interceptor", "href": "/packages/xray-network-serverpod-interceptor" },
+        { "title": "💾 xray_shared_preferences_inspector", "href": "/packages/xray-shared-preferences-inspector" },
+        { "title": "🔐 xray_secure_storage_inspector", "href": "/packages/xray-secure-storage-inspector" },
+        { "title": "🎨 xray_inspector_ui", "href": "/packages/xray-inspector-ui" },
+        { "title": "🧩 xray_inspector_core", "href": "/packages/xray-inspector-core" }
       ]
     }
   ]
