@@ -57,7 +57,13 @@
       "group": "Getting Started",
       "pages": [
         { "title": "📖 Overview", "href": "/" },
-        { "title": "🚀 Quick Start", "href": "/getting-started" },
+        { "title": "🚀 Quick Start", "href": "/getting-started" }
+      ]
+    },
+    {
+      "tab": "docs",
+      "group": "Legal",
+      "pages": [
         { "title": "📝 License", "href": "/license" },
         { "title": "📝 Terms & Conditions", "href": "/terms-and-conditions" }
       ]
