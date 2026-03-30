@@ -3,33 +3,50 @@
   "name": "Impaktfull Inspector",
   "description": "A comprehensive Flutter debugging toolkit for inspecting network calls, logs, and key-value storage.",
   "logo": "https://raw.githubusercontent.com/impaktfull/impaktfull_inspector/main/images/logo.png",
+  "tabs": [
+    {
+      "id": "docs",
+      "title": "Docs",
+      "href": "/"
+    },
+    {
+      "id": "guides",
+      "title": "Guides",
+      "href": "/guides/network-inspection"
+    },
+    {
+      "id": "packages",
+      "title": "Packages",
+      "href": "/packages/impaktfull-inspector"
+    }
+  ],
   "sidebar": [
     {
       "group": "Getting Started",
       "pages": [
-        ["Overview", "/"],
-        ["Quick Start", "/getting-started"]
+        ["📖 Overview", "/"],
+        ["🚀 Quick Start", "/getting-started"]
       ]
     },
     {
       "group": "Guides",
       "pages": [
-        ["Network Inspection", "/guides/network-inspection"],
-        ["Log Inspection", "/guides/log-inspection"],
-        ["Key-Value Inspection", "/guides/key-value-inspection"],
-        ["Remote UI", "/guides/remote-ui"]
+        ["🌐 Network Inspection", "/guides/network-inspection"],
+        ["📋 Log Inspection", "/guides/log-inspection"],
+        ["🗄️ Key-Value Inspection", "/guides/key-value-inspection"],
+        ["🖥️ Remote UI", "/guides/remote-ui"]
       ]
     },
     {
       "group": "Packages",
       "pages": [
-        ["impaktfull_inspector", "/packages/impaktfull-inspector"],
-        ["impaktfull_network_dio_interceptor", "/packages/impaktfull-network-dio-interceptor"],
-        ["impaktfull_network_serverpod_interceptor", "/packages/impaktfull-network-serverpod-interceptor"],
-        ["impaktfull_shared_preferences_inspector", "/packages/impaktfull-shared-preferences-inspector"],
-        ["impaktfull_secure_storage_inspector", "/packages/impaktfull-secure-storage-inspector"],
-        ["impaktfull_inspector_ui", "/packages/impaktfull-inspector-ui"],
-        ["impaktfull_inspector_core", "/packages/impaktfull-inspector-core"]
+        ["📦 impaktfull_inspector", "/packages/impaktfull-inspector"],
+        ["🔌 impaktfull_network_dio_interceptor", "/packages/impaktfull-network-dio-interceptor"],
+        ["🔌 impaktfull_network_serverpod_interceptor", "/packages/impaktfull-network-serverpod-interceptor"],
+        ["💾 impaktfull_shared_preferences_inspector", "/packages/impaktfull-shared-preferences-inspector"],
+        ["🔐 impaktfull_secure_storage_inspector", "/packages/impaktfull-secure-storage-inspector"],
+        ["🎨 impaktfull_inspector_ui", "/packages/impaktfull-inspector-ui"],
+        ["🧩 impaktfull_inspector_core", "/packages/impaktfull-inspector-core"]
       ]
     }
   ]
