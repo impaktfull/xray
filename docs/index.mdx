@@ -1,56 +1,56 @@
 ---
-title: Welcome to docs.page!
-description: Get started with docs.page
+title: Impaktfull Inspector
+description: A comprehensive Flutter debugging toolkit for inspecting network calls, logs, and key-value storage in development.
 ---
 
-Welcome to docs.page! The init command you just ran has created a basic file struture in your project to help you get started.
+# Impaktfull Inspector
 
-## Walkthrough
+A comprehensive Flutter debugging toolkit that captures and displays network calls, logs, and key-value storage — all inspectable in real-time via a remote UI.
 
-### Configuration
+## What's included
 
-In the root of your directory a new `docs.json` file has been created. This file is used to configure your documentation site. You can customize the name, description, and sidebar, theme, logos and more using this file.
+| Package | Description |
+|---|---|
+| `impaktfull_inspector` | Core package — network, log, and key-value inspectors + HTTP server |
+| `impaktfull_network_dio_interceptor` | Dio HTTP interceptor |
+| `impaktfull_network_serverpod_interceptor` | Serverpod HTTP client interceptor |
+| `impaktfull_shared_preferences_inspector` | SharedPreferences key-value inspector |
+| `impaktfull_secure_storage_inspector` | flutter_secure_storage inspector |
+| `impaktfull_inspector_ui` | Flutter UI that connects to a running inspector server |
+| `impaktfull_inspector_core` | Pure Dart models and protocol constants (no Flutter dependency) |
 
-Here's a basic example of what the file looks like:
+## Architecture overview
 
 ```
-{
-  "name": "My Docs",
-  "description": "My documentation site",
-  "sidebar": [
-  {
-    "group": "Getting Started",
-    "pages": [
-      {
-        "title": "Getting to know docs.page",
-        "href": "/",
-        "icon": "rocket"
-      },
-      {
-        "title": "Next Steps",
-        "href": "/next-steps",
-        "icon": "arrow-right"
-      }
-    ]
-  }
-]
-}
+Your Flutter app
+       │
+       ├── ImpaktfullNetworkInspector   ◄── ImpaktfullNetworkDioInterceptor
+       ├── ImpaktfullLogInspector
+       ├── ImpaktfullSharedPreferencesInspector
+       └── ImpaktfullSecureStorageInspector
+                        │
+              ImpaktfullInspectorServer  (HTTP + WebSocket + UDP discovery)
+                        │
+              ImpaktfullInspectorUiController  (separate app or debug panel)
+                        │
+                Inspector UI screens
 ```
 
-To learn more about the advanced configuration options, check out the [docs](https://use.docs.page/configuration).
+The inspector server runs inside your app and broadcasts data over HTTP/WebSocket. A separate UI (another device, simulator, or debug panel) connects to it via `ImpaktfullInspectorUiController`.
 
-### Content
+## Design principles
 
-docs.page uses the `docs` directory to store your documentation pages. Two pages have been created for you:
+- **No singletons** — all dependencies are passed explicitly via constructors.
+- **ValueNotifier reactivity** — all data exposed as `ValueNotifier` for Flutter rebuilds.
+- **No disk I/O** — all captured data lives in memory only.
+- **Composable** — add only the inspectors you need.
 
-- `index.mdx` - The home page of your documentation site, resolves to the root URL.
-- `next-steps.mdx` - A page to help you get started with docs.page, resolves to `/next-steps`.
+## Quick links
 
-Documentation can be written using the standard [GitHub Flavored Markdown Spec](https://github.github.com/gfm/) and also supports the use of [MDX](https://mdxjs.com/), 
-with the ability to render custom [components](https://use.docs.page/components) for more advanced use cases.
-
-## Preview
-
-To preview your documentation site, head over to [https://docs.page/preview](https://docs.page/preview) in your browser and open this directory.
-
-Previewing your documentation site will allow you to see the changes you make in real-time before you publish to the world.
+<Cards>
+  <Card title="Quick Start" href="/getting-started" />
+  <Card title="Network Inspection" href="/guides/network-inspection" />
+  <Card title="Log Inspection" href="/guides/log-inspection" />
+  <Card title="Key-Value Inspection" href="/guides/key-value-inspection" />
+  <Card title="Remote UI" href="/guides/remote-ui" />
+</Cards>
