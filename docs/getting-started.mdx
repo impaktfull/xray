@@ -1,6 +1,6 @@
 ---
 title: Quick Start
-description: Set up impaktfull_inspector in your Flutter app in minutes.
+description: Set up xray_inspector in your Flutter app in minutes.
 ---
 
 # Quick Start
@@ -13,13 +13,13 @@ Add the packages you need to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  impaktfull_inspector: ^0.0.1
-  impaktfull_network_dio_interceptor: ^0.0.1        # if you use Dio
-  impaktfull_shared_preferences_inspector: ^0.0.1   # optional
-  impaktfull_secure_storage_inspector: ^0.0.1       # optional
+  xray_inspector: ^0.0.1
+  xray_network_dio_interceptor: ^0.0.1        # if you use Dio
+  xray_shared_preferences_inspector: ^0.0.1   # optional
+  xray_secure_storage_inspector: ^0.0.1       # optional
 
   # In a separate app or debug panel:
-  impaktfull_inspector_ui: ^0.0.1
+  xray_inspector_ui: ^0.0.1
 ```
 
 ## 2. Create inspectors
@@ -27,21 +27,21 @@ dependencies:
 Create your inspectors at app startup (top-level, provider, or service locator):
 
 ```dart
-import 'package:impaktfull_inspector/impaktfull_inspector.dart';
-import 'package:impaktfull_network_dio_interceptor/impaktfull_network_dio_interceptor.dart';
-import 'package:impaktfull_shared_preferences_inspector/impaktfull_shared_preferences_inspector.dart';
-import 'package:impaktfull_secure_storage_inspector/impaktfull_secure_storage_inspector.dart';
+import 'package:xray_inspector/xray_inspector.dart';
+import 'package:xray_network_dio_interceptor/xray_network_dio_interceptor.dart';
+import 'package:xray_shared_preferences_inspector/xray_shared_preferences_inspector.dart';
+import 'package:xray_secure_storage_inspector/xray_secure_storage_inspector.dart';
 
 // Network inspector
-final networkInspector = ImpaktfullNetworkInspector();
+final networkInspector = XRayNetworkInspector();
 
 // Log inspector
-final logInspector = ImpaktfullLogInspector();
+final logInspector = XRayLogInspector();
 
 // Key-value inspectors (optional)
 final prefs = await SharedPreferences.getInstance();
-final sharedPrefsInspector = ImpaktfullSharedPreferencesInspector(prefs: prefs);
-final secureStorageInspector = ImpaktfullSecureStorageInspector(
+final sharedPrefsInspector = XRaySharedPreferencesInspector(prefs: prefs);
+final secureStorageInspector = XRaySecureStorageInspector(
   secureStorage: const FlutterSecureStorage(),
 );
 ```
@@ -60,8 +60,8 @@ final dio = Dio()
 ## 4. Start the inspector server
 
 ```dart
-final inspectorServer = ImpaktfullInspectorServer(
-  config: ImpaktfullInspectorServerConfig(
+final inspectorServer = XRayInspectorServer(
+  config: XRayInspectorServerConfig(
     inspectors: [
       networkInspector,
       logInspector,
@@ -88,9 +88,9 @@ logInspector.error('Request failed: timeout');
 In a debug panel or separate app, connect to the running server:
 
 ```dart
-import 'package:impaktfull_inspector_ui/impaktfull_inspector_ui.dart';
+import 'package:xray_inspector_ui/xray_inspector_ui.dart';
 
-final uiController = ImpaktfullInspectorUiController();
+final uiController = XRayInspectorUiController();
 
 // Auto-discover on the local network
 await uiController.connectLocal();
@@ -117,7 +117,7 @@ await inspectorServer.stop();
 If you only need network inspection without a remote UI:
 
 ```dart
-final networkInspector = ImpaktfullNetworkInspector();
+final networkInspector = XRayNetworkInspector();
 
 final dio = Dio()
   ..interceptors.add(

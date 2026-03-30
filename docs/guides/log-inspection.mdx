@@ -5,17 +5,17 @@ description: Capture structured log entries with levels for real-time inspection
 
 # Log Inspection
 
-`ImpaktfullLogInspector` captures structured log entries with severity levels, storing them in memory for real-time inspection via the remote UI.
+`XRayLogInspector` captures structured log entries with severity levels, storing them in memory for real-time inspection via the remote UI.
 
 ## Setup
 
 ```dart
-import 'package:impaktfull_inspector/impaktfull_inspector.dart';
+import 'package:xray_inspector/xray_inspector.dart';
 
-final logInspector = ImpaktfullLogInspector();
+final logInspector = XRayLogInspector();
 
 // Optional: custom title shown in the remote UI
-final logInspector = ImpaktfullLogInspector(title: 'App Logs');
+final logInspector = XRayLogInspector(title: 'App Logs');
 ```
 
 ## Logging messages
@@ -80,7 +80,7 @@ Route your existing logging through the inspector:
 ```dart
 // Example: wrapping a logger
 class AppLogger {
-  final ImpaktfullLogInspector _inspector;
+  final XRayLogInspector _inspector;
 
   AppLogger(this._inspector);
 
@@ -99,8 +99,8 @@ class AppLogger {
 ## Multiple log inspectors
 
 ```dart
-final appLogs = ImpaktfullLogInspector(title: 'App');
-final networkLogs = ImpaktfullLogInspector(title: 'Network');
+final appLogs = XRayLogInspector(title: 'App');
+final networkLogs = XRayLogInspector(title: 'Network');
 ```
 
 Both will appear as separate tabs in the remote UI.

@@ -1,9 +1,9 @@
 ---
-title: impaktfull_inspector_core
+title: xray_inspector_core
 description: Pure Dart models and protocol constants for the impaktfull inspector ecosystem.
 ---
 
-# impaktfull_inspector_core
+# xray_inspector_core
 
 Pure Dart package (no Flutter dependency) containing the shared data models and protocol constants used across the impaktfull inspector ecosystem.
 
@@ -11,10 +11,10 @@ Pure Dart package (no Flutter dependency) containing the shared data models and 
 
 ```yaml
 dependencies:
-  impaktfull_inspector_core: ^0.0.1
+  xray_inspector_core: ^0.0.1
 ```
 
-You typically don't need to add this package directly — it's pulled in transitively by `impaktfull_inspector` and `impaktfull_inspector_ui`.
+You typically don't need to add this package directly — it's pulled in transitively by `xray_inspector` and `xray_inspector_ui`.
 
 ## Models
 
@@ -86,13 +86,13 @@ class InspectorKeyValueEntry {
 
 ## Protocol constants
 
-### ImpaktfullInspectorProtocol
+### XRayInspectorProtocol
 
 ```dart
-class ImpaktfullInspectorProtocol {
+class XRayInspectorProtocol {
   static const int defaultHttpPort = 7780;
   static const int defaultDiscoveryPort = 7781;
 }
 ```
 
-Used by `ImpaktfullInspectorServerConfig` as defaults and by `ImpaktfullInspectorUiController` for auto-discovery.
+Used by `XRayInspectorServerConfig` as defaults and by `XRayInspectorUiController` for auto-discovery.

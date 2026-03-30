@@ -13,17 +13,17 @@ Key-value inspectors let you read, write, and delete entries in persistent stora
 
 ```dart
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:impaktfull_shared_preferences_inspector/impaktfull_shared_preferences_inspector.dart';
+import 'package:xray_shared_preferences_inspector/xray_shared_preferences_inspector.dart';
 
 final prefs = await SharedPreferences.getInstance();
-final sharedPrefsInspector = ImpaktfullSharedPreferencesInspector(prefs: prefs);
+final sharedPrefsInspector = XRaySharedPreferencesInspector(prefs: prefs);
 ```
 
 ### Register with the server
 
 ```dart
-final inspectorServer = ImpaktfullInspectorServer(
-  config: ImpaktfullInspectorServerConfig(
+final inspectorServer = XRayInspectorServer(
+  config: XRayInspectorServerConfig(
     inspectors: [sharedPrefsInspector],
   ),
 );
@@ -35,9 +35,9 @@ final inspectorServer = ImpaktfullInspectorServer(
 
 ```dart
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:impaktfull_secure_storage_inspector/impaktfull_secure_storage_inspector.dart';
+import 'package:xray_secure_storage_inspector/xray_secure_storage_inspector.dart';
 
-final secureStorageInspector = ImpaktfullSecureStorageInspector(
+final secureStorageInspector = XRaySecureStorageInspector(
   secureStorage: const FlutterSecureStorage(),
 );
 ```
@@ -47,7 +47,7 @@ final secureStorageInspector = ImpaktfullSecureStorageInspector(
 Implement `ImpaktfullKeyValueSource` to inspect any key-value store:
 
 ```dart
-import 'package:impaktfull_inspector/impaktfull_inspector.dart';
+import 'package:xray_inspector/xray_inspector.dart';
 
 class MyCustomSource implements ImpaktfullKeyValueSource {
   @override
@@ -70,8 +70,8 @@ class MyCustomSource implements ImpaktfullKeyValueSource {
   }
 }
 
-// Use it with ImpaktfullKeyValueInspector
-final customInspector = ImpaktfullKeyValueInspector(
+// Use it with XRayKeyValueInspector
+final customInspector = XRayKeyValueInspector(
   source: MyCustomSource(),
 );
 ```

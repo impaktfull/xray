@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/impaktfull/impaktfull_inspector/main/images/logo.png" alt="Impaktfull Inspector" height="120" />
+  <img src="https://raw.githubusercontent.com/impaktfull/xray_inspector/main/images/logo.png" alt="Impaktfull Inspector" height="120" />
 </p>
 
 <p align="center">
-  <a href="https://pub.dev/packages/impaktfull_inspector"><img src="https://img.shields.io/pub/v/impaktfull_inspector?label=pub.dev&labelColor=333940&logo=dart&color=00589B" alt="pub"></a>
-  <a href="https://github.com/impaktfull/impaktfull_inspector"><img src="https://img.shields.io/github/stars/impaktfull/impaktfull_inspector?style=flat&label=stars&labelColor=333940&color=8957e5&logo=github" alt="github"></a>
-  <a href="https://github.com/impaktfull/impaktfull_inspector/actions"><img src="https://img.shields.io/github/actions/workflow/status/impaktfull/impaktfull_inspector/test.yml?branch=main&label=tests&labelColor=333940&logo=github" alt="tests"></a>
+  <a href="https://pub.dev/packages/xray_inspector"><img src="https://img.shields.io/pub/v/xray_inspector?label=pub.dev&labelColor=333940&logo=dart&color=00589B" alt="pub"></a>
+  <a href="https://github.com/impaktfull/xray_inspector"><img src="https://img.shields.io/github/stars/impaktfull/xray_inspector?style=flat&label=stars&labelColor=333940&color=8957e5&logo=github" alt="github"></a>
+  <a href="https://github.com/impaktfull/xray_inspector/actions"><img src="https://img.shields.io/github/actions/workflow/status/impaktfull/xray_inspector/test.yml?branch=main&label=tests&labelColor=333940&logo=github" alt="tests"></a>
 </p>
 
 <p align="center">
@@ -36,27 +36,27 @@
 
 | Package | Description |
 |---|---|
-| [`impaktfull_inspector`](https://pub.dev/packages/impaktfull_inspector) | Core package — inspectors + HTTP/WebSocket server |
-| [`impaktfull_network_dio_interceptor`](https://pub.dev/packages/impaktfull_network_dio_interceptor) | Dio HTTP interceptor |
-| [`impaktfull_network_serverpod_interceptor`](https://pub.dev/packages/impaktfull_network_serverpod_interceptor) | Serverpod HTTP client interceptor |
-| [`impaktfull_shared_preferences_inspector`](https://pub.dev/packages/impaktfull_shared_preferences_inspector) | SharedPreferences key-value inspector |
-| [`impaktfull_secure_storage_inspector`](https://pub.dev/packages/impaktfull_secure_storage_inspector) | flutter_secure_storage inspector |
-| [`impaktfull_inspector_ui`](https://pub.dev/packages/impaktfull_inspector_ui) | Flutter UI that connects to a running inspector server |
-| [`impaktfull_inspector_core`](https://pub.dev/packages/impaktfull_inspector_core) | Pure Dart models and protocol constants (no Flutter dependency) |
+| [`xray_inspector`](https://pub.dev/packages/xray_inspector) | Core package — inspectors + HTTP/WebSocket server |
+| [`xray_network_dio_interceptor`](https://pub.dev/packages/xray_network_dio_interceptor) | Dio HTTP interceptor |
+| [`xray_network_serverpod_interceptor`](https://pub.dev/packages/xray_network_serverpod_interceptor) | Serverpod HTTP client interceptor |
+| [`xray_shared_preferences_inspector`](https://pub.dev/packages/xray_shared_preferences_inspector) | SharedPreferences key-value inspector |
+| [`xray_secure_storage_inspector`](https://pub.dev/packages/xray_secure_storage_inspector) | flutter_secure_storage inspector |
+| [`xray_inspector_ui`](https://pub.dev/packages/xray_inspector_ui) | Flutter UI that connects to a running inspector server |
+| [`xray_inspector_core`](https://pub.dev/packages/xray_inspector_core) | Pure Dart models and protocol constants (no Flutter dependency) |
 
 ## Architecture
 
 ```
 Your Flutter app
        │
-       ├── ImpaktfullNetworkInspector   ◄── ImpaktfullNetworkDioInterceptor
-       ├── ImpaktfullLogInspector
-       ├── ImpaktfullSharedPreferencesInspector
-       └── ImpaktfullSecureStorageInspector
+       ├── XRayNetworkInspector   ◄── ImpaktfullNetworkDioInterceptor
+       ├── XRayLogInspector
+       ├── XRaySharedPreferencesInspector
+       └── XRaySecureStorageInspector
                         │
-              ImpaktfullInspectorServer  (HTTP + WebSocket + UDP discovery)
+              XRayInspectorServer  (HTTP + WebSocket + UDP discovery)
                         │
-              ImpaktfullInspectorUiController  (separate app or debug panel)
+              XRayInspectorUiController  (separate app or debug panel)
                         │
                 Inspector UI screens
 ```
@@ -69,26 +69,26 @@ Add the packages you need:
 
 ```yaml
 dependencies:
-  impaktfull_inspector: ^0.0.1
-  impaktfull_network_dio_interceptor: ^0.0.1        # if you use Dio
-  impaktfull_shared_preferences_inspector: ^0.0.1   # optional
-  impaktfull_secure_storage_inspector: ^0.0.1       # optional
-  impaktfull_inspector_ui: ^0.0.1                   # for the remote UI
+  xray_inspector: ^0.0.1
+  xray_network_dio_interceptor: ^0.0.1        # if you use Dio
+  xray_shared_preferences_inspector: ^0.0.1   # optional
+  xray_secure_storage_inspector: ^0.0.1       # optional
+  xray_inspector_ui: ^0.0.1                   # for the remote UI
 ```
 
 Set up inspectors at app startup:
 
 ```dart
-final networkInspector = ImpaktfullNetworkInspector();
-final logInspector = ImpaktfullLogInspector();
+final networkInspector = XRayNetworkInspector();
+final logInspector = XRayLogInspector();
 
 final dio = Dio()
   ..interceptors.add(
     ImpaktfullNetworkDioInterceptor(inspector: networkInspector),
   );
 
-final server = ImpaktfullInspectorServer(
-  config: ImpaktfullInspectorServerConfig(
+final server = XRayInspectorServer(
+  config: XRayInspectorServerConfig(
     inspectors: [networkInspector, logInspector],
   ),
 );
@@ -99,7 +99,7 @@ await server.start();
 Connect the remote UI:
 
 ```dart
-final controller = ImpaktfullInspectorUiController();
+final controller = XRayInspectorUiController();
 await controller.connectLocal(); // auto-discovers on the local network
 
 Navigator.push(
@@ -110,7 +110,7 @@ Navigator.push(
 );
 ```
 
-See the [Quick Start guide](https://docs.page/impaktfull/impaktfull_inspector/getting-started) for the full setup.
+See the [Quick Start guide](https://docs.page/impaktfull/xray_inspector/getting-started) for the full setup.
 
 ## Design Principles
 
@@ -121,5 +121,5 @@ See the [Quick Start guide](https://docs.page/impaktfull/impaktfull_inspector/ge
 
 ## Directories
 
-- **/docs**: Documentation hosted at [docs.page/impaktfull/impaktfull_inspector](https://docs.page/impaktfull/impaktfull_inspector).
+- **/docs**: Documentation hosted at [docs.page/impaktfull/xray_inspector](https://docs.page/impaktfull/xray_inspector).
 - **/website**: Landing page assets and static site.

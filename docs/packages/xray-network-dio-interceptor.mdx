@@ -1,18 +1,18 @@
 ---
-title: impaktfull_network_dio_interceptor
-description: Dio HTTP interceptor for impaktfull_inspector.
+title: xray_network_dio_interceptor
+description: Dio HTTP interceptor for xray_inspector.
 ---
 
-# impaktfull_network_dio_interceptor
+# xray_network_dio_interceptor
 
-Dio interceptor that captures all HTTP requests, responses, and errors into an `ImpaktfullNetworkInspector`.
+Dio interceptor that captures all HTTP requests, responses, and errors into an `XRayNetworkInspector`.
 
 ## Installation
 
 ```yaml
 dependencies:
-  impaktfull_inspector: ^0.0.1
-  impaktfull_network_dio_interceptor: ^0.0.1
+  xray_inspector: ^0.0.1
+  xray_network_dio_interceptor: ^0.0.1
   dio: ^5.0.0
 ```
 
@@ -20,10 +20,10 @@ dependencies:
 
 ```dart
 import 'package:dio/dio.dart';
-import 'package:impaktfull_inspector/impaktfull_inspector.dart';
-import 'package:impaktfull_network_dio_interceptor/impaktfull_network_dio_interceptor.dart';
+import 'package:xray_inspector/xray_inspector.dart';
+import 'package:xray_network_dio_interceptor/xray_network_dio_interceptor.dart';
 
-final networkInspector = ImpaktfullNetworkInspector();
+final networkInspector = XRayNetworkInspector();
 
 final dio = Dio()
   ..interceptors.add(

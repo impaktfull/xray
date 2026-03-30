@@ -1,9 +1,9 @@
 ---
-title: impaktfull_shared_preferences_inspector
+title: xray_shared_preferences_inspector
 description: Key-value inspector for SharedPreferences.
 ---
 
-# impaktfull_shared_preferences_inspector
+# xray_shared_preferences_inspector
 
 Exposes `SharedPreferences` entries in the inspector UI, with support for reading, writing, and deleting values at runtime.
 
@@ -11,8 +11,8 @@ Exposes `SharedPreferences` entries in the inspector UI, with support for readin
 
 ```yaml
 dependencies:
-  impaktfull_inspector: ^0.0.1
-  impaktfull_shared_preferences_inspector: ^0.0.1
+  xray_inspector: ^0.0.1
+  xray_shared_preferences_inspector: ^0.0.1
   shared_preferences: ^2.0.0
 ```
 
@@ -20,17 +20,17 @@ dependencies:
 
 ```dart
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:impaktfull_shared_preferences_inspector/impaktfull_shared_preferences_inspector.dart';
+import 'package:xray_shared_preferences_inspector/xray_shared_preferences_inspector.dart';
 
 final prefs = await SharedPreferences.getInstance();
-final inspector = ImpaktfullSharedPreferencesInspector(prefs: prefs);
+final inspector = XRaySharedPreferencesInspector(prefs: prefs);
 ```
 
 Register it with the inspector server:
 
 ```dart
-final server = ImpaktfullInspectorServer(
-  config: ImpaktfullInspectorServerConfig(
+final server = XRayInspectorServer(
+  config: XRayInspectorServerConfig(
     inspectors: [inspector],
   ),
 );

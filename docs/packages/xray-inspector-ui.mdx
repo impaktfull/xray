@@ -1,28 +1,28 @@
 ---
-title: impaktfull_inspector_ui
+title: xray_inspector_ui
 description: Flutter UI that connects to an impaktfull inspector server for real-time inspection.
 ---
 
-# impaktfull_inspector_ui
+# xray_inspector_ui
 
-Flutter UI package that connects to a running `ImpaktfullInspectorServer` and displays network calls, log entries, and key-value data in real-time.
+Flutter UI package that connects to a running `XRayInspectorServer` and displays network calls, log entries, and key-value data in real-time.
 
 ## Installation
 
 ```yaml
 dependencies:
-  impaktfull_inspector_ui: ^0.0.1
-  impaktfull_inspector_core: ^0.0.1
+  xray_inspector_ui: ^0.0.1
+  xray_inspector_core: ^0.0.1
 ```
 
-## ImpaktfullInspectorUiController
+## XRayInspectorUiController
 
 The controller manages the connection to the inspector server and holds all received data.
 
 ```dart
-import 'package:impaktfull_inspector_ui/impaktfull_inspector_ui.dart';
+import 'package:xray_inspector_ui/xray_inspector_ui.dart';
 
-final controller = ImpaktfullInspectorUiController();
+final controller = XRayInspectorUiController();
 ```
 
 ### Connecting

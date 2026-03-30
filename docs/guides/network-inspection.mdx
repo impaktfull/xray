@@ -11,17 +11,17 @@ The network inspector captures every HTTP request, response, and error made thro
 
 | Use case | Package |
 |---|---|
-| Dio | `impaktfull_network_dio_interceptor` |
-| Serverpod | `impaktfull_network_serverpod_interceptor` |
+| Dio | `xray_network_dio_interceptor` |
+| Serverpod | `xray_network_serverpod_interceptor` |
 
 ## Setup with Dio
 
 ```dart
-import 'package:impaktfull_inspector/impaktfull_inspector.dart';
-import 'package:impaktfull_network_dio_interceptor/impaktfull_network_dio_interceptor.dart';
+import 'package:xray_inspector/xray_inspector.dart';
+import 'package:xray_network_dio_interceptor/xray_network_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 
-final networkInspector = ImpaktfullNetworkInspector();
+final networkInspector = XRayNetworkInspector();
 
 final dio = Dio()
   ..interceptors.add(
@@ -32,10 +32,10 @@ final dio = Dio()
 ## Setup with Serverpod
 
 ```dart
-import 'package:impaktfull_inspector/impaktfull_inspector.dart';
-import 'package:impaktfull_network_serverpod_interceptor/impaktfull_network_serverpod_interceptor.dart';
+import 'package:xray_inspector/xray_inspector.dart';
+import 'package:xray_network_serverpod_interceptor/xray_network_serverpod_interceptor.dart';
 
-final networkInspector = ImpaktfullNetworkInspector();
+final networkInspector = XRayNetworkInspector();
 
 final client = ImpaktfullServerpodHttpClient(inspector: networkInspector);
 ```
@@ -89,7 +89,7 @@ networkInspector.clear();
 ## Custom inspector title
 
 ```dart
-final networkInspector = ImpaktfullNetworkInspector(title: 'API Calls');
+final networkInspector = XRayNetworkInspector(title: 'API Calls');
 ```
 
 The title is displayed in the remote UI and used to generate the inspector's ID.
@@ -119,8 +119,8 @@ Each captured call is an `ImpaktfullNetworkCall` with these fields:
 You can run multiple network inspectors simultaneously, each with a distinct title:
 
 ```dart
-final apiInspector = ImpaktfullNetworkInspector(title: 'API');
-final analyticsInspector = ImpaktfullNetworkInspector(title: 'Analytics');
+final apiInspector = XRayNetworkInspector(title: 'API');
+final analyticsInspector = XRayNetworkInspector(title: 'Analytics');
 
 final apiDio = Dio()
   ..interceptors.add(ImpaktfullNetworkDioInterceptor(inspector: apiInspector));

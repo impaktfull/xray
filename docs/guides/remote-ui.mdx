@@ -5,21 +5,21 @@ description: Connect the inspector UI to your running app over the local network
 
 # Remote UI
 
-`impaktfull_inspector_ui` provides a Flutter UI that connects to an inspector server running in your app. It can run in a separate debug app, on another device, or as a debug panel in the same app.
+`xray_inspector_ui` provides a Flutter UI that connects to an inspector server running in your app. It can run in a separate debug app, on another device, or as a debug panel in the same app.
 
 ## How it works
 
-1. Your app starts `ImpaktfullInspectorServer`, which runs an HTTP server and a UDP discovery beacon.
-2. `ImpaktfullInspectorUiController` discovers the server on the local network (or connects directly by IP/port).
+1. Your app starts `XRayInspectorServer`, which runs an HTTP server and a UDP discovery beacon.
+2. `XRayInspectorUiController` discovers the server on the local network (or connects directly by IP/port).
 3. The UI subscribes to a WebSocket stream for real-time updates.
 
 ## Setup the server (in your app)
 
 ```dart
-import 'package:impaktfull_inspector/impaktfull_inspector.dart';
+import 'package:xray_inspector/xray_inspector.dart';
 
-final server = ImpaktfullInspectorServer(
-  config: ImpaktfullInspectorServerConfig(
+final server = XRayInspectorServer(
+  config: XRayInspectorServerConfig(
     inspectors: [
       networkInspector,
       logInspector,
@@ -38,15 +38,15 @@ await server.stop();
 ```
 
 Default ports:
-- HTTP server: `ImpaktfullInspectorProtocol.defaultHttpPort`
-- UDP discovery: `ImpaktfullInspectorProtocol.defaultDiscoveryPort`
+- HTTP server: `XRayInspectorProtocol.defaultHttpPort`
+- UDP discovery: `XRayInspectorProtocol.defaultDiscoveryPort`
 
 ## Setup the UI (in your debug app or panel)
 
 ```dart
-import 'package:impaktfull_inspector_ui/impaktfull_inspector_ui.dart';
+import 'package:xray_inspector_ui/xray_inspector_ui.dart';
 
-final uiController = ImpaktfullInspectorUiController();
+final uiController = XRayInspectorUiController();
 ```
 
 ### Connect via auto-discovery (same network)
@@ -98,7 +98,7 @@ From there, users can navigate to the network calls list, log entries, and key-v
 
 ## Reactive data
 
-`ImpaktfullInspectorUiController` exposes `ValueNotifier` properties that update in real-time as events arrive over WebSocket:
+`XRayInspectorUiController` exposes `ValueNotifier` properties that update in real-time as events arrive over WebSocket:
 
 ```dart
 // Network calls, keyed by inspector ID

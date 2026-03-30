@@ -1,9 +1,9 @@
 ---
-title: impaktfull_inspector
+title: xray_inspector
 description: Core inspector package — network, log, and key-value inspectors plus the HTTP server for remote inspection.
 ---
 
-# impaktfull_inspector
+# xray_inspector
 
 Core orchestration package. Contains the inspector classes, repository layer, and the HTTP/WebSocket server that broadcasts inspector data to remote UI clients.
 
@@ -11,21 +11,21 @@ Core orchestration package. Contains the inspector classes, repository layer, an
 
 ```yaml
 dependencies:
-  impaktfull_inspector: ^0.0.1
+  xray_inspector: ^0.0.1
 ```
 
 ## What's included
 
-- `ImpaktfullNetworkInspector` — captures and stores network calls
-- `ImpaktfullLogInspector` — captures and stores log entries
-- `ImpaktfullKeyValueInspector` — base class for key-value inspectors
-- `ImpaktfullInspectorServer` — HTTP + WebSocket + UDP discovery server
-- `ImpaktfullInspectorServerConfig` — server configuration
+- `XRayNetworkInspector` — captures and stores network calls
+- `XRayLogInspector` — captures and stores log entries
+- `XRayKeyValueInspector` — base class for key-value inspectors
+- `XRayInspectorServer` — HTTP + WebSocket + UDP discovery server
+- `XRayInspectorServerConfig` — server configuration
 
-## ImpaktfullNetworkInspector
+## XRayNetworkInspector
 
 ```dart
-final inspector = ImpaktfullNetworkInspector(title: 'Network');
+final inspector = XRayNetworkInspector(title: 'Network');
 ```
 
 | Member | Type | Description |
@@ -39,10 +39,10 @@ final inspector = ImpaktfullNetworkInspector(title: 'Network');
 | `removeListener(l)` | `void` | Unregister a listener |
 | `clear()` | `void` | Clear all captured calls |
 
-## ImpaktfullLogInspector
+## XRayLogInspector
 
 ```dart
-final inspector = ImpaktfullLogInspector(title: 'Logs');
+final inspector = XRayLogInspector(title: 'Logs');
 ```
 
 | Member | Type | Description |
@@ -58,12 +58,12 @@ final inspector = ImpaktfullLogInspector(title: 'Logs');
 | `log(message, level:)` | `void` | Log with explicit level |
 | `clear()` | `void` | Clear all entries |
 
-## ImpaktfullKeyValueInspector
+## XRayKeyValueInspector
 
-Base class used by `ImpaktfullSharedPreferencesInspector` and `ImpaktfullSecureStorageInspector`.
+Base class used by `XRaySharedPreferencesInspector` and `XRaySecureStorageInspector`.
 
 ```dart
-final inspector = ImpaktfullKeyValueInspector(source: mySource);
+final inspector = XRayKeyValueInspector(source: mySource);
 ```
 
 | Member | Type | Description |
@@ -75,11 +75,11 @@ final inspector = ImpaktfullKeyValueInspector(source: mySource);
 | `delete(key)` | `Future<void>` | Delete a key and refresh |
 | `clear()` | `void` | Delete all keys |
 
-## ImpaktfullInspectorServer
+## XRayInspectorServer
 
 ```dart
-final server = ImpaktfullInspectorServer(
-  config: ImpaktfullInspectorServerConfig(
+final server = XRayInspectorServer(
+  config: XRayInspectorServerConfig(
     inspectors: [networkInspector, logInspector],
     httpPort: 8080,
     discoveryPort: 8081,

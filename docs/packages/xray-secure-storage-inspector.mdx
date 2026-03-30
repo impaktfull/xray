@@ -1,9 +1,9 @@
 ---
-title: impaktfull_secure_storage_inspector
+title: xray_secure_storage_inspector
 description: Key-value inspector for flutter_secure_storage.
 ---
 
-# impaktfull_secure_storage_inspector
+# xray_secure_storage_inspector
 
 Exposes `flutter_secure_storage` entries in the inspector UI, with support for reading, writing, and deleting values at runtime.
 
@@ -11,8 +11,8 @@ Exposes `flutter_secure_storage` entries in the inspector UI, with support for r
 
 ```yaml
 dependencies:
-  impaktfull_inspector: ^0.0.1
-  impaktfull_secure_storage_inspector: ^0.0.1
+  xray_inspector: ^0.0.1
+  xray_secure_storage_inspector: ^0.0.1
   flutter_secure_storage: ^9.0.0
 ```
 
@@ -20,9 +20,9 @@ dependencies:
 
 ```dart
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:impaktfull_secure_storage_inspector/impaktfull_secure_storage_inspector.dart';
+import 'package:xray_secure_storage_inspector/xray_secure_storage_inspector.dart';
 
-final inspector = ImpaktfullSecureStorageInspector(
+final inspector = XRaySecureStorageInspector(
   secureStorage: const FlutterSecureStorage(),
 );
 ```
@@ -30,8 +30,8 @@ final inspector = ImpaktfullSecureStorageInspector(
 Register it with the inspector server:
 
 ```dart
-final server = ImpaktfullInspectorServer(
-  config: ImpaktfullInspectorServerConfig(
+final server = XRayInspectorServer(
+  config: XRayInspectorServerConfig(
     inspectors: [inspector],
   ),
 );
@@ -52,7 +52,7 @@ This package is intended for **development and QA builds only**. Exposing secure
 ```dart
 // Recommended: only add in debug/profile builds
 if (kDebugMode) {
-  inspectors.add(ImpaktfullSecureStorageInspector(
+  inspectors.add(XRaySecureStorageInspector(
     secureStorage: const FlutterSecureStorage(),
   ));
 }
