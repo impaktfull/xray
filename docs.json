@@ -34,16 +34,8 @@
       "href": "https://xrayinspector.dev/install?platform=android"
     }
   ],
-  "tabs": [
-    {
-      "id": "docs",
-      "title": "Docs",
-      "href": "/"
-    }
-  ],
   "sidebar": [
     {
-      "tab": "docs",
       "group": "Getting Started",
       "pages": [
         { "title": "📖 Overview", "href": "/" },
@@ -51,7 +43,6 @@
       ]
     },
     {
-      "tab": "root",
       "group": "Legal",
       "pages": [
         { "title": "📝 License", "href": "/license" },
@@ -59,7 +50,6 @@
       ]
     },
     {
-      "tab": "root",
       "group": "Guides",
       "pages": [
         { "title": "🌐 Network Inspection", "href": "/guides/network-inspection" },
@@ -68,7 +58,6 @@
       ]
     },
     {
-      "tab": "root",
       "group": "Packages",
       "pages": [
         { "title": "📦 xray_inspector", "href": "/packages/xray-inspector" },
