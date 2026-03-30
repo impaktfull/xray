@@ -6,6 +6,34 @@
     "primaryLight": "#7d64f2",
     "primaryDark": "#7d64f2"
   },
+  "social": {
+    "github": "impaktfull",
+    "website": "https://impaktfull.com",
+    "linkedin": "impaktfull",
+    "instagram": "impaktfull"
+  },
+  "anchors": [
+    {
+      "title": "Website",
+      "icon": "globe",
+      "href": "https://xrayinspector.dev"
+    },
+    {
+      "title": "mac App",
+      "icon": "desktop",
+      "href": "https://xrayinspector.dev/install?platform=macos"
+    },
+    {
+      "title": "iOS App",
+      "icon": "apple",
+      "href": "https://xrayinspector.dev/install?platform=ios"
+    },
+    {
+      "title": "Android App",
+      "icon": "android",
+      "href": "https://xrayinspector.dev/install?platform=android"
+    }
+  ],
   "tabs": [
     {
       "id": "docs",
