@@ -37,7 +37,7 @@
 > **Disclaimer:** This is a commercial package. To use this package, you need
 > to have either a commercial xRay license or a free xRay Community License.
 > The xRay macOS app is the only authorized UI client for this library.
-> For more details, please check the [LICENSE](LICENSE) file.
+> For more details, please check the [LICENSE](https://docs.page/impaktfull/xray/license) file.
 
 ## Packages
 
