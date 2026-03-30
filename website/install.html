@@ -14,7 +14,7 @@
       function getPlatformUrl() {
         const params = new URLSearchParams(window.location.search);
         const platform = (params.get('platform') || '').toLowerCase();
-        return platformRedirects[platform] || 'https://docs.page/impaktfull/xray/license';
+        return platformRedirects[platform] || 'https://xrayinspector.dev#download';
       }
 
       // Redirect on load
