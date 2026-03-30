@@ -28,18 +28,18 @@ logInspector.warning('Deprecated API used');
 logInspector.error('Failed to load data');
 
 // Or with an explicit level
-logInspector.log('Custom message', level: ImpaktfullLogInterceptorLevel.info);
+logInspector.log('Custom message', level: XRayLogInterceptorLevel.info);
 ```
 
 ## Log levels
 
-| Level   | Constant                                | Use for                        |
-| ------- | --------------------------------------- | ------------------------------ |
-| verbose | `ImpaktfullLogInterceptorLevel.verbose` | Fine-grained trace output      |
-| debug   | `ImpaktfullLogInterceptorLevel.debug`   | Debugging information          |
-| info    | `ImpaktfullLogInterceptorLevel.info`    | General informational messages |
-| warning | `ImpaktfullLogInterceptorLevel.warning` | Potentially harmful situations |
-| error   | `ImpaktfullLogInterceptorLevel.error`   | Errors and exceptions          |
+| Level   | Constant                          | Use for                        |
+| ------- | --------------------------------- | ------------------------------ |
+| verbose | `XRayLogInterceptorLevel.verbose` | Fine-grained trace output      |
+| debug   | `XRayLogInterceptorLevel.debug`   | Debugging information          |
+| info    | `XRayLogInterceptorLevel.info`    | General informational messages |
+| warning | `XRayLogInterceptorLevel.warning` | Potentially harmful situations |
+| error   | `XRayLogInterceptorLevel.error`   | Errors and exceptions          |
 
 ## Accessing log entries
 
@@ -48,7 +48,7 @@ logInspector.log('Custom message', level: ImpaktfullLogInterceptorLevel.info);
 final entries = logInspector.entries;
 
 // Reactive — rebuilds widget when entries change
-ValueListenableBuilder<List<ImpaktfullLogInterceptorEntry>>(
+ValueListenableBuilder<List<XRayLogInterceptorEntry>>(
   valueListenable: logInspector.entriesNotifier,
   builder: (context, entries, _) {
     return Text('${entries.length} log entries');
@@ -58,7 +58,7 @@ ValueListenableBuilder<List<ImpaktfullLogInterceptorEntry>>(
 
 ## Log entry model
 
-Each entry is an `ImpaktfullLogInterceptorEntry` with:
+Each entry is an `XRayLogInterceptorEntry` with:
 
 | Field       | Type       | Description                |
 | ----------- | ---------- | -------------------------- |

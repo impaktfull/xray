@@ -24,7 +24,7 @@ final networkInspector = XRayNetworkInspector();
 
 final dio = Dio()
   ..interceptors.add(
-    ImpaktfullNetworkDioInterceptor(inspector: networkInspector),
+    XRayNetworkDioInterceptor(inspector: networkInspector),
   );
 ```
 
@@ -35,7 +35,7 @@ final dio = Dio()
 final calls = networkInspector.calls;
 
 // Reactive — rebuilds your widget when calls change
-ValueListenableBuilder<List<ImpaktfullNetworkCall>>(
+ValueListenableBuilder<List<XRayNetworkCall>>(
   valueListenable: networkInspector.callsNotifier,
   builder: (context, calls, _) {
     return Text('${calls.length} calls captured');
@@ -45,12 +45,12 @@ ValueListenableBuilder<List<ImpaktfullNetworkCall>>(
 
 ## Listening to new calls in code
 
-Implement `ImpaktfullNetworkInterceptorListener` and register it:
+Implement `XRayNetworkInterceptorListener` and register it:
 
 ```dart
-class MyListener implements ImpaktfullNetworkInterceptorListener {
+class MyListener implements XRayNetworkInterceptorListener {
   @override
-  void onNetworkCallAdded(ImpaktfullNetworkCall call) {
+  void onNetworkCallAdded(XRayNetworkCall call) {
     debugPrint('[Network] ${call.method} ${call.uri} → ${call.responseStatusCode}');
   }
 }
@@ -84,23 +84,23 @@ The title is displayed in the remote UI and used to generate the inspector's ID.
 
 ## Network call model
 
-Each captured call is an `ImpaktfullNetworkCall` with these fields:
+Each captured call is an `XRayNetworkCall` with these fields:
 
-| Field                | Type                          | Description                       |
-| -------------------- | ----------------------------- | --------------------------------- |
-| `id`                 | `String`                      | Unique ID (timestamp-based)       |
-| `method`             | `String`                      | HTTP method (`GET`, `POST`, etc.) |
-| `uri`                | `String`                      | Full request URI                  |
-| `requestHeaders`     | `Map<String, dynamic>?`       | Request headers                   |
-| `requestBody`        | `dynamic`                     | Request body                      |
-| `responseStatusCode` | `int?`                        | HTTP status code                  |
-| `responseHeaders`    | `Map<String, dynamic>?`       | Response headers                  |
-| `responseBody`       | `dynamic`                     | Response body                     |
-| `status`             | `ImpaktfullNetworkCallStatus` | `loading` / `success` / `error`   |
-| `startTime`          | `DateTime`                    | When the request started          |
-| `endTime`            | `DateTime?`                   | When the request completed        |
-| `durationMs`         | `int?`                        | Duration in milliseconds          |
-| `error`              | `String?`                     | Error message if failed           |
+| Field                | Type                    | Description                       |
+| -------------------- | ----------------------- | --------------------------------- |
+| `id`                 | `String`                | Unique ID (timestamp-based)       |
+| `method`             | `String`                | HTTP method (`GET`, `POST`, etc.) |
+| `uri`                | `String`                | Full request URI                  |
+| `requestHeaders`     | `Map<String, dynamic>?` | Request headers                   |
+| `requestBody`        | `dynamic`               | Request body                      |
+| `responseStatusCode` | `int?`                  | HTTP status code                  |
+| `responseHeaders`    | `Map<String, dynamic>?` | Response headers                  |
+| `responseBody`       | `dynamic`               | Response body                     |
+| `status`             | `XRayNetworkCallStatus` | `loading` / `success` / `error`   |
+| `startTime`          | `DateTime`              | When the request started          |
+| `endTime`            | `DateTime?`             | When the request completed        |
+| `durationMs`         | `int?`                  | Duration in milliseconds          |
+| `error`              | `String?`               | Error message if failed           |
 
 ## Multiple network inspectors
 
@@ -111,8 +111,8 @@ final apiInspector = XRayNetworkInspector(title: 'API');
 final analyticsInspector = XRayNetworkInspector(title: 'Analytics');
 
 final apiDio = Dio()
-  ..interceptors.add(ImpaktfullNetworkDioInterceptor(inspector: apiInspector));
+  ..interceptors.add(XRayNetworkDioInterceptor(inspector: apiInspector));
 
 final analyticsDio = Dio()
-  ..interceptors.add(ImpaktfullNetworkDioInterceptor(inspector: analyticsInspector));
+  ..interceptors.add(XRayNetworkDioInterceptor(inspector: analyticsInspector));
 ```

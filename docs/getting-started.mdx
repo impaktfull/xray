@@ -53,7 +53,7 @@ import 'package:dio/dio.dart';
 
 final dio = Dio()
   ..interceptors.add(
-    ImpaktfullNetworkDioInterceptor(inspector: networkInspector),
+    XRayNetworkDioInterceptor(inspector: networkInspector),
   );
 ```
 

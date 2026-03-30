@@ -44,12 +44,12 @@ final secureStorageInspector = XRaySecureStorageInspector(
 
 ## Custom key-value source
 
-Implement `ImpaktfullKeyValueSource` to inspect any key-value store:
+Implement `XRayKeyValueSource` to inspect any key-value store:
 
 ```dart
 import 'package:xray_inspector/xray_inspector.dart';
 
-class MyCustomSource implements ImpaktfullKeyValueSource {
+class MyCustomSource implements XRayKeyValueSource {
   @override
   String get title => 'My Store';
 

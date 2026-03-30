@@ -27,15 +27,15 @@ final networkInspector = XRayNetworkInspector();
 
 final dio = Dio()
   ..interceptors.add(
-    ImpaktfullNetworkDioInterceptor(inspector: networkInspector),
+    XRayNetworkDioInterceptor(inspector: networkInspector),
   );
 ```
 
 ## How it works
 
-`ImpaktfullNetworkDioInterceptor` hooks into Dio's interceptor lifecycle:
+`XRayNetworkDioInterceptor` hooks into Dio's interceptor lifecycle:
 
-1. **`onRequest`** — Creates a new `ImpaktfullNetworkCall` with status `loading` and stores the call ID in Dio's request options `extra` map.
+1. **`onRequest`** — Creates a new `XRayNetworkCall` with status `loading` and stores the call ID in Dio's request options `extra` map.
 2. **`onResponse`** — Finds the call by ID and updates it with the response status code, headers, and body. Status becomes `success`.
 3. **`onError`** — Finds the call by ID and updates it with the error details. Status becomes `error`.
 
@@ -49,13 +49,13 @@ final dio = Dio()
 
 ## Combining with other Dio interceptors
 
-Add `ImpaktfullNetworkDioInterceptor` alongside other interceptors. Order matters — place it where you want the captured request/response to reflect the transformation state:
+Add `XRayNetworkDioInterceptor` alongside other interceptors. Order matters — place it where you want the captured request/response to reflect the transformation state:
 
 ```dart
 final dio = Dio()
   ..interceptors.addAll([
     AuthInterceptor(),                                        // runs first
-    ImpaktfullNetworkDioInterceptor(inspector: inspector),   // captures after auth headers added
+    XRayNetworkDioInterceptor(inspector: inspector),   // captures after auth headers added
     LogInterceptor(),
   ]);
 ```

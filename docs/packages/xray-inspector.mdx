@@ -28,16 +28,16 @@ dependencies:
 final inspector = XRayNetworkInspector(title: 'Network');
 ```
 
-| Member | Type | Description |
-|---|---|---|
-| `title` | `String` | Display name (default: `"Network"`) |
-| `id` | `String` | Derived from title, used as server route ID |
-| `calls` | `List<ImpaktfullNetworkCall>` | Current captured calls (snapshot) |
-| `callsNotifier` | `ValueNotifier<List<...>>` | Reactive calls list |
-| `findById(id)` | `ImpaktfullNetworkCall?` | Look up a call by ID |
-| `addListener(l)` | `void` | Register a listener |
-| `removeListener(l)` | `void` | Unregister a listener |
-| `clear()` | `void` | Clear all captured calls |
+| Member              | Type                       | Description                                 |
+| ------------------- | -------------------------- | ------------------------------------------- |
+| `title`             | `String`                   | Display name (default: `"Network"`)         |
+| `id`                | `String`                   | Derived from title, used as server route ID |
+| `calls`             | `List<XRayNetworkCall>`    | Current captured calls (snapshot)           |
+| `callsNotifier`     | `ValueNotifier<List<...>>` | Reactive calls list                         |
+| `findById(id)`      | `XRayNetworkCall?`         | Look up a call by ID                        |
+| `addListener(l)`    | `void`                     | Register a listener                         |
+| `removeListener(l)` | `void`                     | Unregister a listener                       |
+| `clear()`           | `void`                     | Clear all captured calls                    |
 
 ## XRayLogInspector
 
@@ -45,18 +45,18 @@ final inspector = XRayNetworkInspector(title: 'Network');
 final inspector = XRayLogInspector(title: 'Logs');
 ```
 
-| Member | Type | Description |
-|---|---|---|
-| `title` | `String` | Display name (default: `"Logs"`) |
-| `entries` | `List<ImpaktfullLogInterceptorEntry>` | Current log entries |
-| `entriesNotifier` | `ValueNotifier<List<...>>` | Reactive entries list |
-| `verbose(message)` | `void` | Log at verbose level |
-| `debug(message)` | `void` | Log at debug level |
-| `info(message)` | `void` | Log at info level |
-| `warning(message)` | `void` | Log at warning level |
-| `error(message)` | `void` | Log at error level |
-| `log(message, level:)` | `void` | Log with explicit level |
-| `clear()` | `void` | Clear all entries |
+| Member                 | Type                            | Description                      |
+| ---------------------- | ------------------------------- | -------------------------------- |
+| `title`                | `String`                        | Display name (default: `"Logs"`) |
+| `entries`              | `List<XRayLogInterceptorEntry>` | Current log entries              |
+| `entriesNotifier`      | `ValueNotifier<List<...>>`      | Reactive entries list            |
+| `verbose(message)`     | `void`                          | Log at verbose level             |
+| `debug(message)`       | `void`                          | Log at debug level               |
+| `info(message)`        | `void`                          | Log at info level                |
+| `warning(message)`     | `void`                          | Log at warning level             |
+| `error(message)`       | `void`                          | Log at error level               |
+| `log(message, level:)` | `void`                          | Log with explicit level          |
+| `clear()`              | `void`                          | Clear all entries                |
 
 ## XRayKeyValueInspector
 
@@ -66,14 +66,14 @@ Base class used by `XRaySharedPreferencesInspector` and `XRaySecureStorageInspec
 final inspector = XRayKeyValueInspector(source: mySource);
 ```
 
-| Member | Type | Description |
-|---|---|---|
-| `title` | `String` | Derived from `source.title` |
-| `entriesNotifier` | `ValueNotifier<List<InspectorKeyValueEntry>>` | Reactive entries |
-| `refresh()` | `Future<void>` | Re-read all entries from the source |
-| `write(key, value)` | `Future<void>` | Write a value and refresh |
-| `delete(key)` | `Future<void>` | Delete a key and refresh |
-| `clear()` | `void` | Delete all keys |
+| Member              | Type                                          | Description                         |
+| ------------------- | --------------------------------------------- | ----------------------------------- |
+| `title`             | `String`                                      | Derived from `source.title`         |
+| `entriesNotifier`   | `ValueNotifier<List<InspectorKeyValueEntry>>` | Reactive entries                    |
+| `refresh()`         | `Future<void>`                                | Re-read all entries from the source |
+| `write(key, value)` | `Future<void>`                                | Write a value and refresh           |
+| `delete(key)`       | `Future<void>`                                | Delete a key and refresh            |
+| `clear()`           | `void`                                        | Delete all keys                     |
 
 ## XRayInspectorServer
 
@@ -92,37 +92,37 @@ await server.stop();
 
 ### HTTP API
 
-| Method | Path | Description |
-|---|---|---|
-| `GET` | `/api/ping` | Server info and inspector list |
-| `GET` | `/api/network/:id/calls` | All network calls for inspector |
-| `DELETE` | `/api/network/:id/calls` | Clear network calls |
-| `GET` | `/api/network/:id/calls/:callId` | Single network call |
-| `GET` | `/api/log/:id/entries` | All log entries |
-| `DELETE` | `/api/log/:id/entries` | Clear log entries |
-| `GET` | `/api/key-value/sources` | List all key-value sources |
-| `GET` | `/api/key-value/sources/:sourceId` | Entries for a source |
-| `PUT` | `/api/key-value/sources/:sourceId/entries/:key` | Write an entry |
-| `DELETE` | `/api/key-value/sources/:sourceId/entries/:key` | Delete an entry |
-| `GET` | `/api/events` | WebSocket upgrade for real-time events |
+| Method   | Path                                            | Description                            |
+| -------- | ----------------------------------------------- | -------------------------------------- |
+| `GET`    | `/api/ping`                                     | Server info and inspector list         |
+| `GET`    | `/api/network/:id/calls`                        | All network calls for inspector        |
+| `DELETE` | `/api/network/:id/calls`                        | Clear network calls                    |
+| `GET`    | `/api/network/:id/calls/:callId`                | Single network call                    |
+| `GET`    | `/api/log/:id/entries`                          | All log entries                        |
+| `DELETE` | `/api/log/:id/entries`                          | Clear log entries                      |
+| `GET`    | `/api/key-value/sources`                        | List all key-value sources             |
+| `GET`    | `/api/key-value/sources/:sourceId`              | Entries for a source                   |
+| `PUT`    | `/api/key-value/sources/:sourceId/entries/:key` | Write an entry                         |
+| `DELETE` | `/api/key-value/sources/:sourceId/entries/:key` | Delete an entry                        |
+| `GET`    | `/api/events`                                   | WebSocket upgrade for real-time events |
 
 ### WebSocket events
 
-| Event type | Payload | Description |
-|---|---|---|
-| `network_call_added` | `{ inspectorId, data }` | New network call captured |
-| `network_call_updated` | `{ inspectorId, data }` | Call status changed |
-| `network_cleared` | `{ inspectorId }` | All calls cleared |
-| `log_entry_added` | `{ inspectorId, data }` | New log entry |
-| `log_cleared` | `{ inspectorId }` | All log entries cleared |
-| `key_value_changed` | `{ source, entries }` | Key-value store updated |
+| Event type             | Payload                 | Description               |
+| ---------------------- | ----------------------- | ------------------------- |
+| `network_call_added`   | `{ inspectorId, data }` | New network call captured |
+| `network_call_updated` | `{ inspectorId, data }` | Call status changed       |
+| `network_cleared`      | `{ inspectorId }`       | All calls cleared         |
+| `log_entry_added`      | `{ inspectorId, data }` | New log entry             |
+| `log_cleared`          | `{ inspectorId }`       | All log entries cleared   |
+| `key_value_changed`    | `{ source, entries }`   | Key-value store updated   |
 
-## ImpaktfullKeyValueSource
+## XRayKeyValueSource
 
 Implement this interface to add any key-value store:
 
 ```dart
-abstract class ImpaktfullKeyValueSource {
+abstract class XRayKeyValueSource {
   String get title;
   Future<Map<String, String>> readAll();
   Future<void> write(String key, String value);

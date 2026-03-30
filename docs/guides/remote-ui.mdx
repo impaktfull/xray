@@ -103,13 +103,13 @@ From there, users can navigate to the network calls list, log entries, and key-v
 
 ```dart
 // Network calls, keyed by inspector ID
-ValueListenableBuilder<Map<String, List<ImpaktfullNetworkCall>>>(
+ValueListenableBuilder<Map<String, List<XRayNetworkCall>>>(
   valueListenable: uiController.networkCalls,
   builder: (context, callsByInspector, _) { ... },
 );
 
 // Log entries, keyed by inspector ID
-ValueListenableBuilder<Map<String, List<ImpaktfullLogInterceptorEntry>>>(
+ValueListenableBuilder<Map<String, List<XRayLogInterceptorEntry>>>(
   valueListenable: uiController.logEntries,
   builder: (context, entriesByInspector, _) { ... },
 );
