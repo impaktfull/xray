@@ -102,7 +102,7 @@ img {
 .nav-logo {
   width: 28px;
   height: 28px;
-  background: url('https://xrayinspector.dev/assets/logo.svg') center/cover no-repeat;
+  background: url('https://xrayinspector.dev/assets/logo.svg') center/contain no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -535,7 +535,7 @@ footer {
 .foot-logo {
   width: 20px;
   height: 20px;
-  background: url('https://xrayinspector.dev/assets/logo.svg') center/cover no-repeat;
+  background: url('https://xrayinspector.dev/assets/logo.svg') center/contain no-repeat;
   flex-shrink: 0;
 }
 
