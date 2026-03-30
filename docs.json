@@ -2,22 +2,21 @@
   "$schema": "https://docs.page/schema.json",
   "name": "Impaktfull Inspector",
   "description": "A comprehensive Flutter debugging toolkit for inspecting network calls, logs, and key-value storage.",
-  "logo": "https://raw.githubusercontent.com/impaktfull/impaktfull_inspector/main/images/logo.png",
   "tabs": [
     {
       "id": "docs",
       "title": "Docs",
-      "href": "/"
+      "href": "/docs"
     },
     {
       "id": "guides",
       "title": "Guides",
-      "href": "/guides/network-inspection"
+      "href": "/docs/guides/network-inspection"
     },
     {
       "id": "packages",
       "title": "Packages",
-      "href": "/packages/impaktfull-inspector"
+      "href": "/docs/packages/impaktfull-inspector"
     }
   ],
   "sidebar": [
@@ -25,31 +24,31 @@
       "tab": "docs",
       "group": "Getting Started",
       "pages": [
-        { "title": "📖 Overview", "href": "/" },
-        { "title": "🚀 Quick Start", "href": "/getting-started" }
+        { "title": "📖 Overview", "href": "/docs" },
+        { "title": "🚀 Quick Start", "href": "/docs/getting-started" }
       ]
     },
     {
       "tab": "guides",
       "group": "Guides",
       "pages": [
-        { "title": "🌐 Network Inspection", "href": "/guides/network-inspection" },
-        { "title": "📋 Log Inspection", "href": "/guides/log-inspection" },
-        { "title": "🗄️ Key-Value Inspection", "href": "/guides/key-value-inspection" },
-        { "title": "🖥️ Remote UI", "href": "/guides/remote-ui" }
+        { "title": "🌐 Network Inspection", "href": "/docs/guides/network-inspection" },
+        { "title": "📋 Log Inspection", "href": "/docs/guides/log-inspection" },
+        { "title": "🗄️ Key-Value Inspection", "href": "/docs/guides/key-value-inspection" },
+        { "title": "🖥️ Remote UI", "href": "/docs/guides/remote-ui" }
       ]
     },
     {
       "tab": "packages",
       "group": "Packages",
       "pages": [
-        { "title": "📦 impaktfull_inspector", "href": "/packages/impaktfull-inspector" },
-        { "title": "🔌 impaktfull_network_dio_interceptor", "href": "/packages/impaktfull-network-dio-interceptor" },
-        { "title": "🔌 impaktfull_network_serverpod_interceptor", "href": "/packages/impaktfull-network-serverpod-interceptor" },
-        { "title": "💾 impaktfull_shared_preferences_inspector", "href": "/packages/impaktfull-shared-preferences-inspector" },
-        { "title": "🔐 impaktfull_secure_storage_inspector", "href": "/packages/impaktfull-secure-storage-inspector" },
-        { "title": "🎨 impaktfull_inspector_ui", "href": "/packages/impaktfull-inspector-ui" },
-        { "title": "🧩 impaktfull_inspector_core", "href": "/packages/impaktfull-inspector-core" }
+        { "title": "📦 impaktfull_inspector", "href": "/docs/packages/impaktfull-inspector" },
+        { "title": "🔌 impaktfull_network_dio_interceptor", "href": "/docs/packages/impaktfull-network-dio-interceptor" },
+        { "title": "🔌 impaktfull_network_serverpod_interceptor", "href": "/docs/packages/impaktfull-network-serverpod-interceptor" },
+        { "title": "💾 impaktfull_shared_preferences_inspector", "href": "/docs/packages/impaktfull-shared-preferences-inspector" },
+        { "title": "🔐 impaktfull_secure_storage_inspector", "href": "/docs/packages/impaktfull-secure-storage-inspector" },
+        { "title": "🎨 impaktfull_inspector_ui", "href": "/docs/packages/impaktfull-inspector-ui" },
+        { "title": "🧩 impaktfull_inspector_core", "href": "/docs/packages/impaktfull-inspector-core" }
       ]
     }
   ]
