@@ -39,16 +39,6 @@
       "id": "docs",
       "title": "Docs",
       "href": "/"
-    },
-    {
-      "id": "guides",
-      "title": "Guides",
-      "href": "/guides"
-    },
-    {
-      "id": "packages",
-      "title": "Packages",
-      "href": "/packages"
     }
   ],
   "sidebar": [
