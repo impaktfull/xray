@@ -12,7 +12,6 @@ The network inspector captures every HTTP request, response, and error made thro
 | Use case | Package |
 |---|---|
 | Dio | `xray_network_dio_interceptor` |
-| Serverpod | `xray_network_serverpod_interceptor` |
 
 ## Setup with Dio
 
@@ -27,17 +26,6 @@ final dio = Dio()
   ..interceptors.add(
     ImpaktfullNetworkDioInterceptor(inspector: networkInspector),
   );
-```
-
-## Setup with Serverpod
-
-```dart
-import 'package:xray_inspector/xray_inspector.dart';
-import 'package:xray_network_serverpod_interceptor/xray_network_serverpod_interceptor.dart';
-
-final networkInspector = XRayNetworkInspector();
-
-final client = ImpaktfullServerpodHttpClient(inspector: networkInspector);
 ```
 
 ## Accessing captured calls

@@ -38,7 +38,6 @@
 | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
 | [`xray_inspector`](https://pub.dev/packages/xray_inspector)                                         | Core package — inspectors + HTTP/WebSocket server               |
 | [`xray_network_dio_interceptor`](https://pub.dev/packages/xray_network_dio_interceptor)             | Dio HTTP interceptor                                            |
-| [`xray_network_serverpod_interceptor`](https://pub.dev/packages/xray_network_serverpod_interceptor) | Serverpod HTTP client interceptor                               |
 | [`xray_shared_preferences_inspector`](https://pub.dev/packages/xray_shared_preferences_inspector)   | SharedPreferences key-value inspector                           |
 | [`xray_secure_storage_inspector`](https://pub.dev/packages/xray_secure_storage_inspector)           | flutter_secure_storage inspector                                |
 | [`xray_inspector_ui`](https://pub.dev/packages/xray_inspector_ui)                                   | Flutter UI that connects to a running inspector server          |
