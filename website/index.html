@@ -521,21 +521,16 @@
               <code class="code-primary"
                 >final networkInspector = XRayNetworkInspector();</code
               >
-              <code class="code-primary"
-                >final logInspector = XRayLogInspector();</code
-              >
+              <code class="code-primary">final logInspector = XRayLogInspector();</code>
               <code class="code-default"> </code>
-              <code class="code-primary"
-                >final server = XRayInspectorServer(</code
-              >
-              <code class="code-default">
-                config: XRayInspectorServerConfig(</code
-              >
-              <code class="code-default">
-                inspectors: [networkInspector, logInspector],</code
-              >
-              <code class="code-default"> ),</code>
-              <code class="code-default">);</code>
+              <code class="code-primary">final server = XRayInspectorServer(</code>
+              <code class="code-default">   config: XRayInspectorServerConfig(</code>
+              <code class="code-default">      inspectors: [</code>
+              <code class="code-default">         networkInspector,</code>
+              <code class="code-default">         logInspector,</code>
+              <code class="code-default">      ],</code>
+              <code class="code-default">   ),</code>
+              <code class="code-primary">);</code>
               <code class="code-primary">await server.start();</code>
             </div>
           </div>
