@@ -11,35 +11,35 @@ xRay (inspector) is split into focused packages so you only add what you need.
 
 | Package                                                                                 | Description                                                         |
 | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| [`xray_inspector`](/docs/packages/xray-inspector)                                       | Core package — network, log, and key-value inspectors + HTTP server |
-| [`xray_network_dio_interceptor`](/docs/packages/xray-network-dio-interceptor)           | Dio HTTP interceptor                                                |
-| [`xray_shared_preferences_inspector`](/docs/packages/xray-shared-preferences-inspector) | SharedPreferences key-value inspector                               |
-| [`xray_secure_storage_inspector`](/docs/packages/xray-secure-storage-inspector)         | flutter_secure_storage inspector                                    |
-| [`xray_inspector_ui`](/docs/packages/xray-inspector-ui)                                 | Flutter UI that connects to a running inspector server              |
-| [`xray_inspector_core`](/docs/packages/xray-inspector-core)                             | Pure Dart models and protocol constants (no Flutter dependency)     |
+| [`xray_inspector`](/packages/xray-inspector)                                       | Core package — network, log, and key-value inspectors + HTTP server |
+| [`xray_network_dio_interceptor`](/packages/xray-network-dio-interceptor)           | Dio HTTP interceptor                                                |
+| [`xray_shared_preferences_inspector`](/packages/xray-shared-preferences-inspector) | SharedPreferences key-value inspector                               |
+| [`xray_secure_storage_inspector`](/packages/xray-secure-storage-inspector)         | flutter_secure_storage inspector                                    |
+| [`xray_inspector_ui`](/packages/xray-inspector-ui)                                 | Flutter UI that connects to a running inspector server              |
+| [`xray_inspector_core`](/packages/xray-inspector-core)                             | Pure Dart models and protocol constants (no Flutter dependency)     |
 
 ## Package details
 
-### 📦 [xray_inspector](/docs/packages/xray-inspector)
+### 📦 [xray_inspector](/packages/xray-inspector)
 
 The main package. Provides `XRayNetworkInspector`, `XRayLogInspector`, and the key-value inspectors, plus `XRayInspectorServer` to expose data over HTTP/WebSocket.
 
-### 🔌 [xray_network_dio_interceptor](/docs/packages/xray-network-dio-interceptor)
+### 🔌 [xray_network_dio_interceptor](/packages/xray-network-dio-interceptor)
 
 A Dio `Interceptor` that feeds HTTP requests and responses into `XRayNetworkInspector`. Add it to your Dio instance during setup.
 
-### 💾 [xray_shared_preferences_inspector](/docs/packages/xray-shared-preferences-inspector)
+### 💾 [xray_shared_preferences_inspector](/packages/xray-shared-preferences-inspector)
 
 Wraps `SharedPreferences` to expose all key-value pairs to the inspector. Supports reading, editing, and deleting entries at runtime.
 
-### 🔐 [xray_secure_storage_inspector](/docs/packages/xray-secure-storage-inspector)
+### 🔐 [xray_secure_storage_inspector](/packages/xray-secure-storage-inspector)
 
 Wraps `flutter_secure_storage` to expose secure key-value pairs to the inspector. Supports reading, editing, and deleting entries at runtime.
 
-### 🎨 [xray_inspector_ui](/docs/packages/xray-inspector-ui)
+### 🎨 [xray_inspector_ui](/packages/xray-inspector-ui)
 
 A Flutter UI package that connects to a running inspector server via `XRayInspectorUiController`. Can run as a separate app, on a second device, or as a debug overlay.
 
-### 🧩 [xray_inspector_core](/docs/packages/xray-inspector-core)
+### 🧩 [xray_inspector_core](/packages/xray-inspector-core)
 
 Pure Dart models, protocol constants, and shared types. No Flutter dependency — useful when building custom tooling on top of the inspector protocol.
