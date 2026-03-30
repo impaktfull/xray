@@ -27,16 +27,7 @@ final inspector = XRaySecureStorageInspector(
 );
 ```
 
-Register it with the inspector server:
-
-```dart
-final server = XRayInspectorServer(
-  config: XRayInspectorServerConfig(
-    inspectors: [inspector],
-  ),
-);
-await server.start();
-```
+Then pass it to `XRayInspectorServerConfig`. See [Quick Start](/getting-started) for full server setup.
 
 ## Capabilities
 

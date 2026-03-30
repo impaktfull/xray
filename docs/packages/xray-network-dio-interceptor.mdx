@@ -16,20 +16,7 @@ dependencies:
   dio: ^5.0.0
 ```
 
-## Usage
-
-```dart
-import 'package:dio/dio.dart';
-import 'package:xray_inspector/xray_inspector.dart';
-import 'package:xray_network_dio_interceptor/xray_network_dio_interceptor.dart';
-
-final networkInspector = XRayNetworkInspector();
-
-final dio = Dio()
-  ..interceptors.add(
-    XRayNetworkDioInterceptor(inspector: networkInspector),
-  );
-```
+For setup, see [Network Inspection](/guides/network-inspection).
 
 ## How it works
 

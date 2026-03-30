@@ -58,7 +58,7 @@
       "pages": [
         { "title": "📖 Overview", "href": "/" },
         { "title": "🚀 Quick Start", "href": "/getting-started" },
-        { "title": "📝 License", "href": "/license" }
+        { "title": "📝 License", "href": "https://xrayinspector.dev/license" }
       ]
     },
     {
