@@ -36,7 +36,6 @@ The inspector server runs inside your app and broadcasts data over HTTP/WebSocke
 ## Design principles
 
 - **No singletons** — all dependencies are passed explicitly via constructors.
-- **ValueNotifier reactivity** — all data exposed as `ValueNotifier` for Flutter rebuilds.
 - **No disk I/O** — all captured data lives in memory only.
 - **Composable** — add only the inspectors you need.
 
