@@ -43,13 +43,6 @@
       ]
     },
     {
-      "group": "Legal",
-      "pages": [
-        { "title": "📝 License", "href": "/license" },
-        { "title": "📝 Terms & Conditions", "href": "/terms-and-conditions" }
-      ]
-    },
-    {
       "group": "Guides",
       "pages": [
         { "title": "🌐 Network Inspection", "href": "/guides/network-inspection" },
@@ -64,6 +57,13 @@
         { "title": "🔌 xray_network_dio_interceptor", "href": "/packages/xray-network-dio-interceptor" },
         { "title": "💾 xray_shared_preferences_inspector", "href": "/packages/xray-shared-preferences-inspector" },
         { "title": "🔐 xray_secure_storage_inspector", "href": "/packages/xray-secure-storage-inspector" }
+      ]
+    },
+    {
+      "group": "Legal",
+      "pages": [
+        { "title": "📝 License", "href": "/license" },
+        { "title": "📝 Terms & Conditions", "href": "/terms-and-conditions" }
       ]
     }
   ]
