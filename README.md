@@ -11,24 +11,29 @@
 <p align="center">
   <a href="https://docs.page/impaktfull/xray">Documentation</a> •
   <a href="https://docs.page/impaktfull/xray/getting-started">Quick Start</a> •
-  <a href="https://docs.page/impaktfull/xray/guides/network-inspection">Network Inspection</a> •
-  <a href="https://docs.page/impaktfull/xray/guides/remote-ui">Remote UI</a>
+  <a href="https://docs.page/impaktfull/xray/guides/network-inspection">Network Inspection</a>
+</p>
+
+<p align="center">
+  <a href="https://xrayinspector.dev/install?platform=macos">macOS App</a> •
+  <a href="https://xrayinspector.dev/install?platform=ios">iOS App</a> •
+  <a href="https://xrayinspector.dev/install?platform=android">Android App</a>
 </p>
 
 # xRay (inspector)
 
-> A comprehensive Flutter debugging toolkit that captures and displays **network calls**, **logs**, and **key-value storage** — all inspectable in real-time via a remote UI.
+> A comprehensive Flutter debugging toolkit that captures and displays **network calls**, **logs**, and **key-value storage** — all inspectable in real-time via the xRay app.
 
 - 🔍 **Why?**: Debugging Flutter apps shouldn't require print statements or platform-specific tools. xRay (inspector) gives you a live, structured view of everything happening inside your app.
 - 👥 **Who?**: Built for Flutter developers who need deep insight into network traffic, app logs, and persistent storage during development and QA.
-- 🚀 **What?**: A composable, dependency-injection-friendly inspection layer that runs an HTTP/WebSocket server inside your app and lets any remote UI connect to it in real-time.
+- 🚀 **What?**: A composable, dependency-injection-friendly inspection layer that runs an HTTP/WebSocket server inside your app and lets the xRay app connect to it in real-time.
 
 ### Core Features
 
 - 🌐 **Network inspection**: Capture every HTTP request, response, and error with full headers and body.
 - 📋 **Log inspection**: Structured log levels (verbose, debug, info, warning, error) with real-time streaming.
 - 🗄️ **Key-value inspection**: Browse, edit, and delete entries from SharedPreferences and flutter_secure_storage — live.
-- 📡 **Remote UI**: A separate Flutter app or debug panel connects over the local network via UDP discovery — no config needed.
+- 📡 **Remote UI**: Connect the xRay app (macOS, iOS, Android) over the local network via UDP discovery — no config needed.
 - ♻️ **Reactive**: All data exposed as `ValueNotifier` for seamless Flutter rebuilds.
 - 🧩 **Composable**: Add only the inspectors you need. No forced singletons, no hidden globals.
 
@@ -36,38 +41,42 @@
 
 > **Disclaimer:** This is a commercial package. To use this package, you need
 > to have either a commercial xRay license or a free xRay Community License.
-> The xRay macOS app is the only authorized UI client for this library.
-> For more details, please check the [LICENSE](https://docs.page/impaktfull/xray/license) file.
+> The xRay macOS, iOS, and Android apps are the authorized UI clients for this library.
+> For more details, please check the [LICENSE](https://xrayinspector.dev/license) file.
+
+## Apps
+
+| Platform | Download                                                       |
+| -------- | -------------------------------------------------------------- |
+| macOS    | [Download](https://xrayinspector.dev/install?platform=macos)   |
+| iOS      | [Download](https://xrayinspector.dev/install?platform=ios)     |
+| Android  | [Download](https://xrayinspector.dev/install?platform=android) |
 
 ## Packages
 
-| Package                                                                                           | Description                                                     |
-| ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| [`xray_inspector`](https://pub.dev/packages/xray_inspector)                                       | Core package — inspectors + HTTP/WebSocket server               |
-| [`xray_network_dio_interceptor`](https://pub.dev/packages/xray_network_dio_interceptor)           | Dio HTTP interceptor                                            |
-| [`xray_shared_preferences_inspector`](https://pub.dev/packages/xray_shared_preferences_inspector) | SharedPreferences key-value inspector                           |
-| [`xray_secure_storage_inspector`](https://pub.dev/packages/xray_secure_storage_inspector)         | flutter_secure_storage inspector                                |
-| [`xray_inspector_ui`](https://pub.dev/packages/xray_inspector_ui)                                 | Flutter UI that connects to a running inspector server          |
-| [`xray_inspector_core`](https://pub.dev/packages/xray_inspector_core)                             | Pure Dart models and protocol constants (no Flutter dependency) |
+| Package                                                                                           | Description                                       |
+| ------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| [`xray_inspector`](https://pub.dev/packages/xray_inspector)                                       | Core package — inspectors + HTTP/WebSocket server |
+| [`xray_network_dio_interceptor`](https://pub.dev/packages/xray_network_dio_interceptor)           | Dio HTTP interceptor                              |
+| [`xray_shared_preferences_inspector`](https://pub.dev/packages/xray_shared_preferences_inspector) | SharedPreferences key-value inspector             |
+| [`xray_secure_storage_inspector`](https://pub.dev/packages/xray_secure_storage_inspector)         | flutter_secure_storage inspector                  |
 
 ## Architecture
 
 ```
 Your Flutter app
        │
-       ├── XRayNetworkInspector   ◄── ImpaktfullNetworkDioInterceptor
+       ├── XRayNetworkInspector   ◄── XRayNetworkDioInterceptor
        ├── XRayLogInspector
        ├── XRaySharedPreferencesInspector
        └── XRaySecureStorageInspector
                         │
               XRayInspectorServer  (HTTP + WebSocket + UDP discovery)
                         │
-              XRayInspectorUiController  (separate app or debug panel)
-                        │
-                Inspector UI screens
+                  xRay App (macOS / iOS / Android)
 ```
 
-The inspector server runs inside your app and broadcasts data over HTTP and WebSocket. A separate UI — another device, simulator, or embedded debug panel — connects to it automatically via UDP discovery.
+The inspector server runs inside your app and broadcasts data over HTTP and WebSocket. The xRay app connects to it automatically via UDP discovery — no configuration needed.
 
 ## Quick Start
 
@@ -79,7 +88,6 @@ dependencies:
   xray_network_dio_interceptor: ^0.0.1 # if you use Dio
   xray_shared_preferences_inspector: ^0.0.1 # optional
   xray_secure_storage_inspector: ^0.0.1 # optional
-  xray_inspector_ui: ^0.0.1 # for the remote UI
 ```
 
 Set up inspectors at app startup:
@@ -90,7 +98,7 @@ final logInspector = XRayLogInspector();
 
 final dio = Dio()
   ..interceptors.add(
-    ImpaktfullNetworkDioInterceptor(inspector: networkInspector),
+    XRayNetworkDioInterceptor(inspector: networkInspector),
   );
 
 final server = XRayInspectorServer(
@@ -102,30 +110,12 @@ final server = XRayInspectorServer(
 await server.start();
 ```
 
-Connect the remote UI:
+Then open the xRay app on macOS, iOS, or Android — it will auto-discover your running server on the local network.
 
-```dart
-final controller = XRayInspectorUiController();
-await controller.connectLocal(); // auto-discovers on the local network
-
-Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (_) => InspectorSettingsScreen(controller: controller),
-  ),
-);
-```
-
-See the [Quick Start guide](https://docs.page/impaktfull/xray_inspector/getting-started) for the full setup.
+See the [Quick Start guide](https://docs.page/impaktfull/xray/getting-started) for the full setup.
 
 ## Design Principles
 
 - **No singletons** — all dependencies are passed explicitly via constructors.
-- **ValueNotifier reactivity** — all data exposed as `ValueNotifier` for Flutter rebuilds.
 - **No disk I/O** — all captured data lives in memory only.
 - **Composable** — add only the inspectors you need.
-
-## Directories
-
-- **/docs**: Documentation hosted at [docs.page/impaktfull/xray_inspector](https://docs.page/impaktfull/xray_inspector).
-- **/website**: Landing page assets and static site.

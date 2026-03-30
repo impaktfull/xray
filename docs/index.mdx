@@ -15,8 +15,6 @@ A comprehensive Flutter debugging toolkit that captures and displays network cal
 | `xray_network_dio_interceptor`      | Dio HTTP interceptor                                                |
 | `xray_shared_preferences_inspector` | SharedPreferences key-value inspector                               |
 | `xray_secure_storage_inspector`     | flutter_secure_storage inspector                                    |
-| `xray_inspector_ui`                 | Flutter UI that connects to a running inspector server              |
-| `xray_inspector_core`               | Pure Dart models and protocol constants (no Flutter dependency)     |
 
 ## Architecture overview
 
@@ -30,12 +28,10 @@ Your Flutter app
                         │
               XRayInspectorServer  (HTTP + WebSocket + UDP discovery)
                         │
-              XRayInspectorUiController  (separate app or debug panel)
-                        │
-                Inspector UI screens
+                  xRay Inspector App / Web App
 ```
 
-The inspector server runs inside your app and broadcasts data over HTTP/WebSocket. A separate UI (another device, simulator, or debug panel) connects to it via `XRayInspectorUiController`.
+The inspector server runs inside your app and broadcasts data over HTTP/WebSocket. Connect to it using the xRay app or web app.
 
 ## Design principles
 
@@ -51,4 +47,3 @@ The inspector server runs inside your app and broadcasts data over HTTP/WebSocke
 - [Network Inspection](/guides/network-inspection)
 - [Log Inspection](/guides/log-inspection)
 - [Key-Value Inspection](/guides/key-value-inspection)
-- [Remote UI](/guides/remote-ui)

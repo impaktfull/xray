@@ -67,8 +67,7 @@
       "pages": [
         { "title": "🌐 Network Inspection", "href": "/guides/network-inspection" },
         { "title": "📋 Log Inspection", "href": "/guides/log-inspection" },
-        { "title": "🗄️ Key-Value Inspection", "href": "/guides/key-value-inspection" },
-        { "title": "🖥️ Remote UI", "href": "/guides/remote-ui" }
+        { "title": "🗄️ Key-Value Inspection", "href": "/guides/key-value-inspection" }
       ]
     },
     {
@@ -78,9 +77,7 @@
         { "title": "📦 xray_inspector", "href": "/packages/xray-inspector" },
         { "title": "🔌 xray_network_dio_interceptor", "href": "/packages/xray-network-dio-interceptor" },
         { "title": "💾 xray_shared_preferences_inspector", "href": "/packages/xray-shared-preferences-inspector" },
-        { "title": "🔐 xray_secure_storage_inspector", "href": "/packages/xray-secure-storage-inspector" },
-        { "title": "🎨 xray_inspector_ui", "href": "/packages/xray-inspector-ui" },
-        { "title": "🧩 xray_inspector_core", "href": "/packages/xray-inspector-core" }
+        { "title": "🔐 xray_secure_storage_inspector", "href": "/packages/xray-secure-storage-inspector" }
       ]
     }
   ]

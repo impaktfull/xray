@@ -15,8 +15,6 @@ xRay (inspector) is split into focused packages so you only add what you need.
 | [`xray_network_dio_interceptor`](/packages/xray-network-dio-interceptor)           | Dio HTTP interceptor                                                |
 | [`xray_shared_preferences_inspector`](/packages/xray-shared-preferences-inspector) | SharedPreferences key-value inspector                               |
 | [`xray_secure_storage_inspector`](/packages/xray-secure-storage-inspector)         | flutter_secure_storage inspector                                    |
-| [`xray_inspector_ui`](/packages/xray-inspector-ui)                                 | Flutter UI that connects to a running inspector server              |
-| [`xray_inspector_core`](/packages/xray-inspector-core)                             | Pure Dart models and protocol constants (no Flutter dependency)     |
 
 ## Package details
 
@@ -36,10 +34,3 @@ Wraps `SharedPreferences` to expose all key-value pairs to the inspector. Suppor
 
 Wraps `flutter_secure_storage` to expose secure key-value pairs to the inspector. Supports reading, editing, and deleting entries at runtime.
 
-### 🎨 [xray_inspector_ui](/packages/xray-inspector-ui)
-
-A Flutter UI package that connects to a running inspector server via `XRayInspectorUiController`. Can run as a separate app, on a second device, or as a debug overlay.
-
-### 🧩 [xray_inspector_core](/packages/xray-inspector-core)
-
-Pure Dart models, protocol constants, and shared types. No Flutter dependency — useful when building custom tooling on top of the inspector protocol.

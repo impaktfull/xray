@@ -5,7 +5,7 @@ description: Set up xray_inspector in your Flutter app in minutes.
 
 # Quick Start
 
-This guide sets up full inspection — network, logs, and key-value storage — with a remote UI.
+This guide sets up full inspection — network, logs, and key-value storage.
 
 ## 1. Add dependencies
 
@@ -17,9 +17,6 @@ dependencies:
   xray_network_dio_interceptor: ^0.0.1 # if you use Dio
   xray_shared_preferences_inspector: ^0.0.1 # optional
   xray_secure_storage_inspector: ^0.0.1 # optional
-
-  # In a separate app or debug panel:
-  xray_inspector_ui: ^0.0.1
 ```
 
 ## 2. Create inspectors
@@ -83,28 +80,7 @@ logInspector.warning('Cache miss');
 logInspector.error('Request failed: timeout');
 ```
 
-## 6. Connect the UI
-
-In a debug panel or separate app, connect to the running server:
-
-```dart
-import 'package:xray_inspector_ui/xray_inspector_ui.dart';
-
-final uiController = XRayInspectorUiController();
-
-// Auto-discover on the local network
-await uiController.connectLocal();
-
-// Then navigate to the settings/overview screen
-Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (_) => InspectorSettingsScreen(controller: uiController),
-  ),
-);
-```
-
-## 7. Tear down
+## 6. Tear down
 
 ```dart
 await inspectorServer.stop();
