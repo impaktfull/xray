@@ -9,10 +9,10 @@
 </p>
 
 <p align="center">
-  <a href="https://docs.page/impaktfull/impaktfull_inspector">Documentation</a> •
-  <a href="https://docs.page/impaktfull/impaktfull_inspector/getting-started">Quick Start</a> •
-  <a href="https://docs.page/impaktfull/impaktfull_inspector/guides/network-inspection">Network Inspection</a> •
-  <a href="https://docs.page/impaktfull/impaktfull_inspector/guides/remote-ui">Remote UI</a>
+  <a href="https://docs.page/impaktfull/xray">Documentation</a> •
+  <a href="https://docs.page/impaktfull/xray/getting-started">Quick Start</a> •
+  <a href="https://docs.page/impaktfull/xray/guides/network-inspection">Network Inspection</a> •
+  <a href="https://docs.page/impaktfull/xray/guides/remote-ui">Remote UI</a>
 </p>
 
 # Impaktfull Inspector
