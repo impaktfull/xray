@@ -88,33 +88,6 @@ await server.start();
 await server.stop();
 ```
 
-### HTTP API
-
-| Method   | Path                                            | Description                            |
-| -------- | ----------------------------------------------- | -------------------------------------- |
-| `GET`    | `/api/ping`                                     | Server info and inspector list         |
-| `GET`    | `/api/network/:id/calls`                        | All network calls for inspector        |
-| `DELETE` | `/api/network/:id/calls`                        | Clear network calls                    |
-| `GET`    | `/api/network/:id/calls/:callId`                | Single network call                    |
-| `GET`    | `/api/log/:id/entries`                          | All log entries                        |
-| `DELETE` | `/api/log/:id/entries`                          | Clear log entries                      |
-| `GET`    | `/api/key-value/sources`                        | List all key-value sources             |
-| `GET`    | `/api/key-value/sources/:sourceId`              | Entries for a source                   |
-| `PUT`    | `/api/key-value/sources/:sourceId/entries/:key` | Write an entry                         |
-| `DELETE` | `/api/key-value/sources/:sourceId/entries/:key` | Delete an entry                        |
-| `GET`    | `/api/events`                                   | WebSocket upgrade for real-time events |
-
-### WebSocket events
-
-| Event type             | Payload                 | Description               |
-| ---------------------- | ----------------------- | ------------------------- |
-| `network_call_added`   | `{ inspectorId, data }` | New network call captured |
-| `network_call_updated` | `{ inspectorId, data }` | Call status changed       |
-| `network_cleared`      | `{ inspectorId }`       | All calls cleared         |
-| `log_entry_added`      | `{ inspectorId, data }` | New log entry             |
-| `log_cleared`          | `{ inspectorId }`       | All log entries cleared   |
-| `key_value_changed`    | `{ source, entries }`   | Key-value store updated   |
-
 ## XRayKeyValueSource
 
 Implement this interface to add any key-value store:
