@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Redirecting...</title>
+    <meta name="robots" content="noindex" />
+    <script>
+      // Redirect mapping for each supported platform
+      const platformRedirects = {
+        'macos': 'https://xrayinspector.dev/download/mac',
+        'ios': 'https://xrayinspector.dev/download/ios',
+        'android': 'https://xrayinspector.dev/download/android'
+      };
+
+      function getPlatformUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const platform = (params.get('platform') || '').toLowerCase();
+        return platformRedirects[platform] || 'https://docs.page/impaktfull/xray/license';
+      }
+
+      // Redirect on load
+      const targetUrl = getPlatformUrl();
+      window.location.replace(targetUrl);
+    </script>
+  </head>
+  <body>
+    <p>If you are not redirected, 
+      <a id="manual-redirect" href="#">click here</a>.
+    </p>
+    <script>
+      // Set manual redirect link
+      document.getElementById('manual-redirect').setAttribute('href', getPlatformUrl());
+    </script>
+  </body>
+</html>
