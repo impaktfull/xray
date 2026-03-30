@@ -1,0 +1,132 @@
+---
+title: Quick Start
+description: Set up impaktfull_inspector in your Flutter app in minutes.
+---
+
+# Quick Start
+
+This guide sets up full inspection — network, logs, and key-value storage — with a remote UI.
+
+## 1. Add dependencies
+
+Add the packages you need to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  impaktfull_inspector: ^0.0.1
+  impaktfull_network_dio_interceptor: ^0.0.1        # if you use Dio
+  impaktfull_shared_preferences_inspector: ^0.0.1   # optional
+  impaktfull_secure_storage_inspector: ^0.0.1       # optional
+
+  # In a separate app or debug panel:
+  impaktfull_inspector_ui: ^0.0.1
+```
+
+## 2. Create inspectors
+
+Create your inspectors at app startup (top-level, provider, or service locator):
+
+```dart
+import 'package:impaktfull_inspector/impaktfull_inspector.dart';
+import 'package:impaktfull_network_dio_interceptor/impaktfull_network_dio_interceptor.dart';
+import 'package:impaktfull_shared_preferences_inspector/impaktfull_shared_preferences_inspector.dart';
+import 'package:impaktfull_secure_storage_inspector/impaktfull_secure_storage_inspector.dart';
+
+// Network inspector
+final networkInspector = ImpaktfullNetworkInspector();
+
+// Log inspector
+final logInspector = ImpaktfullLogInspector();
+
+// Key-value inspectors (optional)
+final prefs = await SharedPreferences.getInstance();
+final sharedPrefsInspector = ImpaktfullSharedPreferencesInspector(prefs: prefs);
+final secureStorageInspector = ImpaktfullSecureStorageInspector(
+  secureStorage: const FlutterSecureStorage(),
+);
+```
+
+## 3. Wire up Dio
+
+```dart
+import 'package:dio/dio.dart';
+
+final dio = Dio()
+  ..interceptors.add(
+    ImpaktfullNetworkDioInterceptor(inspector: networkInspector),
+  );
+```
+
+## 4. Start the inspector server
+
+```dart
+final inspectorServer = ImpaktfullInspectorServer(
+  config: ImpaktfullInspectorServerConfig(
+    inspectors: [
+      networkInspector,
+      logInspector,
+      sharedPrefsInspector,
+      secureStorageInspector,
+    ],
+  ),
+);
+
+await inspectorServer.start();
+```
+
+## 5. Log messages
+
+```dart
+logInspector.info('App started');
+logInspector.debug('Loading user data');
+logInspector.warning('Cache miss');
+logInspector.error('Request failed: timeout');
+```
+
+## 6. Connect the UI
+
+In a debug panel or separate app, connect to the running server:
+
+```dart
+import 'package:impaktfull_inspector_ui/impaktfull_inspector_ui.dart';
+
+final uiController = ImpaktfullInspectorUiController();
+
+// Auto-discover on the local network
+await uiController.connectLocal();
+
+// Then navigate to the settings/overview screen
+Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (_) => InspectorSettingsScreen(controller: uiController),
+  ),
+);
+```
+
+## 7. Tear down
+
+```dart
+await inspectorServer.stop();
+```
+
+---
+
+## Minimal setup (network only, no remote UI)
+
+If you only need network inspection without a remote UI:
+
+```dart
+final networkInspector = ImpaktfullNetworkInspector();
+
+final dio = Dio()
+  ..interceptors.add(
+    ImpaktfullNetworkDioInterceptor(inspector: networkInspector),
+  );
+
+// Listen to calls in code
+networkInspector.callsNotifier.addListener(() {
+  final calls = networkInspector.calls;
+  // handle updated calls list
+});
+```

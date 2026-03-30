@@ -1,0 +1,140 @@
+---
+title: Remote UI
+description: Connect the inspector UI to your running app over the local network.
+---
+
+# Remote UI
+
+`impaktfull_inspector_ui` provides a Flutter UI that connects to an inspector server running in your app. It can run in a separate debug app, on another device, or as a debug panel in the same app.
+
+## How it works
+
+1. Your app starts `ImpaktfullInspectorServer`, which runs an HTTP server and a UDP discovery beacon.
+2. `ImpaktfullInspectorUiController` discovers the server on the local network (or connects directly by IP/port).
+3. The UI subscribes to a WebSocket stream for real-time updates.
+
+## Setup the server (in your app)
+
+```dart
+import 'package:impaktfull_inspector/impaktfull_inspector.dart';
+
+final server = ImpaktfullInspectorServer(
+  config: ImpaktfullInspectorServerConfig(
+    inspectors: [
+      networkInspector,
+      logInspector,
+      sharedPrefsInspector,
+    ],
+    // Optional: override default ports
+    httpPort: 7780,       // default
+    discoveryPort: 7781,  // default
+  ),
+);
+
+await server.start();
+
+// Stop when done
+await server.stop();
+```
+
+Default ports:
+- HTTP server: `ImpaktfullInspectorProtocol.defaultHttpPort`
+- UDP discovery: `ImpaktfullInspectorProtocol.defaultDiscoveryPort`
+
+## Setup the UI (in your debug app or panel)
+
+```dart
+import 'package:impaktfull_inspector_ui/impaktfull_inspector_ui.dart';
+
+final uiController = ImpaktfullInspectorUiController();
+```
+
+### Connect via auto-discovery (same network)
+
+```dart
+await uiController.connectLocal();
+```
+
+Sends a UDP broadcast to find running inspector servers on the local network.
+
+### Connect to a specific server
+
+```dart
+await uiController.connect(discoveredServer);
+```
+
+### Disconnect
+
+```dart
+uiController.disconnect();
+```
+
+## Showing the inspector UI
+
+Navigate to `InspectorSettingsScreen` as the entry point:
+
+```dart
+Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (_) => InspectorSettingsScreen(controller: uiController),
+  ),
+);
+```
+
+From there, users can navigate to the network calls list, log entries, and key-value stores.
+
+## Available screens
+
+| Screen | Description |
+|---|---|
+| `InspectorSettingsScreen` | Connection settings and inspector overview |
+| `NetworkCallsScreen` | List of captured network calls |
+| `NetworkCallDetailScreen` | Full detail for a single network call |
+| `LogEntriesScreen` | List of log entries |
+| `LogEntryDetailScreen` | Full detail for a single log entry |
+| `KeyValueScreen` | Browse and edit key-value entries |
+| `KeyValueEntryDetailScreen` | Detail view for a single key-value entry |
+
+## Reactive data
+
+`ImpaktfullInspectorUiController` exposes `ValueNotifier` properties that update in real-time as events arrive over WebSocket:
+
+```dart
+// Network calls, keyed by inspector ID
+ValueListenableBuilder<Map<String, List<ImpaktfullNetworkCall>>>(
+  valueListenable: uiController.networkCalls,
+  builder: (context, callsByInspector, _) { ... },
+);
+
+// Log entries, keyed by inspector ID
+ValueListenableBuilder<Map<String, List<ImpaktfullLogInterceptorEntry>>>(
+  valueListenable: uiController.logEntries,
+  builder: (context, entriesByInspector, _) { ... },
+);
+
+// Key-value entries, keyed by inspector ID
+ValueListenableBuilder<Map<String, List<InspectorKeyValueEntry>>>(
+  valueListenable: uiController.keyValueEntries,
+  builder: (context, kvByInspector, _) { ... },
+);
+```
+
+## Floating action button overlay
+
+Add `InspectorOverlayFab` to your widget tree to show a floating button that opens the inspector:
+
+```dart
+Stack(
+  children: [
+    YourApp(),
+    InspectorOverlayFab(controller: uiController),
+  ],
+)
+```
+
+## Xray web app
+
+The inspector server also supports the **Xray** web app at [getxray.dev](https://getxray.dev), which provides a browser-based inspector UI. Connect your browser to `http://<device-ip>:<httpPort>` or use the web app's auto-discovery feature.
+
+CORS is pre-configured to allow connections from `localhost` and `*.getxray.dev`.

@@ -1,0 +1,98 @@
+---
+title: impaktfull_inspector_core
+description: Pure Dart models and protocol constants for the impaktfull inspector ecosystem.
+---
+
+# impaktfull_inspector_core
+
+Pure Dart package (no Flutter dependency) containing the shared data models and protocol constants used across the impaktfull inspector ecosystem.
+
+## Installation
+
+```yaml
+dependencies:
+  impaktfull_inspector_core: ^0.0.1
+```
+
+You typically don't need to add this package directly — it's pulled in transitively by `impaktfull_inspector` and `impaktfull_inspector_ui`.
+
+## Models
+
+### ImpaktfullNetworkCall
+
+Immutable model representing a single captured HTTP call.
+
+```dart
+class ImpaktfullNetworkCall {
+  final String id;                          // Unique ID
+  final String method;                      // HTTP method
+  final String uri;                         // Full URI
+  final Map<String, dynamic>? requestHeaders;
+  final dynamic requestBody;
+  final int? responseStatusCode;
+  final Map<String, dynamic>? responseHeaders;
+  final dynamic responseBody;
+  final ImpaktfullNetworkCallStatus status; // loading / success / error
+  final DateTime startTime;
+  final DateTime? endTime;
+  final String? error;
+  int? get durationMs;                      // Computed from start/end
+}
+```
+
+### ImpaktfullNetworkCallStatus
+
+```dart
+enum ImpaktfullNetworkCallStatus {
+  loading,
+  success,
+  error,
+}
+```
+
+### ImpaktfullLogInterceptorEntry
+
+```dart
+class ImpaktfullLogInterceptorEntry {
+  final String id;
+  final String message;
+  final String level;
+  final DateTime timestamp;
+}
+```
+
+### ImpaktfullLogInterceptorLevel
+
+String constants for log levels:
+
+```dart
+class ImpaktfullLogInterceptorLevel {
+  static const String verbose = 'verbose';
+  static const String debug = 'debug';
+  static const String info = 'info';
+  static const String warning = 'warning';
+  static const String error = 'error';
+}
+```
+
+### InspectorKeyValueEntry
+
+```dart
+class InspectorKeyValueEntry {
+  final String key;
+  final String value;
+}
+```
+
+## Protocol constants
+
+### ImpaktfullInspectorProtocol
+
+```dart
+class ImpaktfullInspectorProtocol {
+  static const int defaultHttpPort = 7780;
+  static const int defaultDiscoveryPort = 7781;
+}
+```
+
+Used by `ImpaktfullInspectorServerConfig` as defaults and by `ImpaktfullInspectorUiController` for auto-discovery.

@@ -1,0 +1,33 @@
+---
+title: impaktfull_network_serverpod_interceptor
+description: HTTP client wrapper for impaktfull_inspector, compatible with Serverpod.
+---
+
+# impaktfull_network_serverpod_interceptor
+
+HTTP client wrapper compatible with Serverpod that captures all network calls into an `ImpaktfullNetworkInspector`.
+
+## Installation
+
+```yaml
+dependencies:
+  impaktfull_inspector: ^0.0.1
+  impaktfull_network_serverpod_interceptor: ^0.0.1
+```
+
+## Usage
+
+```dart
+import 'package:impaktfull_inspector/impaktfull_inspector.dart';
+import 'package:impaktfull_network_serverpod_interceptor/impaktfull_network_serverpod_interceptor.dart';
+
+final networkInspector = ImpaktfullNetworkInspector();
+
+final httpClient = ImpaktfullServerpodHttpClient(inspector: networkInspector);
+```
+
+Pass the `httpClient` to your Serverpod client wherever it accepts a custom HTTP client.
+
+## How it works
+
+`ImpaktfullServerpodHttpClient` wraps the underlying HTTP client and intercepts all outgoing requests and incoming responses, forwarding the data to the `ImpaktfullNetworkInspector` in the same way as the Dio interceptor.

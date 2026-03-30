@@ -1,0 +1,50 @@
+---
+title: impaktfull_shared_preferences_inspector
+description: Key-value inspector for SharedPreferences.
+---
+
+# impaktfull_shared_preferences_inspector
+
+Exposes `SharedPreferences` entries in the inspector UI, with support for reading, writing, and deleting values at runtime.
+
+## Installation
+
+```yaml
+dependencies:
+  impaktfull_inspector: ^0.0.1
+  impaktfull_shared_preferences_inspector: ^0.0.1
+  shared_preferences: ^2.0.0
+```
+
+## Usage
+
+```dart
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:impaktfull_shared_preferences_inspector/impaktfull_shared_preferences_inspector.dart';
+
+final prefs = await SharedPreferences.getInstance();
+final inspector = ImpaktfullSharedPreferencesInspector(prefs: prefs);
+```
+
+Register it with the inspector server:
+
+```dart
+final server = ImpaktfullInspectorServer(
+  config: ImpaktfullInspectorServerConfig(
+    inspectors: [inspector],
+  ),
+);
+await server.start();
+```
+
+## Capabilities
+
+- **Read** — lists all stored key-value pairs
+- **Write** — updates a value by key (stored as string)
+- **Delete** — removes a key
+- **Refresh** — re-reads all values on demand
+
+## Notes
+
+- All values are read and written as strings. Typed values (int, bool, etc.) stored by `SharedPreferences` will appear as their string representation.
+- The inspector title defaults to `"SharedPreferences"` and is shown in the remote UI.

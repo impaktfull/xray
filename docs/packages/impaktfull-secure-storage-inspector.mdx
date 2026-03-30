@@ -1,0 +1,59 @@
+---
+title: impaktfull_secure_storage_inspector
+description: Key-value inspector for flutter_secure_storage.
+---
+
+# impaktfull_secure_storage_inspector
+
+Exposes `flutter_secure_storage` entries in the inspector UI, with support for reading, writing, and deleting values at runtime.
+
+## Installation
+
+```yaml
+dependencies:
+  impaktfull_inspector: ^0.0.1
+  impaktfull_secure_storage_inspector: ^0.0.1
+  flutter_secure_storage: ^9.0.0
+```
+
+## Usage
+
+```dart
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:impaktfull_secure_storage_inspector/impaktfull_secure_storage_inspector.dart';
+
+final inspector = ImpaktfullSecureStorageInspector(
+  secureStorage: const FlutterSecureStorage(),
+);
+```
+
+Register it with the inspector server:
+
+```dart
+final server = ImpaktfullInspectorServer(
+  config: ImpaktfullInspectorServerConfig(
+    inspectors: [inspector],
+  ),
+);
+await server.start();
+```
+
+## Capabilities
+
+- **Read** — lists all stored key-value pairs
+- **Write** — updates a value by key
+- **Delete** — removes a key
+- **Refresh** — re-reads all values on demand
+
+## Security notice
+
+This package is intended for **development and QA builds only**. Exposing secure storage contents over the network is a security risk. Do not include this inspector in production builds.
+
+```dart
+// Recommended: only add in debug/profile builds
+if (kDebugMode) {
+  inspectors.add(ImpaktfullSecureStorageInspector(
+    secureStorage: const FlutterSecureStorage(),
+  ));
+}
+```

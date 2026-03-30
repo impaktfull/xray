@@ -1,0 +1,130 @@
+---
+title: Network Inspection
+description: Capture and inspect HTTP network calls from Dio or Serverpod.
+---
+
+# Network Inspection
+
+The network inspector captures every HTTP request, response, and error made through your HTTP client, storing them in memory for real-time inspection.
+
+## Packages
+
+| Use case | Package |
+|---|---|
+| Dio | `impaktfull_network_dio_interceptor` |
+| Serverpod | `impaktfull_network_serverpod_interceptor` |
+
+## Setup with Dio
+
+```dart
+import 'package:impaktfull_inspector/impaktfull_inspector.dart';
+import 'package:impaktfull_network_dio_interceptor/impaktfull_network_dio_interceptor.dart';
+import 'package:dio/dio.dart';
+
+final networkInspector = ImpaktfullNetworkInspector();
+
+final dio = Dio()
+  ..interceptors.add(
+    ImpaktfullNetworkDioInterceptor(inspector: networkInspector),
+  );
+```
+
+## Setup with Serverpod
+
+```dart
+import 'package:impaktfull_inspector/impaktfull_inspector.dart';
+import 'package:impaktfull_network_serverpod_interceptor/impaktfull_network_serverpod_interceptor.dart';
+
+final networkInspector = ImpaktfullNetworkInspector();
+
+final client = ImpaktfullServerpodHttpClient(inspector: networkInspector);
+```
+
+## Accessing captured calls
+
+```dart
+// All captured calls (snapshot)
+final calls = networkInspector.calls;
+
+// Reactive — rebuilds your widget when calls change
+ValueListenableBuilder<List<ImpaktfullNetworkCall>>(
+  valueListenable: networkInspector.callsNotifier,
+  builder: (context, calls, _) {
+    return Text('${calls.length} calls captured');
+  },
+);
+```
+
+## Listening to new calls in code
+
+Implement `ImpaktfullNetworkInterceptorListener` and register it:
+
+```dart
+class MyListener implements ImpaktfullNetworkInterceptorListener {
+  @override
+  void onNetworkCallAdded(ImpaktfullNetworkCall call) {
+    debugPrint('[Network] ${call.method} ${call.uri} → ${call.responseStatusCode}');
+  }
+}
+
+final listener = MyListener();
+networkInspector.addListener(listener);
+
+// Clean up when done
+networkInspector.removeListener(listener);
+```
+
+## Finding a call by ID
+
+```dart
+final call = networkInspector.findById('some-call-id');
+```
+
+## Clearing calls
+
+```dart
+networkInspector.clear();
+```
+
+## Custom inspector title
+
+```dart
+final networkInspector = ImpaktfullNetworkInspector(title: 'API Calls');
+```
+
+The title is displayed in the remote UI and used to generate the inspector's ID.
+
+## Network call model
+
+Each captured call is an `ImpaktfullNetworkCall` with these fields:
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `String` | Unique ID (timestamp-based) |
+| `method` | `String` | HTTP method (`GET`, `POST`, etc.) |
+| `uri` | `String` | Full request URI |
+| `requestHeaders` | `Map<String, dynamic>?` | Request headers |
+| `requestBody` | `dynamic` | Request body |
+| `responseStatusCode` | `int?` | HTTP status code |
+| `responseHeaders` | `Map<String, dynamic>?` | Response headers |
+| `responseBody` | `dynamic` | Response body |
+| `status` | `ImpaktfullNetworkCallStatus` | `loading` / `success` / `error` |
+| `startTime` | `DateTime` | When the request started |
+| `endTime` | `DateTime?` | When the request completed |
+| `durationMs` | `int?` | Duration in milliseconds |
+| `error` | `String?` | Error message if failed |
+
+## Multiple network inspectors
+
+You can run multiple network inspectors simultaneously, each with a distinct title:
+
+```dart
+final apiInspector = ImpaktfullNetworkInspector(title: 'API');
+final analyticsInspector = ImpaktfullNetworkInspector(title: 'Analytics');
+
+final apiDio = Dio()
+  ..interceptors.add(ImpaktfullNetworkDioInterceptor(inspector: apiInspector));
+
+final analyticsDio = Dio()
+  ..interceptors.add(ImpaktfullNetworkDioInterceptor(inspector: analyticsInspector));
+```

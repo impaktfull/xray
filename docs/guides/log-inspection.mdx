@@ -1,0 +1,106 @@
+---
+title: Log Inspection
+description: Capture structured log entries with levels for real-time inspection.
+---
+
+# Log Inspection
+
+`ImpaktfullLogInspector` captures structured log entries with severity levels, storing them in memory for real-time inspection via the remote UI.
+
+## Setup
+
+```dart
+import 'package:impaktfull_inspector/impaktfull_inspector.dart';
+
+final logInspector = ImpaktfullLogInspector();
+
+// Optional: custom title shown in the remote UI
+final logInspector = ImpaktfullLogInspector(title: 'App Logs');
+```
+
+## Logging messages
+
+```dart
+logInspector.verbose('Detailed trace message');
+logInspector.debug('Debug information');
+logInspector.info('User signed in');
+logInspector.warning('Deprecated API used');
+logInspector.error('Failed to load data');
+
+// Or with an explicit level
+logInspector.log('Custom message', level: ImpaktfullLogInterceptorLevel.info);
+```
+
+## Log levels
+
+| Level | Constant | Use for |
+|---|---|---|
+| verbose | `ImpaktfullLogInterceptorLevel.verbose` | Fine-grained trace output |
+| debug | `ImpaktfullLogInterceptorLevel.debug` | Debugging information |
+| info | `ImpaktfullLogInterceptorLevel.info` | General informational messages |
+| warning | `ImpaktfullLogInterceptorLevel.warning` | Potentially harmful situations |
+| error | `ImpaktfullLogInterceptorLevel.error` | Errors and exceptions |
+
+## Accessing log entries
+
+```dart
+// Snapshot of all entries
+final entries = logInspector.entries;
+
+// Reactive — rebuilds widget when entries change
+ValueListenableBuilder<List<ImpaktfullLogInterceptorEntry>>(
+  valueListenable: logInspector.entriesNotifier,
+  builder: (context, entries, _) {
+    return Text('${entries.length} log entries');
+  },
+);
+```
+
+## Log entry model
+
+Each entry is an `ImpaktfullLogInterceptorEntry` with:
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | `String` | Unique entry ID |
+| `message` | `String` | Log message |
+| `level` | `String` | Severity level |
+| `timestamp` | `DateTime` | When the entry was created |
+
+## Clearing entries
+
+```dart
+logInspector.clear();
+```
+
+## Integrating with existing logging
+
+Route your existing logging through the inspector:
+
+```dart
+// Example: wrapping a logger
+class AppLogger {
+  final ImpaktfullLogInspector _inspector;
+
+  AppLogger(this._inspector);
+
+  void info(String message) {
+    debugPrint('[INFO] $message');
+    _inspector.info(message);
+  }
+
+  void error(String message, [Object? error]) {
+    debugPrint('[ERROR] $message${error != null ? ': $error' : ''}');
+    _inspector.error(error != null ? '$message: $error' : message);
+  }
+}
+```
+
+## Multiple log inspectors
+
+```dart
+final appLogs = ImpaktfullLogInspector(title: 'App');
+final networkLogs = ImpaktfullLogInspector(title: 'Network');
+```
+
+Both will appear as separate tabs in the remote UI.

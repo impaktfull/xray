@@ -1,0 +1,124 @@
+---
+title: Key-Value Inspection
+description: Inspect, edit, and delete SharedPreferences and flutter_secure_storage entries at runtime.
+---
+
+# Key-Value Inspection
+
+Key-value inspectors let you read, write, and delete entries in persistent storage (SharedPreferences, flutter_secure_storage) from the remote UI at runtime.
+
+## SharedPreferences
+
+### Setup
+
+```dart
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:impaktfull_shared_preferences_inspector/impaktfull_shared_preferences_inspector.dart';
+
+final prefs = await SharedPreferences.getInstance();
+final sharedPrefsInspector = ImpaktfullSharedPreferencesInspector(prefs: prefs);
+```
+
+### Register with the server
+
+```dart
+final inspectorServer = ImpaktfullInspectorServer(
+  config: ImpaktfullInspectorServerConfig(
+    inspectors: [sharedPrefsInspector],
+  ),
+);
+```
+
+## Secure Storage
+
+### Setup
+
+```dart
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:impaktfull_secure_storage_inspector/impaktfull_secure_storage_inspector.dart';
+
+final secureStorageInspector = ImpaktfullSecureStorageInspector(
+  secureStorage: const FlutterSecureStorage(),
+);
+```
+
+## Custom key-value source
+
+Implement `ImpaktfullKeyValueSource` to inspect any key-value store:
+
+```dart
+import 'package:impaktfull_inspector/impaktfull_inspector.dart';
+
+class MyCustomSource implements ImpaktfullKeyValueSource {
+  @override
+  String get title => 'My Store';
+
+  @override
+  Future<Map<String, String>> readAll() async {
+    // Return all key-value pairs
+    return {'key': 'value'};
+  }
+
+  @override
+  Future<void> write(String key, String value) async {
+    // Persist the value
+  }
+
+  @override
+  Future<void> delete(String key) async {
+    // Remove the key
+  }
+}
+
+// Use it with ImpaktfullKeyValueInspector
+final customInspector = ImpaktfullKeyValueInspector(
+  source: MyCustomSource(),
+);
+```
+
+## Accessing entries in code
+
+```dart
+// Trigger a refresh (reads all entries from the source)
+await inspector.refresh();
+
+// Reactive entries
+ValueListenableBuilder<List<InspectorKeyValueEntry>>(
+  valueListenable: inspector.entriesNotifier,
+  builder: (context, entries, _) {
+    return ListView(
+      children: entries.map((e) => Text('${e.key}: ${e.value}')).toList(),
+    );
+  },
+);
+```
+
+## Writing and deleting entries
+
+```dart
+await inspector.write('theme', 'dark');
+await inspector.delete('onboarding_complete');
+```
+
+Calling `write` or `delete` automatically triggers a refresh.
+
+## Clearing all entries
+
+```dart
+inspector.clear(); // Deletes all keys from the source
+```
+
+## Key-value entry model
+
+| Field | Type | Description |
+|---|---|---|
+| `key` | `String` | Entry key |
+| `value` | `String` | Entry value (always string) |
+
+## Remote UI capabilities
+
+When connected via the remote UI, you can:
+- Browse all entries alphabetically
+- Edit values inline
+- Delete individual entries
+- Refresh the list on demand
