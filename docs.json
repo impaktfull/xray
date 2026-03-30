@@ -61,7 +61,7 @@
       ]
     },
     {
-      "tab": "docs",
+      "tab": "root",
       "group": "Legal",
       "pages": [
         { "title": "📝 License", "href": "/license" },
@@ -69,7 +69,7 @@
       ]
     },
     {
-      "tab": "guides",
+      "tab": "root",
       "group": "Guides",
       "pages": [
         { "title": "🌐 Network Inspection", "href": "/guides/network-inspection" },
@@ -78,7 +78,7 @@
       ]
     },
     {
-      "tab": "packages",
+      "tab": "root",
       "group": "Packages",
       "pages": [
         { "title": "📦 xray_inspector", "href": "/packages/xray-inspector" },
