@@ -14,9 +14,9 @@ Add the packages you need to your `pubspec.yaml`:
 ```yaml
 dependencies:
   xray_inspector: ^0.0.1
-  xray_network_dio_interceptor: ^0.0.1        # if you use Dio
-  xray_shared_preferences_inspector: ^0.0.1   # optional
-  xray_secure_storage_inspector: ^0.0.1       # optional
+  xray_network_dio_interceptor: ^0.0.1 # if you use Dio
+  xray_shared_preferences_inspector: ^0.0.1 # optional
+  xray_secure_storage_inspector: ^0.0.1 # optional
 
   # In a separate app or debug panel:
   xray_inspector_ui: ^0.0.1
@@ -108,25 +108,4 @@ Navigator.push(
 
 ```dart
 await inspectorServer.stop();
-```
-
----
-
-## Minimal setup (network only, no remote UI)
-
-If you only need network inspection without a remote UI:
-
-```dart
-final networkInspector = XRayNetworkInspector();
-
-final dio = Dio()
-  ..interceptors.add(
-    ImpaktfullNetworkDioInterceptor(inspector: networkInspector),
-  );
-
-// Listen to calls in code
-networkInspector.callsNotifier.addListener(() {
-  final calls = networkInspector.calls;
-  // handle updated calls list
-});
 ```
