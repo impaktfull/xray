@@ -33,13 +33,13 @@ logInspector.log('Custom message', level: ImpaktfullLogInterceptorLevel.info);
 
 ## Log levels
 
-| Level | Constant | Use for |
-|---|---|---|
-| verbose | `ImpaktfullLogInterceptorLevel.verbose` | Fine-grained trace output |
-| debug | `ImpaktfullLogInterceptorLevel.debug` | Debugging information |
-| info | `ImpaktfullLogInterceptorLevel.info` | General informational messages |
+| Level   | Constant                                | Use for                        |
+| ------- | --------------------------------------- | ------------------------------ |
+| verbose | `ImpaktfullLogInterceptorLevel.verbose` | Fine-grained trace output      |
+| debug   | `ImpaktfullLogInterceptorLevel.debug`   | Debugging information          |
+| info    | `ImpaktfullLogInterceptorLevel.info`    | General informational messages |
 | warning | `ImpaktfullLogInterceptorLevel.warning` | Potentially harmful situations |
-| error | `ImpaktfullLogInterceptorLevel.error` | Errors and exceptions |
+| error   | `ImpaktfullLogInterceptorLevel.error`   | Errors and exceptions          |
 
 ## Accessing log entries
 
@@ -60,11 +60,11 @@ ValueListenableBuilder<List<ImpaktfullLogInterceptorEntry>>(
 
 Each entry is an `ImpaktfullLogInterceptorEntry` with:
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | `String` | Unique entry ID |
-| `message` | `String` | Log message |
-| `level` | `String` | Severity level |
+| Field       | Type       | Description                |
+| ----------- | ---------- | -------------------------- |
+| `id`        | `String`   | Unique entry ID            |
+| `message`   | `String`   | Log message                |
+| `level`     | `String`   | Severity level             |
 | `timestamp` | `DateTime` | When the entry was created |
 
 ## Clearing entries

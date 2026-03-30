@@ -9,9 +9,9 @@ The network inspector captures every HTTP request, response, and error made thro
 
 ## Packages
 
-| Use case | Package |
-|---|---|
-| Dio | `xray_network_dio_interceptor` |
+| Use case | Package                        |
+| -------- | ------------------------------ |
+| Dio      | `xray_network_dio_interceptor` |
 
 ## Setup with Dio
 
@@ -86,21 +86,21 @@ The title is displayed in the remote UI and used to generate the inspector's ID.
 
 Each captured call is an `ImpaktfullNetworkCall` with these fields:
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | `String` | Unique ID (timestamp-based) |
-| `method` | `String` | HTTP method (`GET`, `POST`, etc.) |
-| `uri` | `String` | Full request URI |
-| `requestHeaders` | `Map<String, dynamic>?` | Request headers |
-| `requestBody` | `dynamic` | Request body |
-| `responseStatusCode` | `int?` | HTTP status code |
-| `responseHeaders` | `Map<String, dynamic>?` | Response headers |
-| `responseBody` | `dynamic` | Response body |
-| `status` | `ImpaktfullNetworkCallStatus` | `loading` / `success` / `error` |
-| `startTime` | `DateTime` | When the request started |
-| `endTime` | `DateTime?` | When the request completed |
-| `durationMs` | `int?` | Duration in milliseconds |
-| `error` | `String?` | Error message if failed |
+| Field                | Type                          | Description                       |
+| -------------------- | ----------------------------- | --------------------------------- |
+| `id`                 | `String`                      | Unique ID (timestamp-based)       |
+| `method`             | `String`                      | HTTP method (`GET`, `POST`, etc.) |
+| `uri`                | `String`                      | Full request URI                  |
+| `requestHeaders`     | `Map<String, dynamic>?`       | Request headers                   |
+| `requestBody`        | `dynamic`                     | Request body                      |
+| `responseStatusCode` | `int?`                        | HTTP status code                  |
+| `responseHeaders`    | `Map<String, dynamic>?`       | Response headers                  |
+| `responseBody`       | `dynamic`                     | Response body                     |
+| `status`             | `ImpaktfullNetworkCallStatus` | `loading` / `success` / `error`   |
+| `startTime`          | `DateTime`                    | When the request started          |
+| `endTime`            | `DateTime?`                   | When the request completed        |
+| `durationMs`         | `int?`                        | Duration in milliseconds          |
+| `error`              | `String?`                     | Error message if failed           |
 
 ## Multiple network inspectors
 

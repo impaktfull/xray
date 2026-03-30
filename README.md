@@ -4,8 +4,8 @@
 
 <p align="center">
   <a href="https://pub.dev/packages/xray_inspector"><img src="https://img.shields.io/pub/v/xray_inspector?label=pub.dev&labelColor=333940&logo=dart&color=00589B" alt="pub"></a>
-  <a href="https://github.com/impaktfull/xray_inspector"><img src="https://img.shields.io/github/stars/impaktfull/xray_inspector?style=flat&label=stars&labelColor=333940&color=8957e5&logo=github" alt="github"></a>
-  <a href="https://github.com/impaktfull/xray_inspector/actions"><img src="https://img.shields.io/github/actions/workflow/status/impaktfull/xray_inspector/test.yml?branch=main&label=tests&labelColor=333940&logo=github" alt="tests"></a>
+  <a href="https://github.com/impaktfull/xray"><img src="https://img.shields.io/github/stars/impaktfull/xray_inspector?style=flat&label=stars&labelColor=333940&color=8957e5&logo=github" alt="github"></a>
+  <a href="https://github.com/impaktfull/xray/actions"><img src="https://img.shields.io/github/actions/workflow/status/impaktfull/xray_inspector/test.yml?branch=main&label=tests&labelColor=333940&logo=github" alt="tests"></a>
 </p>
 
 <p align="center">
@@ -34,14 +34,14 @@
 
 ## Packages
 
-| Package                                                                                             | Description                                                     |
-| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| [`xray_inspector`](https://pub.dev/packages/xray_inspector)                                         | Core package — inspectors + HTTP/WebSocket server               |
-| [`xray_network_dio_interceptor`](https://pub.dev/packages/xray_network_dio_interceptor)             | Dio HTTP interceptor                                            |
-| [`xray_shared_preferences_inspector`](https://pub.dev/packages/xray_shared_preferences_inspector)   | SharedPreferences key-value inspector                           |
-| [`xray_secure_storage_inspector`](https://pub.dev/packages/xray_secure_storage_inspector)           | flutter_secure_storage inspector                                |
-| [`xray_inspector_ui`](https://pub.dev/packages/xray_inspector_ui)                                   | Flutter UI that connects to a running inspector server          |
-| [`xray_inspector_core`](https://pub.dev/packages/xray_inspector_core)                               | Pure Dart models and protocol constants (no Flutter dependency) |
+| Package                                                                                           | Description                                                     |
+| ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| [`xray_inspector`](https://pub.dev/packages/xray_inspector)                                       | Core package — inspectors + HTTP/WebSocket server               |
+| [`xray_network_dio_interceptor`](https://pub.dev/packages/xray_network_dio_interceptor)           | Dio HTTP interceptor                                            |
+| [`xray_shared_preferences_inspector`](https://pub.dev/packages/xray_shared_preferences_inspector) | SharedPreferences key-value inspector                           |
+| [`xray_secure_storage_inspector`](https://pub.dev/packages/xray_secure_storage_inspector)         | flutter_secure_storage inspector                                |
+| [`xray_inspector_ui`](https://pub.dev/packages/xray_inspector_ui)                                 | Flutter UI that connects to a running inspector server          |
+| [`xray_inspector_core`](https://pub.dev/packages/xray_inspector_core)                             | Pure Dart models and protocol constants (no Flutter dependency) |
 
 ## Architecture
 
