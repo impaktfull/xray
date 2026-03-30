@@ -1,0 +1,50 @@
+---
+title: Packages
+description: API reference for all Impaktfull Inspector packages.
+---
+
+# Packages
+
+Impaktfull Inspector is split into focused packages so you only add what you need.
+
+## Overview
+
+| Package | Description |
+|---|---|
+| [`impaktfull_inspector`](/docs/packages/impaktfull-inspector) | Core package — network, log, and key-value inspectors + HTTP server |
+| [`impaktfull_network_dio_interceptor`](/docs/packages/impaktfull-network-dio-interceptor) | Dio HTTP interceptor |
+| [`impaktfull_network_serverpod_interceptor`](/docs/packages/impaktfull-network-serverpod-interceptor) | Serverpod HTTP client interceptor |
+| [`impaktfull_shared_preferences_inspector`](/docs/packages/impaktfull-shared-preferences-inspector) | SharedPreferences key-value inspector |
+| [`impaktfull_secure_storage_inspector`](/docs/packages/impaktfull-secure-storage-inspector) | flutter_secure_storage inspector |
+| [`impaktfull_inspector_ui`](/docs/packages/impaktfull-inspector-ui) | Flutter UI that connects to a running inspector server |
+| [`impaktfull_inspector_core`](/docs/packages/impaktfull-inspector-core) | Pure Dart models and protocol constants (no Flutter dependency) |
+
+## Package details
+
+### 📦 [impaktfull_inspector](/docs/packages/impaktfull-inspector)
+
+The main package. Provides `ImpaktfullNetworkInspector`, `ImpaktfullLogInspector`, and the key-value inspectors, plus `ImpaktfullInspectorServer` to expose data over HTTP/WebSocket.
+
+### 🔌 [impaktfull_network_dio_interceptor](/docs/packages/impaktfull-network-dio-interceptor)
+
+A Dio `Interceptor` that feeds HTTP requests and responses into `ImpaktfullNetworkInspector`. Add it to your Dio instance during setup.
+
+### 🔌 [impaktfull_network_serverpod_interceptor](/docs/packages/impaktfull-network-serverpod-interceptor)
+
+An HTTP client interceptor for Serverpod that feeds traffic into `ImpaktfullNetworkInspector`.
+
+### 💾 [impaktfull_shared_preferences_inspector](/docs/packages/impaktfull-shared-preferences-inspector)
+
+Wraps `SharedPreferences` to expose all key-value pairs to the inspector. Supports reading, editing, and deleting entries at runtime.
+
+### 🔐 [impaktfull_secure_storage_inspector](/docs/packages/impaktfull-secure-storage-inspector)
+
+Wraps `flutter_secure_storage` to expose secure key-value pairs to the inspector. Supports reading, editing, and deleting entries at runtime.
+
+### 🎨 [impaktfull_inspector_ui](/docs/packages/impaktfull-inspector-ui)
+
+A Flutter UI package that connects to a running inspector server via `ImpaktfullInspectorUiController`. Can run as a separate app, on a second device, or as a debug overlay.
+
+### 🧩 [impaktfull_inspector_core](/docs/packages/impaktfull-inspector-core)
+
+Pure Dart models, protocol constants, and shared types. No Flutter dependency — useful when building custom tooling on top of the inspector protocol.
