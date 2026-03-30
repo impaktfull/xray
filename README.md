@@ -32,6 +32,13 @@
 - ♻️ **Reactive**: All data exposed as `ValueNotifier` for seamless Flutter rebuilds.
 - 🧩 **Composable**: Add only the inspectors you need. No forced singletons, no hidden globals.
 
+---
+
+> **Disclaimer:** This is a commercial package. To use this package, you need
+> to have either a commercial Xray license or a free Xray Community License.
+> The Xray macOS app is the only authorized UI client for this library.
+> For more details, please check the [LICENSE](LICENSE) file.
+
 ## Packages
 
 | Package                                                                                           | Description                                                     |
