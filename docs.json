@@ -48,7 +48,6 @@
       "pages": [
         { "title": "📦 xray_inspector", "href": "/packages/xray-inspector" },
         { "title": "🔌 xray_network_dio_interceptor", "href": "/packages/xray-network-dio-interceptor" },
-        { "title": "🔌 xray_network_serverpod_interceptor", "href": "/packages/xray-network-serverpod-interceptor" },
         { "title": "💾 xray_shared_preferences_inspector", "href": "/packages/xray-shared-preferences-inspector" },
         { "title": "🔐 xray_secure_storage_inspector", "href": "/packages/xray-secure-storage-inspector" },
         { "title": "🎨 xray_inspector_ui", "href": "/packages/xray-inspector-ui" },
