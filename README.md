@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/impaktfull/xray_inspector/main/images/logo.png" alt="xRay (inspector)" height="120" />
+  <img src="https://raw.githubusercontent.com/impaktfull/xray_inspector/main/assets/logo_full.png" alt="xRay (inspector)" height="120" />
 </p>
 
 <p align="center">
