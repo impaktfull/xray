@@ -1,0 +1,67 @@
+# xRay
+
+> A modular Flutter debugging toolkit for real-time inspection of network calls, logs, and key-value storage — with remote UI support via a local network server.
+
+xRay gives Flutter developers real-time visibility into their app's network calls, logs, and storage. It runs a local HTTP/WebSocket server inside the Flutter app and streams data to a companion viewer app (macOS, iOS, Android) or an in-app UI overlay. Debug faster, ship with confidence.
+
+Built and maintained by [impaktfull](https://impaktfull.com).
+
+> **License:** xRay is a commercial product. Usage requires either a paid commercial license or a free Community License. The macOS, iOS, and Android viewer apps are the authorized UI clients for this library.
+
+## Core features
+
+- **Network Inspector** — Monitor every HTTP request and response in real-time. View headers and body content in JSON, XML, or HTML with syntax highlighting.
+- **Log Viewer** — Browse, filter, and search through app log output. Filter by level, toggle timestamps, find issues instantly.
+- **Key-Value Storage Inspector** — Inspect and edit SharedPreferences and flutter_secure_storage values (strings, booleans, and more) on the fly.
+- **Remote UI** — Stream inspection data over a local network server with no extra configuration. Connect from the companion viewer app or embed the Flutter UI widget directly.
+- **Composable architecture** — No forced singletons. Mix and match only the inspectors you need.
+- **Reactive** — Built on ValueNotifier; UI stays in sync automatically.
+
+## Packages
+
+| Package | Description |
+|---|---|
+| `xray_inspector` | Core inspectors (network, log, key-value) + HTTP/WebSocket server |
+| `xray_inspector_core` | Shared models and protocol constants — pure Dart, no Flutter dependency |
+| `xray_inspector_server_client` | Client library for connecting to a running inspector server — pure Dart |
+| `xray_inspector_ui` | Flutter UI for browsing network calls, logs, and key-value storage remotely |
+| `xray_network_dio_interceptor` | Dio interceptor that feeds network calls into the inspector |
+| `xray_secure_storage_inspector` | Key-value inspector for `flutter_secure_storage` |
+| `xray_shared_preferences_inspector` | Key-value inspector for `shared_preferences` |
+
+All packages are published on pub.dev by [xrayinspector.dev](https://pub.dev/publishers/xrayinspector.dev/packages).
+
+## Platform support
+
+- **macOS** — macOS 13+
+- **iOS / iPadOS** — iOS 16+
+- **Android** — Android 10+
+
+## Quick start
+
+```dart
+import 'package:xray_inspector/xray_inspector.dart';
+
+final networkInspector = XRayNetworkInspector();
+final logInspector = XRayLogInspector();
+
+final server = XRayInspectorServer(
+  config: XRayInspectorServerConfig(
+    inspectors: [
+      networkInspector,
+      logInspector,
+    ],
+  ),
+);
+await server.start();
+```
+
+## Links
+
+- Website: https://xrayinspector.dev
+- Documentation: https://docs.page/impaktfull/xray
+- GitHub: https://github.com/impaktfull/xray
+- pub.dev: https://pub.dev/publishers/xrayinspector.dev/packages
+- License: https://xrayinspector.dev/license
+- Terms & Conditions: https://xrayinspector.dev/terms-and-conditions
+- Built by: https://impaktfull.com
