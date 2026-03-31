@@ -1,11 +1,10 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/impaktfull/xray_inspector/main/assets/logo_full.png" alt="xRay (inspector)" height="120" />
+  <img src="https://raw.githubusercontent.com/impaktfull/xray/main/assets/logo_full.png" alt="xRay (inspector)" height="120" />
 </p>
 
 <p align="center">
   <a href="https://pub.dev/packages/xray_inspector"><img src="https://img.shields.io/pub/v/xray_inspector?label=pub.dev&labelColor=333940&logo=dart&color=00589B" alt="pub"></a>
   <a href="https://github.com/impaktfull/xray"><img src="https://img.shields.io/github/stars/impaktfull/xray_inspector?style=flat&label=stars&labelColor=333940&color=8957e5&logo=github" alt="github"></a>
-  <a href="https://github.com/impaktfull/xray/actions"><img src="https://img.shields.io/github/actions/workflow/status/impaktfull/xray_inspector/test.yml?branch=main&label=tests&labelColor=333940&logo=github" alt="tests"></a>
 </p>
 
 <p align="center">
