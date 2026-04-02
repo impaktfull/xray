@@ -43,18 +43,18 @@ final inspector = XRayNetworkInspector(title: 'Network');
 final inspector = XRayLogInspector(title: 'Logs');
 ```
 
-| Member                 | Type                            | Description                      |
-| ---------------------- | ------------------------------- | -------------------------------- |
-| `title`                | `String`                        | Display name (default: `"Logs"`) |
-| `entries`              | `List<XRayLogInterceptorEntry>` | Current log entries              |
-| `entriesNotifier`      | `ValueNotifier<List<...>>`      | Reactive entries list            |
-| `verbose(message)`     | `void`                          | Log at verbose level             |
-| `debug(message)`       | `void`                          | Log at debug level               |
-| `info(message)`        | `void`                          | Log at info level                |
-| `warning(message)`     | `void`                          | Log at warning level             |
-| `error(message)`       | `void`                          | Log at error level               |
-| `log(message, level:)` | `void`                          | Log with explicit level          |
-| `clear()`              | `void`                          | Clear all entries                |
+| Member                 | Type                          | Description                      |
+| ---------------------- | ----------------------------- | -------------------------------- |
+| `title`                | `String`                      | Display name (default: `"Logs"`) |
+| `entries`              | `List<XRayLogInspectorEntry>` | Current log entries              |
+| `entriesNotifier`      | `ValueNotifier<List<...>>`    | Reactive entries list            |
+| `verbose(message)`     | `void`                        | Log at verbose level             |
+| `debug(message)`       | `void`                        | Log at debug level               |
+| `info(message)`        | `void`                        | Log at info level                |
+| `warning(message)`     | `void`                        | Log at warning level             |
+| `error(message)`       | `void`                        | Log at error level               |
+| `log(message, level:)` | `void`                        | Log with explicit level          |
+| `clear()`              | `void`                        | Clear all entries                |
 
 ## XRayKeyValueInspector
 

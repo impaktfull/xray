@@ -26,18 +26,18 @@ logInspector.warning('Deprecated API used');
 logInspector.error('Failed to load data');
 
 // Or with an explicit level
-logInspector.log('Custom message', level: XRayLogInterceptorLevel.info);
+logInspector.log('Custom message', level: XRayLogInspectorLevel.info);
 ```
 
 ## Log levels
 
-| Level   | Constant                          | Use for                        |
-| ------- | --------------------------------- | ------------------------------ |
-| verbose | `XRayLogInterceptorLevel.verbose` | Fine-grained trace output      |
-| debug   | `XRayLogInterceptorLevel.debug`   | Debugging information          |
-| info    | `XRayLogInterceptorLevel.info`    | General informational messages |
-| warning | `XRayLogInterceptorLevel.warning` | Potentially harmful situations |
-| error   | `XRayLogInterceptorLevel.error`   | Errors and exceptions          |
+| Level   | Constant                        | Use for                        |
+| ------- | ------------------------------- | ------------------------------ |
+| verbose | `XRayLogInspectorLevel.verbose` | Fine-grained trace output      |
+| debug   | `XRayLogInspectorLevel.debug`   | Debugging information          |
+| info    | `XRayLogInspectorLevel.info`    | General informational messages |
+| warning | `XRayLogInspectorLevel.warning` | Potentially harmful situations |
+| error   | `XRayLogInspectorLevel.error`   | Errors and exceptions          |
 
 ## Accessing log entries
 
@@ -46,7 +46,7 @@ logInspector.log('Custom message', level: XRayLogInterceptorLevel.info);
 final entries = logInspector.entries;
 
 // Reactive — rebuilds widget when entries change
-ValueListenableBuilder<List<XRayLogInterceptorEntry>>(
+ValueListenableBuilder<List<XRayLogInspectorEntry>>(
   valueListenable: logInspector.entriesNotifier,
   builder: (context, entries, _) {
     return Text('${entries.length} log entries');
@@ -56,7 +56,7 @@ ValueListenableBuilder<List<XRayLogInterceptorEntry>>(
 
 ## Log entry model
 
-Each entry is an `XRayLogInterceptorEntry` with:
+Each entry is an `XRayLogInspectorEntry` with:
 
 | Field       | Type       | Description                |
 | ----------- | ---------- | -------------------------- |
