@@ -421,9 +421,99 @@ img {
   gap: 32px;
 }
 
-.alpha-cta {
+.alpha-form {
   display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 520px;
+  flex-wrap: wrap;
   justify-content: center;
+}
+
+.alpha-input {
+  flex: 1 1 260px;
+  min-width: 0;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--fg-primary);
+  background-color: var(--surface-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.alpha-input::placeholder {
+  color: var(--fg-muted);
+}
+
+.alpha-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
+}
+
+.alpha-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.alpha-submit {
+  flex: 0 0 auto;
+  justify-content: center;
+  min-width: 160px;
+}
+
+.alpha-submit[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.alpha-spinner {
+  display: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: alpha-spin 0.7s linear infinite;
+}
+
+.alpha-form.is-loading .alpha-spinner {
+  display: inline-block;
+}
+
+.alpha-form.is-loading .alpha-submit-label {
+  display: none;
+}
+
+@keyframes alpha-spin {
+  to { transform: rotate(360deg); }
+}
+
+.alpha-status {
+  min-height: 1.25em;
+  margin: 0;
+  font-size: 14px;
+  color: var(--fg-muted);
+  text-align: center;
+  max-width: 520px;
+}
+
+.alpha-status[data-kind="success"] { color: var(--success, #22c55e); }
+.alpha-status[data-kind="error"]   { color: #ef4444; }
+.alpha-status[data-kind="loading"] { color: var(--fg-muted); }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* =====================

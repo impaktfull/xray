@@ -449,33 +449,38 @@
             Looking for alpha testers
           </h2>
           <p class="section-subtitle">
-            Join our Discord to get early access to xRay and help shape what
-            comes next. Share feedback, report bugs, and talk directly to the
-            team.
+            Drop your email to request access. We'll send you an invite to our
+            Discord where alpha testers share feedback, and we'll add you to
+            the alpha tester list.
           </p>
         </div>
-        <div class="alpha-cta">
-          <a
-            href="https://discord.gg/S8F9aEZa"
-            class="btn-primary"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="icon" aria-hidden="true">
-              <!-- Discord icon -->
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.04.04 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032q.003.022.021.037a13.3 13.3 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019q.463-.63.818-1.329a.05.05 0 0 0-.01-.059l-.018-.011a9 9 0 0 1-1.248-.595.05.05 0 0 1-.02-.066l.015-.019q.127-.095.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.05.05 0 0 1 .053.007q.121.1.248.195a.05.05 0 0 1-.004.085 8 8 0 0 1-1.249.594.05.05 0 0 0-.03.03.05.05 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.2 13.2 0 0 0 4.001-2.02.05.05 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.03.03 0 0 0-.02-.019m-8.198 7.307c-.789 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612m5.316 0c-.788 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612"/>
-              </svg>
-            </span>
-            Join the Alpha on Discord
-          </a>
-        </div>
+        <form
+          class="alpha-form"
+          id="alpha-form"
+          novalidate
+          aria-describedby="alpha-form-status"
+        >
+          <label class="sr-only" for="alpha-email">Email address</label>
+          <input
+            type="email"
+            id="alpha-email"
+            name="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+            class="alpha-input"
+          />
+          <button type="submit" class="btn-primary alpha-submit">
+            <span class="alpha-submit-label">Request access</span>
+            <span class="alpha-spinner" aria-hidden="true"></span>
+          </button>
+        </form>
+        <p
+          class="alpha-status"
+          id="alpha-form-status"
+          role="status"
+          aria-live="polite"
+        ></p>
       </section>
 
       <!-- =====================
@@ -631,5 +636,71 @@
         >
       </nav>
     </footer>
+
+    <script>
+      (function () {
+        const form = document.getElementById("alpha-form");
+        if (!form) return;
+        const input = form.querySelector("#alpha-email");
+        const submit = form.querySelector(".alpha-submit");
+        const status = document.getElementById("alpha-form-status");
+        const endpoint =
+          "https://versioncheck.xrayinspector.dev/alpha/request-access";
+
+        function setStatus(message, kind) {
+          status.textContent = message;
+          status.dataset.kind = kind || "";
+        }
+
+        form.addEventListener("submit", async function (event) {
+          event.preventDefault();
+          const email = input.value.trim();
+          if (!email || !input.checkValidity()) {
+            setStatus("Please enter a valid email address.", "error");
+            input.focus();
+            return;
+          }
+
+          submit.disabled = true;
+          input.disabled = true;
+          form.classList.add("is-loading");
+          setStatus("Sending your request…", "loading");
+
+          try {
+            const response = await fetch(endpoint, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email: email }),
+            });
+
+            if (response.ok) {
+              form.reset();
+              setStatus(
+                "Thanks! Check your inbox — we've sent you an invite to our Discord and added you to the alpha tester list.",
+                "success"
+              );
+            } else {
+              let message = "Something went wrong. Please try again.";
+              try {
+                const data = await response.json();
+                if (data && typeof data.message === "string") {
+                  message = data.message;
+                }
+              } catch (_) {}
+              setStatus(message, "error");
+            }
+          } catch (_) {
+            setStatus(
+              "Network error. Please check your connection and try again.",
+              "error"
+            );
+          } finally {
+            submit.disabled = false;
+            input.disabled = false;
+            form.classList.remove("is-loading");
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
