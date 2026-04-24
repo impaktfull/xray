@@ -15,8 +15,6 @@
 
 <p align="center">
   <a href="https://xrayinspector.dev/install?platform=macos">macOS App</a> •
-  <a href="https://xrayinspector.dev/install?platform=ios">iOS App</a> •
-  <a href="https://xrayinspector.dev/install?platform=android">Android App</a>
 </p>
 
 # xRay (inspector)
