@@ -411,6 +411,22 @@ img {
 }
 
 /* =====================
+   Alpha Section
+   ===================== */
+.alpha-section {
+  padding: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.alpha-cta {
+  display: flex;
+  justify-content: center;
+}
+
+/* =====================
    Documentation Section
    ===================== */
 .docs-section {
@@ -584,6 +600,7 @@ footer {
   .hero-section,
   .features-section,
   .download-section,
+  .alpha-section,
   .docs-section,
   footer {
     padding-left: 40px;
@@ -616,6 +633,7 @@ footer {
   .hero-section,
   .features-section,
   .download-section,
+  .alpha-section,
   .docs-section {
     padding-left: 24px;
     padding-right: 24px;
