@@ -42,7 +42,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Geist+Mono:wght@400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&family=Geologica:wght@400;500;600&family=Geist+Mono:wght@400&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles/styles.css" />
@@ -133,46 +133,24 @@
          Hero Section
          ===================== -->
       <section class="hero-section" aria-labelledby="hero-title">
-        <!-- Badge -->
-        <div
-          class="hero-badge"
-          aria-label="Built for Flutter developers by Flutter developers"
-        >
-          <span class="hero-badge-icon icon" aria-hidden="true">
-            <!-- Zap icon -->
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-            </svg>
-          </span>
-          <span class="hero-badge-text"
-            >Built for Flutter developers by Flutter developers</span
-          >
-        </div>
+        <!-- Eyebrow -->
+        <span class="eyebrow">Built for Flutter developers</span>
 
         <!-- Title -->
         <h1 class="hero-title" id="hero-title">
-          See inside your app.<br />Like never before.
+          See inside your app.<br />Like never before<span class="accent">.</span>
         </h1>
 
         <!-- Subtitle -->
         <p class="hero-subtitle">
           xRay gives you real-time visibility into network calls, logs, and
-          storage — across iOS, Android, and macOS. Debug faster, ship with
+          storage, across iOS, Android, and macOS. Debug faster, ship with
           confidence.
         </p>
 
         <!-- Buttons -->
         <div class="hero-buttons">
-          <a href="#download" class="btn-primary">
+          <a href="#download" class="btn-primary btn-lg">
             <span class="icon" aria-hidden="true">
               <!-- Download icon -->
               <svg
@@ -192,7 +170,7 @@
             </span>
             Download App
           </a>
-          <a href="#docs" class="btn-outline">
+          <a href="#docs" class="btn-outline btn-lg">
             <span class="icon" aria-hidden="true">
               <!-- Book-open icon -->
               <svg
@@ -216,7 +194,7 @@
         <!-- Preview Image -->
         <div class="hero-preview">
           <img
-            src="assets/hero-preview.png"
+            src="assets/hero_preview.png"
             alt="xRay app interface showing network requests, logs and storage inspector"
             width="1100"
             height="620"
@@ -229,18 +207,17 @@
          Features Section
          ===================== -->
       <section
-        class="features-section"
+        class="section features-section section-glow"
         id="features"
         aria-labelledby="features-title"
       >
         <div class="section-header">
-          <span class="section-label">Features</span>
+          <span class="eyebrow">Features</span>
           <h2 class="section-title" id="features-title">
-            Everything you need to debug
+            Everything you need<br />to debug<span style="color: var(--accent-light);">.</span>
           </h2>
           <p class="section-subtitle">
-            xRay provides a complete suite of inspection tools for your Flutter
-            app
+            A complete suite of inspection tools for your Flutter app.
           </p>
         </div>
 
@@ -335,17 +312,17 @@
          Download Section
          ===================== -->
       <section
-        class="download-section"
+        class="section download-section"
         id="download"
         aria-labelledby="download-title"
       >
         <div class="section-header">
-          <span class="section-label">Download</span>
+          <span class="eyebrow">Download</span>
           <h2 class="section-title" id="download-title">
-            Soon on every platform
+            Soon on every<br />platform<span style="color: var(--accent-light);">.</span>
           </h2>
           <p class="section-subtitle">
-            Run the companion app on your development machine or device
+            Run the companion app on your development machine or device.
           </p>
         </div>
 
@@ -438,14 +415,14 @@
          Alpha Testers Section
          ===================== -->
       <section
-        class="alpha-section"
+        class="section alpha-section section-glow"
         id="alpha"
         aria-labelledby="alpha-title"
       >
         <div class="section-header">
-          <span class="section-label">Alpha Program</span>
+          <span class="eyebrow">Alpha Program</span>
           <h2 class="section-title" id="alpha-title">
-            Looking for alpha testers
+            Wanted<span style="color: var(--accent-light);">:</span><br />alpha testers<span style="color: var(--accent-light);">.</span>
           </h2>
           <p class="section-subtitle">
             Drop your email to request access. We'll send you an invite to our
@@ -485,12 +462,12 @@
       <!-- =====================
          Documentation Section
          ===================== -->
-      <section class="docs-section" id="docs" aria-labelledby="docs-title">
+      <section class="section docs-section section-glow" id="docs" aria-labelledby="docs-title">
         <div class="docs-inner">
           <!-- Left: Text -->
           <div class="docs-left">
-            <span class="section-label">Documentation</span>
-            <h2 id="docs-title">Get up and running<br />in minutes</h2>
+            <span class="eyebrow">Documentation</span>
+            <h2 id="docs-title">Get up and running<br />in minutes<span style="color: var(--accent-light);">.</span></h2>
             <p>
               Add the xRay package to your Flutter project, configure the
               inspector, and start debugging. Our comprehensive docs cover
@@ -562,24 +539,20 @@
               <span class="code-filename">setup.dart</span>
             </div>
             <div class="code-body">
-              <code class="code-import"
-                >import 'package:xray_inspector/xray_inspector.dart';</code
-              >
-              <code class="code-default"> </code>
-              <code class="code-primary"
-                >final networkInspector = XRayNetworkInspector();</code
-              >
-              <code class="code-primary">final logInspector = XRayLogInspector();</code>
-              <code class="code-default"> </code>
-              <code class="code-primary">final server = XRayInspectorServer(</code>
-              <code class="code-default">   config: XRayInspectorServerConfig(</code>
-              <code class="code-default">      inspectors: [</code>
-              <code class="code-default">         networkInspector,</code>
-              <code class="code-default">         logInspector,</code>
-              <code class="code-default">      ],</code>
-              <code class="code-default">   ),</code>
-              <code class="code-primary">);</code>
-              <code class="code-primary">await server.start();</code>
+              <code><span class="tok-keyword">import</span> <span class="tok-string">'package:xray_inspector/xray_inspector.dart'</span><span class="tok-punct">;</span></code>
+              <code> </code>
+              <code><span class="tok-control">final</span> <span class="tok-var">networkInspector</span> <span class="tok-punct">=</span> <span class="tok-type">XRayNetworkInspector</span><span class="tok-punct">();</span></code>
+              <code><span class="tok-control">final</span> <span class="tok-var">logInspector</span> <span class="tok-punct">=</span> <span class="tok-type">XRayLogInspector</span><span class="tok-punct">();</span></code>
+              <code> </code>
+              <code><span class="tok-control">final</span> <span class="tok-var">server</span> <span class="tok-punct">=</span> <span class="tok-type">XRayInspectorServer</span><span class="tok-punct">(</span></code>
+              <code>   <span class="tok-var">config</span><span class="tok-punct">:</span> <span class="tok-type">XRayInspectorServerConfig</span><span class="tok-punct">(</span></code>
+              <code>      <span class="tok-var">inspectors</span><span class="tok-punct">:</span> <span class="tok-punct">[</span></code>
+              <code>         <span class="tok-var">networkInspector</span><span class="tok-punct">,</span></code>
+              <code>         <span class="tok-var">logInspector</span><span class="tok-punct">,</span></code>
+              <code>      <span class="tok-punct">],</span></code>
+              <code>   <span class="tok-punct">),</span></code>
+              <code><span class="tok-punct">);</span></code>
+              <code><span class="tok-control">await</span> <span class="tok-var">server</span><span class="tok-punct">.</span><span class="tok-fn">start</span><span class="tok-punct">();</span></code>
             </div>
           </div>
         </div>
@@ -635,6 +608,24 @@
         >
       </nav>
     </footer>
+
+    <script>
+      // Navbar scroll state — add border/background once user has scrolled past the hero
+      (function () {
+        const navbar = document.querySelector(".navbar");
+        if (!navbar) return;
+        const threshold = 16;
+        const update = () => {
+          if (window.scrollY > threshold) {
+            navbar.classList.add("is-scrolled");
+          } else {
+            navbar.classList.remove("is-scrolled");
+          }
+        };
+        update();
+        window.addEventListener("scroll", update, { passive: true });
+      })();
+    </script>
 
     <script>
       (function () {
