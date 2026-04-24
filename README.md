@@ -46,8 +46,6 @@
 | Platform | Download                                                       |
 | -------- | -------------------------------------------------------------- |
 | macOS    | [Download](https://xrayinspector.dev/install?platform=macos)   |
-| iOS      | [Download](https://xrayinspector.dev/install?platform=ios)     |
-| Android  | [Download](https://xrayinspector.dev/install?platform=android) |
 
 ## Packages
 
