@@ -26,16 +26,6 @@
       "title": "mac App",
       "icon": "desktop",
       "href": "xray/app/install-macos"
-    },
-    {
-      "title": "iOS App",
-      "icon": "apple",
-      "href": "https://xrayinspector.dev/install?platform=ios"
-    },
-    {
-      "title": "Android App",
-      "icon": "android",
-      "href": "https://xrayinspector.dev/install?platform=android"
     }
   ],
   "sidebar": [

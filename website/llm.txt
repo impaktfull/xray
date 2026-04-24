@@ -33,9 +33,7 @@ All packages are published on pub.dev by [xrayinspector.dev](https://pub.dev/pub
 
 ## Platform support
 
-- **macOS** — macOS 13+
-- **iOS / iPadOS** — iOS 16+
-- **Android** — Android 10+
+- **macOS** — macOS 10.15+
 
 ## Quick start
 
