@@ -1,0 +1,59 @@
+---
+title: Install on macOS
+description: Install the xRay macOS app via Homebrew or a direct DMG download.
+---
+
+The xRay macOS app is the desktop UI client for inspecting Flutter apps that run the `xray_inspector` server. It is distributed as a signed and notarized `.dmg` on GitHub Releases, and as a Homebrew Cask.
+
+## Requirements
+
+- macOS 11 (Big Sur) or later
+- Apple Silicon or Intel
+- A running Flutter app with `xray_inspector` configured (see [Quick Start](/getting-started))
+
+## Option 1 — Homebrew (recommended)
+
+Install with Homebrew Cask:
+
+```bash
+brew install --cask impaktfull/xray/xray
+```
+
+If you haven't added the tap before, Homebrew will add it automatically. You can also add it explicitly:
+
+```bash
+brew tap impaktfull/xray
+brew install --cask xray
+```
+
+Upgrade to the latest release:
+
+```bash
+brew upgrade --cask xray
+```
+
+Uninstall:
+
+```bash
+brew uninstall --cask xray
+```
+
+## Option 2 — Direct DMG download
+
+1. Open the [xRay GitHub Releases page](https://github.com/impaktfull/xray/releases).
+2. Download the latest `xRay-<version>.dmg` asset.
+3. Open the DMG and drag **xRay.app** into your **Applications** folder.
+4. Eject the DMG and launch xRay from Applications or Spotlight.
+
+The DMG is signed with a Developer ID certificate and notarized by Apple, so Gatekeeper will open it without additional prompts.
+
+## Verify the installation
+
+Launch xRay and confirm the app starts. When your Flutter app with `xray_inspector` is running on the same network, it will appear in the device list automatically via UDP discovery.
+
+## Next steps
+
+- [Quick Start](/getting-started) — set up `xray_inspector` in your Flutter app
+- [Network Inspection](/guides/network-inspection)
+- [Log Inspection](/guides/log-inspection)
+- [Key-Value Inspection](/guides/key-value-inspection)

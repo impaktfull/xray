@@ -25,7 +25,7 @@
     {
       "title": "mac App",
       "icon": "desktop",
-      "href": "https://xrayinspector.dev/install?platform=macos"
+      "href": "app/install-macos"
     },
     {
       "title": "iOS App",
