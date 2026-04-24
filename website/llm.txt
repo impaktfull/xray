@@ -2,11 +2,11 @@
 
 > A modular Flutter debugging toolkit for real-time inspection of network calls, logs, and key-value storage — with remote UI support via a local network server.
 
-xRay gives Flutter developers real-time visibility into their app's network calls, logs, and storage. It runs a local HTTP/WebSocket server inside the Flutter app and streams data to a companion viewer app (macOS, iOS, Android) or an in-app UI overlay. Debug faster, ship with confidence.
+xRay gives Flutter developers real-time visibility into their app's network calls, logs, and storage. It runs a local HTTP/WebSocket server inside the Flutter app and streams data to a companion viewer app (macOS, with Windows and Linux coming soon) or an in-app UI overlay. Debug faster, ship with confidence.
 
 Built and maintained by [impaktfull](https://impaktfull.com).
 
-> **License:** xRay is a commercial product. Usage requires either a paid commercial license or a free Community License. The macOS, iOS, and Android viewer apps are the authorized UI clients for this library.
+> **License:** xRay is a commercial product. Usage requires either a paid commercial license or a free Community License. The macOS viewer app (with Windows and Linux coming soon) is the authorized UI client for this library.
 
 ## Core features
 
