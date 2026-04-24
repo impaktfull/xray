@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://xrayinspector.dev/install?platform=macos">macOS App</a> •
+  <a href="https://xrayinspector.dev/install?platform=macos">macOS App</a>
 </p>
 
 # xRay (inspector)
