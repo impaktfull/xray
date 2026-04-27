@@ -938,3 +938,33 @@ footer {
     scroll-behavior: auto;
   }
 }
+
+/* =====================
+   Cookiethough.dev — xRay branding
+   ===================== */
+.cookie-though {
+  --ct-primary-400: var(--accent);
+  --ct-primary-300: var(--accent-light);
+  --ct-primary-200: var(--accent-subtle);
+  --ct-primary-100: var(--surface-tertiary);
+
+  --ct-text: var(--fg-secondary);
+  --ct-white: var(--surface-secondary);
+
+  --ct-button: var(--accent);
+  --ct-button-color: #ffffff;
+  --ct-button-secondary: rgba(255, 255, 255, 0.05);
+  --ct-button-secondary-color: var(--fg-primary);
+
+  --ct-policy-enabled: var(--accent-subtle);
+  --ct-policy-text-enabled: var(--fg-primary);
+  --ct-policy-text: var(--fg-primary);
+
+  --ct-primary-font: var(--font-body);
+  --ct-primary-font-weight: 500;
+  --ct-secondary-font: var(--font-display);
+  --ct-secondary-font-weight: 500;
+
+  --ct-button-radius: var(--radius-full);
+  --ct-button-padding: 10px 18px;
+}

@@ -72,6 +72,35 @@
         }
       }
     </script>
+
+    <!-- ===== Analytics + Consent ===== -->
+    <!-- 1. Google Consent Mode v2 — all denied by default. -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        functionality_storage: 'denied',
+        personalization_storage: 'denied',
+        security_storage: 'granted',
+        wait_for_update: 500
+      });
+      gtag('js', new Date());
+      gtag('config', 'G-589QLTH004', { anonymize_ip: true });
+    </script>
+
+    <!-- 2. GA4 loader. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-589QLTH004"></script>
+
+    <!-- 3. Cookiethough.dev banner. -->
+    <script src="https://cookiethough.dev/lib/1.7.3" defer></script>
+
+    <!-- 4. Local consent bridge + event tracking. -->
+    <script src="scripts/consent.js?v=1.0.0" defer></script>
+    <script src="scripts/analytics.js?v=1.0.0" defer></script>
   </head>
 
   <body>
