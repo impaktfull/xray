@@ -10,6 +10,9 @@
     "primaryLight": "#7d64f2",
     "primaryDark": "#7d64f2"
   },
+  "scripts": {
+    "googleAnalytics": "G-4WQS1VDT30"
+  },
   "social": {
     "github": "impaktfull",
     "website": "https://impaktfull.com",
