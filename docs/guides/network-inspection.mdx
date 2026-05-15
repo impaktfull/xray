@@ -29,7 +29,7 @@ final dio = Dio()
 
 ## Setup with global HTTP override
 
-<Note>Available since 0.0.9</Note>
+<Info>Available since 0.0.9</Info>
 
 Pass `enableHttpOverride: true` to intercept **all** `dart:io` `HttpClient` traffic in the process — including `package:http`, Cronet, and any other client that delegates to `dart:io`. No changes to individual clients are needed.
 
@@ -43,9 +43,9 @@ final networkInspector = XRayNetworkInspector(enableHttpOverride: true);
 Only one `XRayNetworkInspector` can have `enableHttpOverride: true` at a time. Enabling it on a second inspector throws a `StateError` at startup.
 </Warning>
 
-<Note>
+<Info>
 `enableHttpOverride` is silently ignored on web — `dart:io` is not available there.
-</Note>
+</Info>
 
 ## Accessing captured calls
 
