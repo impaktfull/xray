@@ -10,7 +10,7 @@ The network inspector captures every HTTP request, response, and error made thro
 | Use case | Package |
 | -------- | ------- |
 | Dio | `xray_network_dio_interceptor` |
-| Any `dart:io` client (`package:http`, Cronet, …) | `xray_inspector` (`enableHttpOverride`) |
+| All `dart:io` clients (Dio, `package:http`, and any other client that delegates to `dart:io`) | `xray_inspector` (`enableHttpOverride`) |
 
 ## Setup with Dio
 
@@ -31,13 +31,17 @@ final dio = Dio()
 
 <Info>Available since 0.0.9</Info>
 
-Pass `enableHttpOverride: true` to intercept **all** `dart:io` `HttpClient` traffic in the process — including `package:http`, Cronet, and any other client that delegates to `dart:io`. No changes to individual clients are needed.
+Pass `enableHttpOverride: true` to intercept **every** HTTP request made in the app at the `dart:io` level — Dio, `package:http`, and any other client that uses `dart:io` under the hood. No changes to individual clients are needed.
 
 ```dart
 import 'package:xray_inspector/xray_inspector.dart';
 
 final networkInspector = XRayNetworkInspector(enableHttpOverride: true);
 ```
+
+<Warning>
+The HTTP override captures **all** traffic in the process, regardless of which HTTP client made the call. If you also use a Dio interceptor, Dio calls will appear in **both** inspectors — the Dio inspector and the HTTP override inspector.
+</Warning>
 
 <Warning>
 Only one `XRayNetworkInspector` can have `enableHttpOverride: true` at a time. Enabling it on a second inspector throws a `StateError` at startup.
@@ -135,3 +139,7 @@ final networkHttpInspector = XRayNetworkInspector(
 final dio = Dio()
   ..interceptors.add(XRayNetworkDioInterceptor(inspector: networkDioInspector));
 ```
+
+<Info>
+In this setup, Dio calls will appear in both inspectors — the Dio interceptor captures them with richer metadata, while the HTTP override captures them at the lower `dart:io` level.
+</Info>
