@@ -42,6 +42,7 @@
     {
       "group": "Guides",
       "pages": [
+        { "title": "⚙️ How it works", "href": "/guides/how-it-works" },
         { "title": "🌐 Network Inspection", "href": "/guides/network-inspection" },
         { "title": "📋 Log Inspection", "href": "/guides/log-inspection" },
         { "title": "🗄️ Key-Value Inspection", "href": "/guides/key-value-inspection" }

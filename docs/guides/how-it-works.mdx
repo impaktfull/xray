@@ -1,0 +1,52 @@
+---
+title: How it works
+description: Understand xRay's local-network architecture, production build implications, and how to run multiple apps simultaneously.
+---
+
+xRay is a local network debugging tool. All data stays on your device and local network — nothing is sent to any external server.
+
+## Local network only
+
+The xRay SDK runs a small HTTP server and a UDP discovery listener inside your app. The xRay macOS app discovers your device via a UDP broadcast on the local network, then connects directly to the HTTP server in your app to read inspection data. No cloud, no relay.
+
+## Production builds
+
+**Do not include xRay in production or App Store builds.** The SDK starts a network server that accepts connections from any device on the same network. In a store build, this exposes your app internals to anyone on the same Wi-Fi network.
+
+Use Flutter's build modes (or a compile-time constant) to enable the SDK only in debug/internal builds:
+
+```dart
+import 'package:flutter/foundation.dart';
+import 'package:xray_inspector/xray_inspector.dart';
+
+// Only enable in non-production builds
+if (!kReleaseMode) {
+  await XRayInspectorServer(
+    config: XRayInspectorServerConfig(inspectors: [...]),
+  ).start();
+}
+```
+
+The [Quick Start](/getting-started) guide already covers this — this section highlights why it matters.
+
+## Multiple apps on the same device
+
+If you run two apps with xRay on the same device, each app must use a different HTTP port and UDP discovery port to avoid conflicts:
+
+```dart
+// App 1 — default ports
+XRayInspectorServerConfig(
+  httpPort: 7780,
+  discoveryPort: 7781,
+  inspectors: [...],
+)
+
+// App 2 — custom ports
+XRayInspectorServerConfig(
+  httpPort: 7782,
+  discoveryPort: 7783,
+  inspectors: [...],
+)
+```
+
+In the xRay macOS app, change the discovery port in the Connections panel to match the port used by the app you want to inspect.
