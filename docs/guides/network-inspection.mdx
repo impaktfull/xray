@@ -1,15 +1,16 @@
 ---
 title: Network Inspection
-description: Capture and inspect HTTP network calls from Dio or Serverpod.
+description: Capture and inspect HTTP network calls from Dio or any dart:io HttpClient.
 ---
 
 The network inspector captures every HTTP request, response, and error made through your HTTP client, storing them in memory for real-time inspection.
 
 ## Packages
 
-| Use case | Package                        |
-| -------- | ------------------------------ |
-| Dio      | `xray_network_dio_interceptor` |
+| Use case | Package |
+| -------- | ------- |
+| Dio | `xray_network_dio_interceptor` |
+| Any `dart:io` client (`package:http`, Cronet, …) | `xray_inspector` (`enableHttpOverride`) |
 
 ## Setup with Dio
 
@@ -25,6 +26,26 @@ final dio = Dio()
     XRayNetworkDioInterceptor(inspector: networkInspector),
   );
 ```
+
+## Setup with global HTTP override
+
+<Note>Available since 0.0.9</Note>
+
+Pass `enableHttpOverride: true` to intercept **all** `dart:io` `HttpClient` traffic in the process — including `package:http`, Cronet, and any other client that delegates to `dart:io`. No changes to individual clients are needed.
+
+```dart
+import 'package:xray_inspector/xray_inspector.dart';
+
+final networkInspector = XRayNetworkInspector(enableHttpOverride: true);
+```
+
+<Warning>
+Only one `XRayNetworkInspector` can have `enableHttpOverride: true` at a time. Enabling it on a second inspector throws a `StateError` at startup.
+</Warning>
+
+<Note>
+`enableHttpOverride` is silently ignored on web — `dart:io` is not available there.
+</Note>
 
 ## Accessing captured calls
 
@@ -102,15 +123,15 @@ Each captured call is an `XRayNetworkCall` with these fields:
 
 ## Multiple network inspectors
 
-You can run multiple network inspectors simultaneously, each with a distinct title:
+You can run multiple network inspectors simultaneously. Each must have a distinct title (used to generate the inspector's ID). A common pattern is one inspector for Dio and one for all other HTTP traffic:
 
 ```dart
-final apiInspector = XRayNetworkInspector(title: 'API');
-final analyticsInspector = XRayNetworkInspector(title: 'Analytics');
+final networkDioInspector = XRayNetworkInspector(title: 'Network (Dio)');
+final networkHttpInspector = XRayNetworkInspector(
+  title: 'Network (Http)',
+  enableHttpOverride: true,
+);
 
-final apiDio = Dio()
-  ..interceptors.add(XRayNetworkDioInterceptor(inspector: apiInspector));
-
-final analyticsDio = Dio()
-  ..interceptors.add(XRayNetworkDioInterceptor(inspector: analyticsInspector));
+final dio = Dio()
+  ..interceptors.add(XRayNetworkDioInterceptor(inspector: networkDioInspector));
 ```

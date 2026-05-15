@@ -25,19 +25,24 @@ dependencies:
 ## XRayNetworkInspector
 
 ```dart
-final inspector = XRayNetworkInspector(title: 'Network');
+// Dio — wire up via XRayNetworkDioInterceptor
+final inspector = XRayNetworkInspector();
+
+// Global dart:io override — captures all HttpClient traffic automatically
+final inspector = XRayNetworkInspector(enableHttpOverride: true);
 ```
 
-| Member              | Type                       | Description                                 |
-| ------------------- | -------------------------- | ------------------------------------------- |
-| `title`             | `String`                   | Display name (default: `"Network"`)         |
-| `id`                | `String`                   | Derived from title, used as server route ID |
-| `calls`             | `List<XRayNetworkCall>`    | Current captured calls (snapshot)           |
-| `callsNotifier`     | `ValueNotifier<List<...>>` | Reactive calls list                         |
-| `findById(id)`      | `XRayNetworkCall?`         | Look up a call by ID                        |
-| `addListener(l)`    | `void`                     | Register a listener                         |
-| `removeListener(l)` | `void`                     | Unregister a listener                       |
-| `clear()`           | `void`                     | Clear all captured calls                    |
+| Member                 | Type                       | Description                                                                 |
+| ---------------------- | -------------------------- | --------------------------------------------------------------------------- |
+| `title`                | `String`                   | Display name (default: `"Network"`)                                         |
+| `enableHttpOverride`   | `bool`                     | When `true`, installs a global `dart:io` override to capture all HTTP traffic. Only one inspector can have this enabled at a time. Ignored on web. _(since 0.0.9)_ |
+| `id`                   | `String`                   | Derived from title, used as server route ID                                 |
+| `calls`                | `List<XRayNetworkCall>`    | Current captured calls (snapshot)                                           |
+| `callsNotifier`        | `ValueNotifier<List<...>>` | Reactive calls list                                                         |
+| `findById(id)`         | `XRayNetworkCall?`         | Look up a call by ID                                                        |
+| `addListener(l)`       | `void`                     | Register a listener                                                         |
+| `removeListener(l)`    | `void`                     | Unregister a listener                                                       |
+| `clear()`              | `void`                     | Clear all captured calls                                                    |
 
 ## XRayLogInspector
 
