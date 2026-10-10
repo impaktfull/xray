@@ -1,104 +1,33 @@
-<!-- =====================
-   Features Section
-   ===================== -->
-<section
-  class="section features-section section-glow"
-  id="features"
-  aria-labelledby="features-title"
->
+---
+import { features } from '../../content/home';
+import PhosphorIcon from '../ui/PhosphorIcon.astro';
+---
+
+<section class="section features-section section-glow" id="features" aria-labelledby="features-title">
   <div class="section-header">
     <span class="eyebrow">Features</span>
     <h2 class="section-title" id="features-title">
-      Everything you need<br />to debug<span style="color: var(--accent-light);">.</span>
+      Everything you need<br />to debug<span class="accent">.</span>
     </h2>
-    <p class="section-subtitle">
-      A complete suite of inspection tools for your Flutter app.
-    </p>
+    <p class="section-subtitle">One window for what your app sends, logs and stores.</p>
   </div>
 
   <div class="features-grid" role="list">
-    <!-- Network Inspector -->
-    <article class="feature-card" role="listitem">
-      <div class="feature-icon-wrap accent" aria-hidden="true">
-        <!-- Wifi icon -->
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M5 12.55a11 11 0 0 1 14.08 0" />
-          <path d="M1.42 9a16 16 0 0 1 21.16 0" />
-          <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
-          <line x1="12" y1="20" x2="12.01" y2="20" />
-        </svg>
-      </div>
-      <h3>Network Inspector</h3>
-      <p>
-        Monitor every HTTP request and response in real-time. View
-        headers, body content in JSON, XML, or HTML with syntax
-        highlighting.
-      </p>
-    </article>
-
-    <!-- Log Viewer -->
-    <article class="feature-card" role="listitem">
-      <div class="feature-icon-wrap accent" aria-hidden="true">
-        <!-- File-text icon -->
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path
-            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-          />
-          <polyline points="14 2 14 8 20 8" />
-          <line x1="16" y1="13" x2="8" y2="13" />
-          <line x1="16" y1="17" x2="8" y2="17" />
-          <polyline points="10 9 9 9 8 9" />
-        </svg>
-      </div>
-      <h3>Log Viewer</h3>
-      <p>
-        Browse, filter, and search through your app's log output. Filter
-        by level, toggle timestamps, and find issues instantly.
-      </p>
-    </article>
-
-    <!-- Key-Value Storage -->
-    <article class="feature-card" role="listitem">
-      <div class="feature-icon-wrap accent" aria-hidden="true">
-        <!-- Database icon -->
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <ellipse cx="12" cy="5" rx="9" ry="3" />
-          <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
-          <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-        </svg>
-      </div>
-      <h3>Key-Value Storage</h3>
-      <p>
-        Inspect and edit SharedPreferences, secure storage, and other
-        key-value stores. Edit strings, booleans, and more on the fly.
-      </p>
-    </article>
+    {
+      features.map((feature) => (
+        <article class="feature-card" role="listitem">
+          <div class="feature-icon-wrap accent" aria-hidden="true">
+            <PhosphorIcon name={feature.icon} />
+          </div>
+          <h3>{feature.title}</h3>
+          <p>{feature.body}</p>
+          {feature.demoStep && (
+            <a class="feature-try" href={`#demo/${feature.demoStep}`}>
+              Try it in the demo <span aria-hidden="true">→</span>
+            </a>
+          )}
+        </article>
+      ))
+    }
   </div>
 </section>
