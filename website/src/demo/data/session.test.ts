@@ -4,7 +4,7 @@ import { createRng } from './seed';
 import { createInitialSession } from './session';
 import { nextEvent } from './stream';
 
-const now = new Date(2026, 9, 10, 14, 3, 7).getTime();
+const now = Date.UTC(2026, 9, 10, 14, 3, 7);
 
 describe('createInitialSession', () => {
   const session = createInitialSession(42, now);

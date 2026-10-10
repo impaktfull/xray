@@ -32,13 +32,15 @@ export function bodySizeLabel(bytes: number): string {
 
 const two = (value: number) => String(value).padStart(2, '0');
 
+// The demo runs on its own clock in UTC, so the page rendered at build time and the visitor's
+// browser show the same times whatever their timezone.
 export function timeLabel(epochMs: number): string {
   const d = new Date(epochMs);
-  return `${two(d.getHours())}:${two(d.getMinutes())}:${two(d.getSeconds())}`;
+  return `${two(d.getUTCHours())}:${two(d.getUTCMinutes())}:${two(d.getUTCSeconds())}`;
 }
 
 export function timeTenthsLabel(epochMs: number): string {
-  return `${timeLabel(epochMs)}.${Math.floor(new Date(epochMs).getMilliseconds() / 100)}`;
+  return `${timeLabel(epochMs)}.${Math.floor(new Date(epochMs).getUTCMilliseconds() / 100)}`;
 }
 
 export function statusTone({ state, status }: Outcome): Tone {

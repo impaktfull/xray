@@ -10,6 +10,7 @@ import {
   statusLabel,
   statusTone,
   timeLabel,
+  timeTenthsLabel,
 } from './format';
 
 describe('durationLabel', () => {
@@ -37,8 +38,9 @@ describe('bodySizeLabel', () => {
 });
 
 describe('timeLabel', () => {
-  it('formats a timestamp as HH:MM:SS in local time', () => {
-    expect(timeLabel(new Date(2026, 9, 10, 14, 3, 7, 450).getTime())).toBe('14:03:07');
+  it('formats a timestamp as HH:MM:SS on the demo clock (UTC)', () => {
+    expect(timeLabel(Date.UTC(2026, 9, 10, 14, 3, 7, 450))).toBe('14:03:07');
+    expect(timeTenthsLabel(Date.UTC(2026, 9, 10, 14, 3, 7, 450))).toBe('14:03:07.4');
   });
 });
 
