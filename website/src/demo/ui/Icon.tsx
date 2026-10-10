@@ -43,6 +43,11 @@ import broadcast from '@phosphor-icons/core/regular/broadcast.svg?raw';
 import lockSimple from '@phosphor-icons/core/regular/lock-simple.svg?raw';
 import sparkle from '@phosphor-icons/core/regular/sparkle.svg?raw';
 
+import link from '@phosphor-icons/core/regular/link.svg?raw';
+import moon from '@phosphor-icons/core/regular/moon.svg?raw';
+import bellSimple from '@phosphor-icons/core/regular/bell-simple.svg?raw';
+import flag from '@phosphor-icons/core/regular/flag.svg?raw';
+import deviceMobileCamera from '@phosphor-icons/core/regular/device-mobile-camera.svg?raw';
 const icons = {
   'x': x,
   'plus': plus,
@@ -87,6 +92,11 @@ const icons = {
   'broadcast': broadcast,
   'lock-simple': lockSimple,
   'sparkle': sparkle,
+  'link': link,
+  'moon': moon,
+  'bell-simple': bellSimple,
+  'flag': flag,
+  'device-mobile-camera': deviceMobileCamera,
 };
 
 export type IconName = keyof typeof icons;

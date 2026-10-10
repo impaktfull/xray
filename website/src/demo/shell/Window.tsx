@@ -4,6 +4,7 @@ import { EmptyState } from '../ui/EmptyState';
 import { Toast } from '../ui/Toast';
 import { InspectorTabs } from './InspectorTabs';
 import { InspectorView } from './InspectorView';
+import { DeviceDrawer } from '../device/DeviceDrawer';
 import { ModalHost } from './ModalHost';
 import { TourOverlay, TourPill } from '../tour/TourOverlay';
 import { TopBar } from './TopBar';
@@ -34,6 +35,7 @@ export function Window() {
           />
         </main>
       )}
+      <DeviceDrawer />
       <ModalHost />
       <TourPill />
       <TourOverlay />

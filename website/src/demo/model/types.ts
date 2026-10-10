@@ -101,6 +101,40 @@ export interface Session {
 export type Platform = 'android' | 'ios' | 'macos';
 export type ConnectionStatus = 'connected' | 'reconnecting' | 'disconnected';
 
+export type Appearance = 'system' | 'light' | 'dark';
+export type AnimationSpeed = 'off' | '0.2' | '1' | '5';
+
+export interface FeatureFlag {
+  key: string;
+  type: 'bool' | 'int' | 'String';
+  source: 'remote' | 'local';
+  remote: boolean | number | string;
+  value: boolean | number | string;
+}
+
+/** What Device Actions can change on the running app; `defaults` is how the app started. */
+export interface DeviceSettings {
+  appearance: Appearance;
+  locale: string;
+  textScale: number;
+  animations: AnimationSpeed;
+  boldText: boolean;
+  highContrast: boolean;
+  layoutBounds: boolean;
+  performanceOverlay: boolean;
+}
+
+export interface DeviceState {
+  os: string;
+  appVersion: string;
+  buildMode: 'debug' | 'profile';
+  settings: DeviceSettings;
+  defaults: DeviceSettings;
+  flags: FeatureFlag[];
+  routes: string[];
+  recentLinks: string[];
+}
+
 export interface Connection {
   id: string;
   appName: string;
@@ -108,4 +142,5 @@ export interface Connection {
   platform: Platform;
   status: ConnectionStatus;
   session: Session;
+  device: DeviceState;
 }

@@ -1,3 +1,4 @@
+import { createDeviceState } from '../data/device';
 import { createInitialSession } from '../data/session';
 import type { Connection, KvStoreId, LogLevel, Platform } from '../model/types';
 import { emptyNetworkFilter, type NetworkFilter } from './networkFilter';
@@ -33,7 +34,10 @@ export type Modal =
   | { kind: 'confirmDelete'; storeId: KvStoreId; key: string }
   | { kind: 'addConnection' }
   | { kind: 'export' }
-  | { kind: 'filePreview'; path: string[] };
+  | { kind: 'filePreview'; path: string[] }
+  | { kind: 'commandMenu' };
+
+export type DeviceTab = 'quick' | 'deepLinks' | 'push' | 'flags';
 
 export interface DiscoveredApp {
   connectionId: string;
@@ -50,6 +54,8 @@ export interface DemoState {
   activeConnectionId?: string;
   tabs: Record<string, TabState>;
   modal?: Modal;
+  /** The Device Actions drawer, open on one of its tabs. */
+  drawer?: { tab: DeviceTab };
   toast?: { id: number; message: string };
   tour?: { step: number };
 }
@@ -89,6 +95,7 @@ export function connectionFor(app: DiscoveredApp, now: number): Connection {
     platform: app.platform,
     status: 'connected',
     session: createInitialSession(app.seed, now, app.connectionId),
+    device: createDeviceState(app.platform),
   };
 }
 
