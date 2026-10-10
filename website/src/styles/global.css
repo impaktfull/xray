@@ -325,6 +325,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .hero-demo {
   height: 720px;
+  padding: 0;
+  /* Hugs the demo window, which has the desktop app's 14px corners. */
+  border-radius: 14px;
+  overflow: hidden;
 }
 
 .hero-preview img {
