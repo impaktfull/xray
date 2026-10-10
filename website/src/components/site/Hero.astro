@@ -68,4 +68,13 @@ import Demo from '../../demo/Demo';
   <div class="hero-preview hero-demo" id="demo">
     <Demo client:visible />
   </div>
+
+  <script>
+    // #demo/<step> links: bring the demo into view, which also loads it; the demo then starts that tour step.
+    const revealDemo = () => {
+      if (location.hash.startsWith('#demo/')) document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+    revealDemo();
+    window.addEventListener('hashchange', revealDemo);
+  </script>
 </section>

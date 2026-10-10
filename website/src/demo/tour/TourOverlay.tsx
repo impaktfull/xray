@@ -1,0 +1,125 @@
+import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
+import { useDemo } from '../context';
+import { Icon } from '../ui/Icon';
+import { tourSteps } from './steps';
+import { endTour, nextTourStep, previousTourStep, startTour } from './tourActions';
+
+interface Rect {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+}
+
+const calloutWidth = 300;
+const gap = 12;
+
+/**
+ * Beside the highlighted area when there is room, otherwise inside its bottom edge, so the callout
+ * never covers the top of what it is describing.
+ */
+function calloutPosition(rect: Rect | undefined, callout: HTMLElement | null): { top: number; left: number } {
+  const bounds = callout?.closest('.xr-window')?.getBoundingClientRect();
+  const width = bounds?.width ?? 1100;
+  const height = bounds?.height ?? 720;
+  const calloutHeight = callout?.offsetHeight ?? 180;
+  if (!rect) return { top: height / 2 - calloutHeight / 2, left: width / 2 - calloutWidth / 2 };
+
+  const top = Math.min(Math.max(gap, rect.top), height - calloutHeight - gap);
+  if (width - (rect.left + rect.width) >= calloutWidth + gap * 2) return { top, left: rect.left + rect.width + gap };
+  if (rect.left >= calloutWidth + gap * 2) return { top, left: rect.left - calloutWidth - gap };
+  if (height - (rect.top + rect.height) >= calloutHeight + gap * 2) return { top: rect.top + rect.height + gap, left: Math.min(rect.left + gap, width - calloutWidth - gap) };
+  return {
+    top: Math.max(gap, Math.min(rect.top + rect.height, height) - calloutHeight - gap * 2),
+    left: Math.min(Math.max(gap, rect.left + rect.width - calloutWidth - gap * 2), width - calloutWidth - gap),
+  };
+}
+
+/** Spotlight on the step's area plus a callout; Esc ends, arrow keys move between steps. */
+export function TourOverlay() {
+  const { state, dispatch } = useDemo();
+  const step = state.tour ? tourSteps[state.tour.step] : undefined;
+  const [rect, setRect] = useState<Rect>();
+  const callout = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (!step) return;
+    const measure = () => {
+      const root = callout.current?.closest('.xr-window');
+      const target = root?.querySelector(step.target);
+      if (!root || !target) return setRect(undefined);
+      const r = root.getBoundingClientRect();
+      const t = target.getBoundingClientRect();
+      setRect({ top: t.top - r.top, left: t.left - r.left, width: t.width, height: t.height });
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [step, state]);
+
+  useEffect(() => {
+    if (!step) return;
+    callout.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      const action = { Escape: endTour, ArrowRight: nextTourStep, ArrowLeft: previousTourStep }[event.key];
+      if (!action) return;
+      // Captured before modals and the call detail see the key, so Esc ends the tour first.
+      event.stopImmediatePropagation();
+      event.preventDefault();
+      dispatch(action);
+    };
+    window.addEventListener('keydown', onKey, true);
+    return () => window.removeEventListener('keydown', onKey, true);
+  }, [step, dispatch]);
+
+  if (!step || !state.tour) return null;
+  const index = state.tour.step;
+  const position = calloutPosition(rect, callout.current);
+
+  return (
+    <div class="xr-tour" role="presentation">
+      {rect && <div class="xr-tour__spotlight" style={{ top: rect.top - 4, left: rect.left - 4, width: rect.width + 8, height: rect.height + 8 }} />}
+      <div
+        ref={callout}
+        class="xr-tour__callout"
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby="xr-tour-title"
+        aria-describedby="xr-tour-body"
+        tabIndex={-1}
+        style={{ ...position, width: calloutWidth }}
+      >
+        <p class="xr-tour__count">
+          {index + 1} of {tourSteps.length}
+        </p>
+        <h3 id="xr-tour-title">{step.title}</h3>
+        <p id="xr-tour-body">{step.body}</p>
+        <div class="xr-tour__actions">
+          <button type="button" class="xr-button is-ghost is-small" onClick={() => dispatch(endTour)}>
+            Skip
+          </button>
+          <span class="xr-spacer" />
+          {index > 0 && (
+            <button type="button" class="xr-button is-outline is-small" onClick={() => dispatch(previousTourStep)}>
+              Back
+            </button>
+          )}
+          <button type="button" class="xr-button is-primary is-small" onClick={() => dispatch(nextTourStep)}>
+            {index === tourSteps.length - 1 ? 'Done' : 'Next'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function TourPill() {
+  const { state, dispatch } = useDemo();
+  if (state.tour) return null;
+  return (
+    <button type="button" class="xr-tour-pill" onClick={() => dispatch(startTour)}>
+      <Icon name="sparkle" />
+      Take the tour
+    </button>
+  );
+}

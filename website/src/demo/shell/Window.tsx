@@ -5,6 +5,7 @@ import { Toast } from '../ui/Toast';
 import { InspectorTabs } from './InspectorTabs';
 import { InspectorView } from './InspectorView';
 import { ModalHost } from './ModalHost';
+import { TourOverlay, TourPill } from '../tour/TourOverlay';
 import { TopBar } from './TopBar';
 
 export function Window() {
@@ -34,6 +35,8 @@ export function Window() {
         </main>
       )}
       <ModalHost />
+      <TourPill />
+      <TourOverlay />
       <Toast />
     </div>
   );

@@ -77,3 +77,27 @@ describe('Demo', () => {
     expect(screen.getByRole('button', { name: 'Device actions (not available in the demo)' })).toBeTruthy();
   });
 });
+
+describe('Demo tour', () => {
+  it('walks through the steps and ends with Esc', () => {
+    render(<Demo />);
+    fireEvent.click(screen.getByRole('button', { name: 'Take the tour' }));
+    expect(screen.getByRole('dialog', { name: 'Every network call, as it happens' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    expect(screen.getByRole('dialog', { name: 'Headers, bodies and errors' })).toBeTruthy();
+    expect(screen.getByRole('region', { name: 'Call detail' }).textContent).toContain('500');
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Take the tour' })).toBeTruthy();
+  });
+
+  it('starts at the step a #demo/<step> link points at', () => {
+    render(<Demo />);
+    act(() => {
+      location.hash = '#demo/timeline';
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
+    });
+    expect(screen.getByRole('dialog', { name: 'One timeline for everything' })).toBeTruthy();
+    location.hash = '';
+  });
+});

@@ -3,6 +3,8 @@ import { DemoContext } from './context';
 import { Window } from './shell/Window';
 import { startLive } from './state/live';
 import { createDemoStore } from './state/store';
+import { tourSteps } from './tour/steps';
+import { startTour } from './tour/tourActions';
 import './styles/tokens.css';
 import './styles/demo.css';
 import './styles/inspectors.css';
@@ -17,9 +19,19 @@ export default function Demo() {
     const observer = new IntersectionObserver(([entry]) => (onScreen = entry.isIntersecting), { threshold: 0.2 });
     if (root.current) observer.observe(root.current);
     const stop = startLive(store, { canStream: () => onScreen && document.visibilityState === 'visible' });
+
+    // "Try it in the demo" links elsewhere on the page point at #demo/<step>.
+    const fromHash = () => {
+      const stepId = location.hash.match(/^#demo\/([\w-]+)$/)?.[1];
+      if (stepId && tourSteps.some((s) => s.id === stepId)) store.dispatch(startTour, stepId);
+    };
+    fromHash();
+    window.addEventListener('hashchange', fromHash);
+
     return () => {
       stop();
       observer.disconnect();
+      window.removeEventListener('hashchange', fromHash);
     };
   }, [store]);
 
