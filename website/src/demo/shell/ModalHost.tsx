@@ -1,3 +1,4 @@
+import { CommandMenu } from '../command/CommandMenu';
 import { AddConnectionModal } from '../connection/AddConnectionModal';
 import { useDemo } from '../context';
 import { ExportModal } from '../export/ExportModal';
@@ -28,6 +29,8 @@ export function ModalHost() {
       return <ExportModal />;
     case 'filePreview':
       return <FilePreviewModal path={modal.path} />;
+    case 'commandMenu':
+      return <CommandMenu />;
     default:
       return null;
   }

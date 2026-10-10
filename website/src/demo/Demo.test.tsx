@@ -71,10 +71,39 @@ describe('Demo', () => {
     vi.useRealTimers();
   });
 
-  it('says which controls are not part of the demo', () => {
+  it('says Settings is not part of the demo', () => {
     render(<Demo />);
-    expect(screen.getByRole('button', { name: 'Search or run a command (not available in the demo)' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Device actions (not available in the demo)' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Settings (not available in the demo)' })).toBeTruthy();
+  });
+
+  it('opens the command menu with ⌘K, searches and opens a result', () => {
+    render(<Demo />);
+    fireEvent.keyDown(screen.getByRole('region', { name: /Interactive demo/ }), { key: 'k', metaKey: true });
+    const input = screen.getByRole('combobox', { name: 'Search or run a command' });
+    fireEvent.input(input, { target: { value: 'ArchiveProject' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(screen.queryByRole('dialog', { name: 'Command menu' })).toBeNull();
+    expect(screen.getByRole('region', { name: 'Call detail' }).textContent).toContain('1 error');
+  });
+
+  it('runs a command from the menu with the keyboard', () => {
+    render(<Demo />);
+    fireEvent.click(screen.getByRole('button', { name: 'Search or run a command' }));
+    const input = screen.getByRole('combobox', { name: 'Search or run a command' });
+    fireEvent.input(input, { target: { value: '> logs' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(tab('Logs').getAttribute('aria-selected')).toBe('true');
+  });
+
+  it('changes the device from Device Actions and shows what the app logged', () => {
+    render(<Demo />);
+    fireEvent.click(screen.getByRole('button', { name: 'Device actions' }));
+    const drawer = screen.getByRole('dialog', { name: 'Device actions' });
+    fireEvent.click(within(drawer).getByRole('radio', { name: 'Dark' }));
+    expect(within(drawer).getByText('1 active override on the device')).toBeTruthy();
+    fireEvent.click(within(drawer).getByRole('button', { name: 'Close device actions' }));
+    fireEvent.click(tab('Logs'));
+    expect(screen.getAllByRole('row')[0].textContent).toContain('Theme changed to dark');
   });
 });
 
