@@ -60,7 +60,7 @@ export function FilesScreen() {
         <ToolbarButton icon="arrow-clockwise" label="Refresh" onClick={() => dispatch(showToast, 'Files refreshed')} />
       </div>
       {items.length ? (
-        <div class="xr-table" role="table" aria-label="Files">
+        <div class="xr-table" role="table" aria-label="Files" data-tour="files-list">
           <div class="xr-table__head xr-files-cols" role="row">
             <span />
             <span role="columnheader">Name</span>

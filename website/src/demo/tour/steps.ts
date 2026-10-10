@@ -4,6 +4,7 @@ import { discoverableApps, initialTabState, type DemoState } from '../state/demo
 import { selectCall, closeCall } from '../state/networkActions';
 import { toggleLog } from '../state/logActions';
 import { openDrawer } from '../state/deviceActions';
+import { openFolder } from '../state/fileActions';
 import { selectStore } from '../state/keyValueActions';
 import { addConnection, closeModal, openModal, selectConnection, selectInspector } from '../state/shellActions';
 import { selectTimelineEvent } from '../state/timelineActions';
@@ -100,6 +101,20 @@ export const tourSteps: TourStep[] = [
       const call = findCall(next, (c) => c.status === 500);
       return call ? selectTimelineEvent(next, call.id) : next;
     },
+  },
+  {
+    id: 'files',
+    target: '[data-tour="files-list"]',
+    title: "Look inside the app's files",
+    body: "Browse the app's documents and caches on the device, and preview JSON, text and images without copying anything off it.",
+    prepare: (state) => openFolder(selectInspector(reset(state), 'files'), 'Documents'),
+  },
+  {
+    id: 'export-session',
+    target: '[role="dialog"][aria-label="Export Session"]',
+    title: 'Share a session',
+    body: 'Export what you captured as a .xray file or HAR for a teammate or a bug report, with tokens and secrets redacted.',
+    prepare: (state) => openModal(selectInspector(reset(state), 'network'), { kind: 'export' }),
   },
   {
     id: 'command-menu',

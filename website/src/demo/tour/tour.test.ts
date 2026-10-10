@@ -38,6 +38,13 @@ describe.each(startingPoints)('tour steps from %s', (_, start) => {
       case 'edit-value':
         expect(state.modal).toEqual({ kind: 'editValue', storeId: 'shared_preferences', key: 'dashboard_layout' });
         break;
+      case 'files':
+        expect(tab.inspector).toBe('files');
+        expect(tab.files.path).toEqual(['Documents']);
+        break;
+      case 'export-session':
+        expect(state.modal).toEqual({ kind: 'export' });
+        break;
       case 'command-menu':
         expect(state.modal).toEqual({ kind: 'commandMenu' });
         break;

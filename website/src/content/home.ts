@@ -49,11 +49,13 @@ export const features: Feature[] = [
     icon: 'folder',
     title: 'Files',
     body: "Browse the app's documents and caches and preview what's inside.",
+    demoStep: 'files',
   },
   {
     icon: 'export',
     title: 'Share a session',
     body: 'Export a session as a .xray file or HAR, with tokens and secrets redacted.',
+    demoStep: 'export-session',
   },
   {
     icon: 'command',
