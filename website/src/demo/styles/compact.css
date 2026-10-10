@@ -110,7 +110,7 @@
   flex: 1;
   min-height: 0;
   padding: 14px;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .xr-summary-card {
@@ -361,13 +361,19 @@
   bottom: 0;
   z-index: 5;
   width: auto;
-  max-height: 62%;
+  max-height: 75%;
   gap: 12px;
   padding: 18px;
   border-left: 0;
   border-top: 1px solid var(--xr-border);
   border-radius: 18px 18px 0 0;
   box-shadow: 0 -16px 40px var(--xr-shadow);
+}
+
+/* The sheet doesn't scroll, so the stack trace is cut to its first lines; "Open in Logs" shows it all. */
+.xr-demo.is-compact .xr-event-detail .xr-log__stack {
+  max-height: 72px;
+  overflow: hidden;
 }
 
 /* ---------- Tour ---------- */

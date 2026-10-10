@@ -402,9 +402,7 @@
 
 .xr-logs {
   flex: 1;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--xr-border) transparent;
+  overflow: hidden;
 }
 
 .xr-log {
@@ -737,9 +735,7 @@
 .xr-stream {
   flex: 1;
   min-width: 0;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--xr-border) transparent;
+  overflow: hidden;
 }
 
 .xr-stream__row {
@@ -803,7 +799,7 @@
   width: 400px;
   flex-shrink: 0;
   padding: 20px;
-  overflow-y: auto;
+  overflow: hidden;
   background: var(--xr-card);
   border-left: 1px solid var(--xr-border);
 }
