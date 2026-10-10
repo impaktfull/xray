@@ -1,0 +1,39 @@
+---
+title: Install on Windows
+description: Install the xRay Windows app with the per-user installer from GitHub Releases.
+---
+
+The xRay Windows app is the desktop UI client for inspecting Flutter apps that run the `xray_inspector` server. It is distributed as an installer on GitHub Releases.
+
+## Requirements
+
+- Windows 10 or later, 64-bit
+- A running Flutter app with `xray_inspector` configured (see [Quick Start](/getting-started))
+
+## Install
+
+1. Open the [xRay GitHub Releases page](https://github.com/impaktfull/xray/releases).
+2. Download the latest `xRay-<version>-setup.exe` asset.
+3. Run the installer. It installs xRay for your user only, so it doesn't need administrator rights.
+4. Launch xRay from the Start menu.
+
+The installer is not code-signed yet, so Windows SmartScreen may warn you the first time you run it. Choose **More info**, then **Run anyway**.
+
+## Allow network access
+
+xRay finds your app by sending a broadcast on your local network. The first time it scans, Windows Firewall asks whether xRay may use the network: allow it on **private networks**, or xRay can't find apps automatically. You can still connect manually with the app's IP address and port.
+
+## Verify the installation
+
+Launch xRay and confirm the app starts. When your Flutter app with `xray_inspector` is running on the same network, it appears in the device list automatically via UDP discovery.
+
+## Uninstall
+
+Open **Settings → Apps → Installed apps**, find **xRay** and choose **Uninstall**.
+
+## Next steps
+
+- [Quick Start](/getting-started) — set up `xray_inspector` in your Flutter app
+- [Network Inspection](/guides/network-inspection)
+- [Log Inspection](/guides/log-inspection)
+- [Key-Value Inspection](/guides/key-value-inspection)

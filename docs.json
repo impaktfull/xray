@@ -26,7 +26,7 @@
       "href": "https://xrayinspector.dev"
     },
     {
-      "title": "mac App",
+      "title": "Desktop App",
       "icon": "desktop",
       "href": "xray/app/install-macos"
     }
@@ -37,6 +37,14 @@
       "pages": [
         { "title": "📖 Overview", "href": "/" },
         { "title": "🚀 Quick Start", "href": "/getting-started" }
+      ]
+    },
+    {
+      "group": "Desktop App",
+      "pages": [
+        { "title": "🍎 Install on macOS", "href": "/app/install-macos" },
+        { "title": "🪟 Install on Windows", "href": "/app/install-windows" },
+        { "title": "🐧 Install on Linux", "href": "/app/install-linux" }
       ]
     },
     {

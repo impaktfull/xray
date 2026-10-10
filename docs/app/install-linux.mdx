@@ -1,0 +1,45 @@
+---
+title: Install on Linux
+description: Run the xRay Linux app as an AppImage from GitHub Releases.
+---
+
+The xRay Linux app is the desktop UI client for inspecting Flutter apps that run the `xray_inspector` server. It is distributed as an AppImage on GitHub Releases: one file that runs on most distributions, without installing anything as root.
+
+## Requirements
+
+- A 64-bit (x86_64) Linux distribution with GTK 3
+- libsecret with a running keyring (GNOME Keyring or KWallet), to keep you signed in
+- WebKitGTK 4.1
+- A running Flutter app with `xray_inspector` configured (see [Quick Start](/getting-started))
+
+On Ubuntu and Debian you can install the libraries with:
+
+```bash
+sudo apt install libgtk-3-0 libsecret-1-0 libwebkit2gtk-4.1-0
+```
+
+## Install
+
+1. Open the [xRay GitHub Releases page](https://github.com/impaktfull/xray/releases).
+2. Download the latest `xRay-<version>-x86_64.AppImage` asset.
+3. Make it executable and start it:
+
+```bash
+chmod +x xRay-*-x86_64.AppImage
+./xRay-*-x86_64.AppImage
+```
+
+xRay registers itself as the handler for sign-in links every time it starts, so signing in through your browser works without extra setup.
+
+To get a menu entry and icon, integrate the AppImage with a tool like [AppImageLauncher](https://github.com/TheAssassin/AppImageLauncher) or [Gear Lever](https://flathub.org/apps/it.mijorus.gearlever).
+
+## Verify the installation
+
+Launch xRay and confirm the app starts. When your Flutter app with `xray_inspector` is running on the same network, it appears in the device list automatically via UDP discovery. If your firewall blocks UDP broadcasts, allow them on your local network or connect manually with the app's IP address and port.
+
+## Next steps
+
+- [Quick Start](/getting-started) — set up `xray_inspector` in your Flutter app
+- [Network Inspection](/guides/network-inspection)
+- [Log Inspection](/guides/log-inspection)
+- [Key-Value Inspection](/guides/key-value-inspection)
