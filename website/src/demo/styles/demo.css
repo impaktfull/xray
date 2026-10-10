@@ -131,31 +131,13 @@
   border-bottom: 1px solid var(--xr-border);
 }
 
-.xr-traffic-lights {
-  display: flex;
-  gap: 8px;
-  width: 78px;
-  padding-left: 13px;
-  flex-shrink: 0;
-}
-
-.xr-traffic-lights span {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 0.5px rgb(0 0 0 / 0.15);
-}
-
-.xr-traffic-lights .is-close { background: #ff5f57; }
-.xr-traffic-lights .is-minimize { background: #febc2e; }
-.xr-traffic-lights .is-zoom { background: #28c840; }
 
 .xr-brand {
   display: flex;
   align-items: center;
   gap: 10px;
   height: 100%;
-  padding: 0 16px 0 4px;
+  padding: 0 16px;
   border-right: 1px solid var(--xr-border);
   font-size: var(--xr-title);
   font-weight: 700;

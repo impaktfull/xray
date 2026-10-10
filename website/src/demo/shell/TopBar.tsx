@@ -28,11 +28,6 @@ export function TopBar() {
   }
   return (
     <header class="xr-topbar">
-      <div class="xr-traffic-lights" aria-hidden="true">
-        <span class="is-close" />
-        <span class="is-minimize" />
-        <span class="is-zoom" />
-      </div>
       <div class="xr-brand">
         <Logo size={20} />
         <span>xRay</span>
