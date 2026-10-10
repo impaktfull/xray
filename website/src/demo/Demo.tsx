@@ -5,6 +5,7 @@ import { startLive } from './state/live';
 import { createDemoStore } from './state/store';
 import './styles/tokens.css';
 import './styles/demo.css';
+import './styles/inspectors.css';
 
 /** The interactive xRay desktop app, rebuilt for the website with made-up data. */
 export default function Demo() {

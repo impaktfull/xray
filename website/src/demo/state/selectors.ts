@@ -1,3 +1,4 @@
+import { pathLabel } from '../model/format';
 import type { FileNode, KvChange, LogEntry, LogLevel, NetworkCall } from '../model/types';
 import { activeConnection, activeTab } from './access';
 import type { DemoState, Lane } from './demoState';
@@ -62,7 +63,9 @@ export function allTimelineEvents(state: DemoState): TimelineEvent[] {
 export function timelineSummary(event: TimelineEvent): string {
   switch (event.lane) {
     case 'network':
-      return `${event.call.method} ${event.call.graphql?.operationName ?? event.call.url}`;
+      return event.call.graphql
+        ? `${event.call.method} ${pathLabel(event.call.url)}  ${event.call.graphql.type} ${event.call.graphql.operationName}`
+        : `${event.call.method} ${pathLabel(event.call.url)}`;
     case 'logs':
       return event.log.message;
     case 'keyValue':

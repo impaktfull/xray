@@ -1,14 +1,23 @@
 import { useDemo } from '../context';
+import { FilesScreen } from '../files/FilesScreen';
+import { KeyValueScreen } from '../keyvalue/KeyValueScreen';
+import { LogsScreen } from '../logs/LogsScreen';
 import { NetworkScreen } from '../network/NetworkScreen';
 import { activeTab } from '../state/access';
-import { EmptyState } from '../ui/EmptyState';
+import { TimelineScreen } from '../timeline/TimelineScreen';
 
 export function InspectorView() {
   const { state } = useDemo();
   switch (activeTab(state)?.inspector) {
-    case 'network':
-      return <NetworkScreen />;
+    case 'timeline':
+      return <TimelineScreen />;
+    case 'logs':
+      return <LogsScreen />;
+    case 'keyValue':
+      return <KeyValueScreen />;
+    case 'files':
+      return <FilesScreen />;
     default:
-      return <EmptyState icon="sparkle" title="Coming up" />;
+      return <NetworkScreen />;
   }
 }

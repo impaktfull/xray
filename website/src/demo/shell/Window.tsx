@@ -4,6 +4,7 @@ import { EmptyState } from '../ui/EmptyState';
 import { Toast } from '../ui/Toast';
 import { InspectorTabs } from './InspectorTabs';
 import { InspectorView } from './InspectorView';
+import { ModalHost } from './ModalHost';
 import { TopBar } from './TopBar';
 
 export function Window() {
@@ -32,6 +33,7 @@ export function Window() {
           />
         </main>
       )}
+      <ModalHost />
       <Toast />
     </div>
   );

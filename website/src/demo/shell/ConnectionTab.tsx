@@ -17,9 +17,9 @@ export function ConnectionTab({ connection, selected, onSelect, onClose }: Conne
         aria-selected={selected}
         class="xr-conn-tab__main"
         onClick={onSelect}
-        title={`${connection.appName} on ${connection.deviceName}`}
+        aria-label={`${connection.appName} on ${connection.deviceName}, ${connection.status}`}
       >
-        <span class={`xr-status-dot is-${connection.status}`} aria-label={connection.status} />
+        <span class={`xr-status-dot is-${connection.status}`} />
         <span class="xr-conn-tab__app">{connection.appName}</span>
         <span class="xr-conn-tab__device">{connection.deviceName}</span>
       </button>
