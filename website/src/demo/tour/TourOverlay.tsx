@@ -15,24 +15,35 @@ interface Rect {
 const calloutWidth = 300;
 const gap = 12;
 
+const minCalloutWidth = 260;
+
 /**
- * Beside the highlighted area when there is room, otherwise inside its bottom edge, so the callout
- * never covers the top of what it is describing.
+ * Beside the highlighted area when there is room (narrowing down to 260px, so centred dialogs keep a
+ * callout next to them), otherwise below it, otherwise inside its bottom edge, so the callout never
+ * covers the top of what it is describing.
  */
-function calloutPosition(rect: Rect | undefined, callout: HTMLElement | null): { top: number; left: number } {
+function calloutPosition(rect: Rect | undefined, callout: HTMLElement | null): { top: number; left: number; width: number } {
   const bounds = callout?.closest('.xr-window')?.getBoundingClientRect();
   const width = bounds?.width ?? 1100;
   const height = bounds?.height ?? 720;
   const calloutHeight = callout?.offsetHeight ?? 180;
-  if (!rect) return { top: height / 2 - calloutHeight / 2, left: width / 2 - calloutWidth / 2 };
+  if (!rect) return { top: height / 2 - calloutHeight / 2, left: width / 2 - calloutWidth / 2, width: calloutWidth };
 
   const top = Math.min(Math.max(gap, rect.top), height - calloutHeight - gap);
-  if (width - (rect.left + rect.width) >= calloutWidth + gap * 2) return { top, left: rect.left + rect.width + gap };
-  if (rect.left >= calloutWidth + gap * 2) return { top, left: rect.left - calloutWidth - gap };
-  if (height - (rect.top + rect.height) >= calloutHeight + gap * 2) return { top: rect.top + rect.height + gap, left: Math.min(rect.left + gap, width - calloutWidth - gap) };
+  const roomRight = width - (rect.left + rect.width) - gap * 2;
+  const roomLeft = rect.left - gap * 2;
+  if (Math.max(roomRight, roomLeft) >= minCalloutWidth) {
+    const onRight = roomRight >= roomLeft;
+    const fitted = Math.min(calloutWidth, onRight ? roomRight : roomLeft);
+    return { top, left: onRight ? rect.left + rect.width + gap : rect.left - fitted - gap, width: fitted };
+  }
+  if (height - (rect.top + rect.height) >= calloutHeight + gap * 2) {
+    return { top: rect.top + rect.height + gap, left: Math.min(rect.left + gap, width - calloutWidth - gap), width: calloutWidth };
+  }
   return {
     top: Math.max(gap, Math.min(rect.top + rect.height, height) - calloutHeight - gap * 2),
     left: Math.min(Math.max(gap, rect.left + rect.width - calloutWidth - gap * 2), width - calloutWidth - gap),
+    width: calloutWidth,
   };
 }
 
@@ -93,7 +104,7 @@ export function TourOverlay() {
         aria-labelledby="xr-tour-title"
         aria-describedby="xr-tour-body"
         tabIndex={-1}
-        style={position && { ...position, width: calloutWidth }}
+        style={position}
       >
         <p class="xr-tour__count">
           {index + 1} of {tourSteps.length}
