@@ -995,7 +995,7 @@ footer {
   margin-top: 16px;
   font-family: var(--font-body);
   font-size: 14px;
-  color: var(--fg-muted);
+  color: var(--fg-secondary);
   text-align: center;
 }
 
