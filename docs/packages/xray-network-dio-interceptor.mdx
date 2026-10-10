@@ -36,13 +36,54 @@ For setup, see [Network Inspection](/guides/network-inspection).
 
 ## Combining with other Dio interceptors
 
-Add `XRayNetworkDioInterceptor` alongside other interceptors. Order matters — place it where you want the captured request/response to reflect the transformation state:
+Add `XRayNetworkDioInterceptor` alongside your other interceptors. Its place in the list decides which version of the request xRay records: interceptors before it have already changed the request (for example added auth headers), interceptors after it haven't yet.
 
 ```dart
 final dio = Dio()
   ..interceptors.addAll([
-    AuthInterceptor(),                                        // runs first
-    XRayNetworkDioInterceptor(inspector: inspector),   // captures after auth headers added
+    AuthInterceptor(),                               // runs first
+    XRayNetworkDioInterceptor(inspector: inspector), // sees the auth headers
     LogInterceptor(),
   ]);
 ```
+
+## Interceptors that stop requests
+
+When another interceptor ends a request in `onRequest` with `handler.reject(...)` or `handler.resolve(...)` — for example an auth interceptor that rejects requests without a token, or a cache that answers from memory — Dio skips the response and error steps of **every** interceptor. xRay then shows that request as loading forever, or not at all. This happens wherever you place `XRayNetworkDioInterceptor` in the list, so changing the order does not fix it.
+
+### `attach`
+
+<Info>Available from the next release of `xray_network_dio_interceptor`.</Info>
+
+`XRayNetworkDioInterceptor.attach` records every request, including the ones another interceptor stops:
+
+```dart
+final dio = Dio()
+  ..interceptors.addAll([
+    AuthInterceptor(),  // may call handler.reject(...)
+    CacheInterceptor(), // may call handler.resolve(...)
+  ]);
+XRayNetworkDioInterceptor.attach(dio, inspector: inspector);
+```
+
+The order does not matter: call `attach` before or after adding your own interceptors. xRay puts itself in front of `dio.interceptors` and runs your interceptors itself, once per request and in the same order, so it sees how every request ended:
+
+- A request another interceptor rejects shows as failed, with the error it was rejected with and the note "Rejected by interceptor".
+- A request another interceptor answers itself, for example from a cache, shows as successful, with that response and the note "Resolved by interceptor".
+- A cancelled request shows as failed with the note "Cancelled".
+- Every other request is recorded as it went over the network, with the headers and body your interceptors actually sent.
+
+An interceptor that retries with `dio.fetch(...)` sends a new request, which shows up as a call of its own.
+
+Keep in mind:
+
+- Interceptors you insert in front of xRay after attaching (`dio.interceptors.insert(0, ...)`) run before xRay sees the request.
+- `dio.clone()` copies xRay's interceptor, and the clone's requests would then run through the original Dio's interceptors and adapter. Clone before attaching, and attach xRay to each clone separately.
+
+Adding `XRayNetworkDioInterceptor` yourself, as shown above, keeps working for apps without interceptors that stop requests.
+
+## Using it together with `enableHttpOverride`
+
+<Info>Available since 0.0.11.</Info>
+
+Dio's default adapter sends requests through `HttpClient`. When an `XRayNetworkInspector` also has `enableHttpOverride: true`, the Dio interceptor tells the override to skip the requests it already records, so every Dio call shows up once. Requests are matched on method and URL; no header or other marker is added to the request.
