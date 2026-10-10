@@ -17,7 +17,7 @@ export function TimelineToolbar() {
   const rangeIndex = ranges.indexOf(timeline.rangeMs);
 
   return (
-    <div class="xr-toolbar" role="toolbar">
+    <div class="xr-toolbar xr-timeline-toolbar" role="toolbar">
       <div class="xr-chips is-inline" aria-label="Lanes">
         {lanes.map((lane) => (
           <Chip key={lane.id} selected={timeline.lanes.includes(lane.id)} count={counts[lane.id]} onClick={() => dispatch(toggleLane, lane.id)}>

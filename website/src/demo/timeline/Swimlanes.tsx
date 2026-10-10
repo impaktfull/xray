@@ -1,3 +1,4 @@
+import { useCompact } from '../compact';
 import { useDemo } from '../context';
 import { activeTab } from '../state/access';
 import { selectedTimelineEvent, timelineEvents, type TimelineEvent } from '../state/selectors';
@@ -10,6 +11,7 @@ const aroundMs = 2_000;
 /** The overview: one track per lane over the selected range, ending now (or around the selection). */
 export function Swimlanes() {
   const { state, dispatch } = useDemo();
+  const compact = useCompact();
   const timeline = activeTab(state)!.timeline;
   const selected = selectedTimelineEvent(state);
   const range = timeline.rangeMs;
@@ -17,7 +19,8 @@ export function Swimlanes() {
   const start = end - range;
   const x = (at: number) => ((at - start) / range) * 100;
   const events = timelineEvents(state).filter((e) => e.at >= start - 5_000 && e.at <= end);
-  const ticks = Array.from({ length: 6 }, (_, i) => start + (range / 5) * i);
+  const tickCount = compact ? 4 : 6;
+  const ticks = Array.from({ length: tickCount }, (_, i) => start + (range / (tickCount - 1)) * i);
 
   const mark = (event: TimelineEvent) => {
     const tone = eventTone(event);

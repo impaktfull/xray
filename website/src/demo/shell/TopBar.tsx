@@ -3,10 +3,29 @@ import { closeConnection, openModal, selectConnection } from '../state/shellActi
 import { Icon } from '../ui/Icon';
 import { Logo } from '../ui/Logo';
 import { NotInDemo } from '../ui/NotInDemo';
+import { useCompact } from '../compact';
+import { ConnectionSwitcher } from './ConnectionSwitcher';
 import { ConnectionTab } from './ConnectionTab';
 
 export function TopBar() {
   const { state, dispatch } = useDemo();
+  const compact = useCompact();
+  if (compact) {
+    return (
+      <header class="xr-topbar is-compact">
+        <span class="xr-brand">
+          <Logo size={18} />
+        </span>
+        {state.connections.length > 0 && <ConnectionSwitcher />}
+        <button type="button" class="xr-icon-button" aria-label="Add connection" data-tour="add-connection" onClick={() => dispatch(openModal, { kind: 'addConnection' })}>
+          <Icon name="plus" size={16} />
+        </button>
+        <button type="button" class="xr-icon-button" aria-label="Export session" disabled={!state.activeConnectionId} onClick={() => dispatch(openModal, { kind: 'export' })}>
+          <Icon name="export" size={16} />
+        </button>
+      </header>
+    );
+  }
   return (
     <header class="xr-topbar">
       <div class="xr-traffic-lights" aria-hidden="true">

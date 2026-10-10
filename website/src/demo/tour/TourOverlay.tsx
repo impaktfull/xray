@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
+import { useCompact } from '../compact';
 import { useDemo } from '../context';
 import { Icon } from '../ui/Icon';
 import { tourSteps } from './steps';
@@ -38,6 +39,7 @@ function calloutPosition(rect: Rect | undefined, callout: HTMLElement | null): {
 /** Spotlight on the step's area plus a callout; Esc ends, arrow keys move between steps. */
 export function TourOverlay() {
   const { state, dispatch } = useDemo();
+  const compact = useCompact();
   const step = state.tour ? tourSteps[state.tour.step] : undefined;
   const [rect, setRect] = useState<Rect>();
   const callout = useRef<HTMLDivElement>(null);
@@ -74,20 +76,24 @@ export function TourOverlay() {
 
   if (!step || !state.tour) return null;
   const index = state.tour.step;
-  const position = calloutPosition(rect, callout.current);
+  // On phones the callout is a sheet (Pencil: "Phone / Tour"): at the bottom, or at the top when
+  // the highlighted area is a bottom sheet itself.
+  const position = compact ? undefined : calloutPosition(rect, callout.current);
+  const windowHeight = callout.current?.closest('.xr-window')?.getBoundingClientRect().height ?? 720;
+  const sheetAtTop = compact && rect !== undefined && rect.top > windowHeight * 0.35;
 
   return (
     <div class="xr-tour" role="presentation">
       {rect && <div class="xr-tour__spotlight" style={{ top: rect.top - 4, left: rect.left - 4, width: rect.width + 8, height: rect.height + 8 }} />}
       <div
         ref={callout}
-        class="xr-tour__callout"
+        class={`xr-tour__callout ${compact ? 'is-sheet' : ''} ${sheetAtTop ? 'is-top' : ''}`}
         role="dialog"
         aria-modal="false"
         aria-labelledby="xr-tour-title"
         aria-describedby="xr-tour-body"
         tabIndex={-1}
-        style={{ ...position, width: calloutWidth }}
+        style={position && { ...position, width: calloutWidth }}
       >
         <p class="xr-tour__count">
           {index + 1} of {tourSteps.length}
@@ -115,7 +121,10 @@ export function TourOverlay() {
 
 export function TourPill() {
   const { state, dispatch } = useDemo();
-  if (state.tour) return null;
+  const compact = useCompact();
+  // On phones a sheet (modal or timeline event) takes the bottom of the window; the pill would cover it.
+  const sheetOpen = compact && (state.modal || (state.activeConnectionId && state.tabs[state.activeConnectionId]?.timeline.selectedId));
+  if (state.tour || sheetOpen) return null;
   return (
     <button type="button" class="xr-tour-pill" onClick={() => dispatch(startTour)}>
       <Icon name="sparkle" />

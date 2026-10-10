@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'preact/hooks';
 import { useDemo } from '../context';
 import { activeTab } from '../state/access';
 import type { InspectorTab } from '../state/demoState';
@@ -15,6 +16,15 @@ const tabs: { id: InspectorTab; label: string; icon: IconName }[] = [
 export function InspectorTabs() {
   const { state, dispatch } = useDemo();
   const current = activeTab(state)?.inspector;
+  const bar = useRef<HTMLElement>(null);
+
+  // On narrow screens the tabs scroll; keep the selected one in view (e.g. when the tour switches tab).
+  useEffect(() => {
+    const tab = bar.current?.querySelector<HTMLElement>(`[data-inspector="${current}"]`);
+    if (tab && bar.current && bar.current.scrollWidth > bar.current.clientWidth) {
+      bar.current.scrollTo({ left: tab.offsetLeft - 24, behavior: 'smooth' });
+    }
+  }, [current]);
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
@@ -25,7 +35,7 @@ export function InspectorTabs() {
   };
 
   return (
-    <nav class="xr-inspector-tabs" role="tablist" aria-label="Inspectors" onKeyDown={onKeyDown}>
+    <nav ref={bar} class="xr-inspector-tabs" role="tablist" aria-label="Inspectors" onKeyDown={onKeyDown}>
       {tabs.map((tab) => (
         <button
           key={tab.id}
