@@ -1,9 +1,12 @@
+---
+---
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <title>Redirecting...</title>
     <meta name="robots" content="noindex" />
-    <script>
+    <script is:inline>
       // Redirect mapping for each supported platform
       const platformRedirects = {
         'macos': 'https://docs.page/impaktfull/xray/app/install-macos',
@@ -26,7 +29,7 @@
     <p>If you are not redirected, 
       <a id="manual-redirect" href="#">click here</a>.
     </p>
-    <script>
+    <script is:inline>
       // Set manual redirect link
       document.getElementById('manual-redirect').setAttribute('href', getPlatformUrl());
     </script>
