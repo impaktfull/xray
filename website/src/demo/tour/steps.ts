@@ -3,6 +3,7 @@ import { createInitialSession } from '../data/session';
 import { discoverableApps, initialTabState, type DemoState } from '../state/demoState';
 import { selectCall, closeCall } from '../state/networkActions';
 import { toggleLog } from '../state/logActions';
+import { openDrawer } from '../state/deviceActions';
 import { selectStore } from '../state/keyValueActions';
 import { addConnection, closeModal, openModal, selectConnection, selectInspector } from '../state/shellActions';
 import { selectTimelineEvent } from '../state/timelineActions';
@@ -25,7 +26,7 @@ const tourConnectionId = 'pixel';
  * sample data restored if they cleared it, no modal and no filters.
  */
 function reset(state: DemoState): DemoState {
-  let next = closeModal(state);
+  let next: DemoState = { ...closeModal(state), drawer: undefined };
   if (!next.connections.some((c) => c.id === tourConnectionId)) next = addConnection(next, tourConnectionId);
   next = selectConnection(next, tourConnectionId);
   const session = activeConnection(next)?.session;
@@ -99,6 +100,20 @@ export const tourSteps: TourStep[] = [
       const call = findCall(next, (c) => c.status === 500);
       return call ? selectTimelineEvent(next, call.id) : next;
     },
+  },
+  {
+    id: 'command-menu',
+    target: '[data-tour="command-menu"]',
+    title: 'Everything is one ⌘K away',
+    body: 'Search every call, log and stored key, jump between inspectors and run any action from the keyboard.',
+    prepare: (state) => openModal(selectInspector(reset(state), 'network'), { kind: 'commandMenu' }),
+  },
+  {
+    id: 'device-actions',
+    target: '[data-tour="device-actions"]',
+    title: 'Change the device from your desk',
+    body: 'Switch dark mode, locale and text size, open deep links, send test pushes and flip feature flags on the running app.',
+    prepare: (state) => openDrawer(selectInspector(reset(state), 'logs'), 'quick'),
   },
   {
     id: 'multi-device',

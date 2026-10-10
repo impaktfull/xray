@@ -12,4 +12,4 @@ export const nextTourStep = (state: DemoState): DemoState =>
 export const previousTourStep = (state: DemoState): DemoState => (state.tour && state.tour.step > 0 ? goTo(state, state.tour.step - 1) : state);
 
 /** Ends the tour and closes anything the tour opened. */
-export const endTour = (state: DemoState): DemoState => ({ ...state, tour: undefined, modal: undefined });
+export const endTour = (state: DemoState): DemoState => ({ ...state, tour: undefined, modal: undefined, drawer: undefined });

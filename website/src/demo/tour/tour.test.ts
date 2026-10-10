@@ -38,6 +38,13 @@ describe.each(startingPoints)('tour steps from %s', (_, start) => {
       case 'edit-value':
         expect(state.modal).toEqual({ kind: 'editValue', storeId: 'shared_preferences', key: 'dashboard_layout' });
         break;
+      case 'command-menu':
+        expect(state.modal).toEqual({ kind: 'commandMenu' });
+        break;
+      case 'device-actions':
+        expect(state.drawer).toEqual({ tab: 'quick' });
+        expect(state.modal).toBeUndefined();
+        break;
       case 'timeline':
         expect(tab.inspector).toBe('timeline');
         expect(tab.timeline.selectedId).toBeDefined();

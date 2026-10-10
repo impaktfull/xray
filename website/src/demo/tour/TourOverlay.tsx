@@ -124,7 +124,8 @@ export function TourPill() {
   const compact = useCompact();
   // On phones a sheet (modal or timeline event) takes the bottom of the window; the pill would cover it.
   const sheetOpen = compact && (state.modal || (state.activeConnectionId && state.tabs[state.activeConnectionId]?.timeline.selectedId));
-  if (state.tour || sheetOpen) return null;
+  // The drawer's footer sits where the pill does.
+  if (state.tour || sheetOpen || state.drawer) return null;
   return (
     <button type="button" class="xr-tour-pill" onClick={() => dispatch(startTour)}>
       <Icon name="sparkle" />

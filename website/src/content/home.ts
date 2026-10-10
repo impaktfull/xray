@@ -59,6 +59,7 @@ export const features: Feature[] = [
     icon: 'command',
     title: 'Command menu & device actions',
     body: 'Search everything with ⌘K, switch dark mode, open deep links and send test pushes to the device.',
+    demoStep: 'command-menu',
   },
 ];
 
