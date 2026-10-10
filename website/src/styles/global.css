@@ -1028,11 +1028,7 @@ footer {
 }
 
 .how-step {
-  display: flex;
-  flex-direction: column;
   gap: 12px;
-  padding: 32px;
-  border-top: 1px solid var(--border-light);
 }
 
 .how-step__number {
@@ -1062,7 +1058,4 @@ footer {
     grid-template-columns: 1fr;
   }
 
-  .how-step {
-    padding: 24px 0;
-  }
 }
