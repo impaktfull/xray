@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import CookieBanner from '../components/site/CookieBanner.astro';
 ---
 <!doctype html>
 <html lang="en">
@@ -75,37 +76,12 @@ import '../styles/global.css';
       }
     </script>
 
-    <!-- ===== Analytics + Consent ===== -->
-    <!-- 1. Google Consent Mode v2 — all denied by default. -->
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('consent', 'default', {
-        ad_storage: 'denied',
-        ad_user_data: 'denied',
-        ad_personalization: 'denied',
-        analytics_storage: 'denied',
-        functionality_storage: 'denied',
-        personalization_storage: 'denied',
-        security_storage: 'granted',
-        wait_for_update: 500
-      });
-      gtag('js', new Date());
-      gtag('config', 'G-589QLTH004', { anonymize_ip: true });
-    </script>
-
-    <!-- 2. GA4 loader. -->
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-589QLTH004"></script>
-
-    <!-- 3. Cookiethough.dev banner. -->
-    <script is:inline src="https://cookiethough.dev/lib/1.7.3" defer></script>
-
-    <!-- 4. Local consent bridge + event tracking. -->
-    <script is:inline src="scripts/consent.js?v=1.0.0" defer></script>
-    <script is:inline src="scripts/analytics.js?v=1.0.0" defer></script>
+    <!-- Event tracking. Its events only reach Google once the visitor accepted analytics cookies. -->
+    <script is:inline src="scripts/analytics.js?v=1.1.0" defer></script>
   </head>
 
   <body>
     <slot />
+    <CookieBanner />
   </body>
 </html>
