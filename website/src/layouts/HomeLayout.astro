@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { Font } from 'astro:assets';
 import CookieBanner from '../components/site/CookieBanner.astro';
 ---
 <!doctype html>
@@ -45,13 +46,10 @@ import CookieBanner from '../components/site/CookieBanner.astro';
     <!-- Canonical -->
     <link rel="canonical" href="https://xrayinspector.dev" />
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&family=Geologica:wght@400;500;600&family=Geist+Mono:wght@400&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Fonts: served from this site. The hero heading and body text are preloaded. -->
+    <Font cssVariable="--font-ubuntu" preload={[{ weight: '700' }]} />
+    <Font cssVariable="--font-geologica" preload={[{ weight: '400' }]} />
+    <Font cssVariable="--font-geist-mono" />
 
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json" is:inline>

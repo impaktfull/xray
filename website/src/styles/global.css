@@ -35,9 +35,10 @@
   --radius-lg:   20px;
   --radius-full: 9999px;
 
-  --font-display: 'Ubuntu', system-ui, -apple-system, sans-serif;
-  --font-body:    'Geologica', system-ui, -apple-system, sans-serif;
-  --font-mono:    'Geist Mono', 'Fira Code', monospace;
+  /* The font stacks, with size-matched fallbacks, come from the fonts in astro.config.mjs. */
+  --font-display: var(--font-ubuntu);
+  --font-body:    var(--font-geologica);
+  --font-mono:    var(--font-geist-mono);
 
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
