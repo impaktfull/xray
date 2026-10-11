@@ -26,7 +26,7 @@
       "href": "https://xrayinspector.dev"
     },
     {
-      "title": "mac App",
+      "title": "Desktop App",
       "icon": "desktop",
       "href": "xray/app/install-macos"
     }
@@ -40,12 +40,21 @@
       ]
     },
     {
+      "group": "Desktop App",
+      "pages": [
+        { "title": "🍎 Install on macOS", "href": "/app/install-macos" },
+        { "title": "🪟 Install on Windows", "href": "/app/install-windows" },
+        { "title": "🐧 Install on Linux", "href": "/app/install-linux" }
+      ]
+    },
+    {
       "group": "Guides",
       "pages": [
         { "title": "⚙️ How it works", "href": "/guides/how-it-works" },
         { "title": "🌐 Network Inspection", "href": "/guides/network-inspection" },
         { "title": "📋 Log Inspection", "href": "/guides/log-inspection" },
-        { "title": "🗄️ Key-Value Inspection", "href": "/guides/key-value-inspection" }
+        { "title": "🗄️ Key-Value Inspection", "href": "/guides/key-value-inspection" },
+        { "title": "📁 File Inspection", "href": "/guides/file-inspection" }
       ]
     },
     {
