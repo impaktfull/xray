@@ -12,9 +12,8 @@
       Wanted<span style="color: var(--accent-light);">:</span><br />alpha testers<span style="color: var(--accent-light);">.</span>
     </h2>
     <p class="section-subtitle">
-      Drop your email to request access. We'll send you an invite to our
-      Discord where alpha testers share feedback, and we'll add you to
-      the alpha tester list.
+      Drop your email to request access. We'll review your request and
+      email you when you're in.
     </p>
   </div>
   <form
@@ -38,6 +37,10 @@
       <span class="alpha-spinner" aria-hidden="true"></span>
     </button>
   </form>
+  <p class="alpha-privacy">
+    We use your email address only to review your request and to email you
+    the outcome.
+  </p>
   <p
     class="alpha-status"
     id="alpha-form-status"
@@ -47,7 +50,14 @@
 </section>
 
 <script>
-  const endpoint = "https://versioncheck.xrayinspector.dev/alpha/request-access";
+  const endpoint = "https://api.xrayinspector.dev/api/public/access-requests";
+
+  // The platform answers 202 for every valid address (also when it already
+  // has access), 422 for a malformed one and 429 when one visitor asks too often.
+  const errorMessages: Record<number, string> = {
+    422: "Please enter a valid email address.",
+    429: "Too many requests. Please try again later.",
+  };
 
   const form = document.querySelector<HTMLFormElement>("#alpha-form");
   const input = form?.querySelector<HTMLInputElement>("#alpha-email");
@@ -84,20 +94,11 @@
         if (response.ok) {
           form.reset();
           setStatus(
-            "Thanks! Check your inbox, we've sent you an invite to our Discord and added you to the alpha tester list.",
+            "Thanks! We'll email you once we've reviewed your request.",
             "success",
           );
         } else {
-          let message = "Something went wrong. Please try again.";
-          try {
-            const data: unknown = await response.json();
-            if (data && typeof data === "object" && "message" in data && typeof data.message === "string") {
-              message = data.message;
-            }
-          } catch {
-            // The server didn't send JSON; keep the generic message.
-          }
-          setStatus(message, "error");
+          setStatus(errorMessages[response.status] ?? "Something went wrong. Please try again.", "error");
         }
       } catch {
         setStatus("Network error. Please check your connection and try again.", "error");

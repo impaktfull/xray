@@ -609,6 +609,15 @@ h1, h2, h3, h4, h5, h6 {
   to { transform: rotate(360deg); }
 }
 
+.alpha-privacy {
+  max-width: 480px;
+  margin: -12px 0 0;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--fg-secondary);
+  text-align: center;
+}
+
 .alpha-status {
   min-height: 1.25em;
   margin: 0;
