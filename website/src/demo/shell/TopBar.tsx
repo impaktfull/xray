@@ -9,29 +9,43 @@ import { ConnectionSwitcher } from './ConnectionSwitcher';
 import { ConnectionTab } from './ConnectionTab';
 
 export function TopBar() {
-  const { state, dispatch } = useDemo();
   const compact = useCompact();
-  if (compact) {
+  if (compact === undefined) {
     return (
-      <header class="xr-topbar is-compact">
-        <span class="xr-brand">
-          <Logo size={18} />
-        </span>
-        {state.connections.length > 0 && <ConnectionSwitcher />}
-        <button type="button" class="xr-icon-button" aria-label="Search or run a command" disabled={!state.activeConnectionId} onClick={() => dispatch(openModal, { kind: 'commandMenu' })}>
-          <Icon name="magnifying-glass" size={16} />
-        </button>
-        <button type="button" class="xr-icon-button" aria-label="Device actions" disabled={!state.activeConnectionId} onClick={() => dispatch(state.drawer ? closeDrawer : openDrawer)}>
-          <Icon name="device-mobile" size={16} />
-        </button>
-        <button type="button" class="xr-icon-button" aria-label="Add connection" data-tour="add-connection" onClick={() => dispatch(openModal, { kind: 'addConnection' })}>
-          <Icon name="plus" size={16} />
-        </button>
-      </header>
+      <>
+        <CompactTopBar class="xr-compact-only" />
+        <WideTopBar class="xr-wide-only" />
+      </>
     );
   }
+  return compact ? <CompactTopBar /> : <WideTopBar />;
+}
+
+function CompactTopBar({ class: className = '' }: { class?: string }) {
+  const { state, dispatch } = useDemo();
   return (
-    <header class="xr-topbar">
+    <header class={`xr-topbar is-compact ${className}`}>
+      <span class="xr-brand">
+        <Logo size={18} />
+      </span>
+      {state.connections.length > 0 && <ConnectionSwitcher />}
+      <button type="button" class="xr-icon-button" aria-label="Search or run a command" disabled={!state.activeConnectionId} onClick={() => dispatch(openModal, { kind: 'commandMenu' })}>
+        <Icon name="magnifying-glass" size={16} />
+      </button>
+      <button type="button" class="xr-icon-button" aria-label="Device actions" disabled={!state.activeConnectionId} onClick={() => dispatch(state.drawer ? closeDrawer : openDrawer)}>
+        <Icon name="device-mobile" size={16} />
+      </button>
+      <button type="button" class="xr-icon-button" aria-label="Add connection" data-tour="add-connection" onClick={() => dispatch(openModal, { kind: 'addConnection' })}>
+        <Icon name="plus" size={16} />
+      </button>
+    </header>
+  );
+}
+
+function WideTopBar({ class: className = '' }: { class?: string }) {
+  const { state, dispatch } = useDemo();
+  return (
+    <header class={`xr-topbar ${className}`}>
       <div class="xr-brand">
         <Logo size={20} />
         <span>xRay</span>

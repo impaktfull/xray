@@ -48,3 +48,23 @@ describe('Demo on phones', () => {
     expect(screen.getByRole('listbox', { name: 'Calls' })).toBeTruthy();
   });
 });
+
+describe('Demo before it has measured itself', () => {
+  it('renders the phone and the desktop version, for CSS to pick from', () => {
+    // As in the HTML rendered at build time: no size is known yet.
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        observe() {}
+        disconnect() {}
+      },
+    );
+    const { container } = render(<Demo />);
+
+    expect(container.querySelector('.xr-demo')?.classList.contains('is-compact')).toBe(false);
+    expect(container.querySelector('.xr-topbar.is-compact.xr-compact-only')).toBeTruthy();
+    expect(container.querySelector('.xr-topbar.xr-wide-only:not(.is-compact)')).toBeTruthy();
+    expect(container.querySelector('.xr-compact-only [role="listbox"][aria-label="Calls"]')).toBeTruthy();
+    expect(container.querySelector('.xr-wide-only [role="table"][aria-label="Network calls"]')).toBeTruthy();
+  });
+});
