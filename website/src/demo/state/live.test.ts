@@ -51,9 +51,23 @@ describe('startLive', () => {
   it('advances the demo clock', () => {
     const store = createDemoStore();
     const start = store.state.value.now;
-    const stop = startLive(store, { canStream: () => false });
+    const stop = startLive(store, { canStream: () => true });
     vi.advanceTimersByTime(5_000);
     expect(store.state.value.now).toBeGreaterThanOrEqual(start + 4_000);
+    stop();
+  });
+
+  it('holds the clock while off-screen and catches up when visible again', () => {
+    const store = createDemoStore();
+    const start = store.state.value.now;
+    let visible = false;
+    const stop = startLive(store, { canStream: () => visible });
+    vi.advanceTimersByTime(10_000);
+    expect(store.state.value.now).toBe(start);
+
+    visible = true;
+    vi.advanceTimersByTime(1_000);
+    expect(store.state.value.now).toBe(start + 11_000);
     stop();
   });
 
