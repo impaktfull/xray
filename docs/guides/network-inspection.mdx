@@ -27,6 +27,10 @@ final dio = Dio()
   );
 ```
 
+<Info>
+If another interceptor can stop a request with `handler.reject(...)` or `handler.resolve(...)`, see [Interceptors that stop requests](/packages/xray-network-dio-interceptor#interceptors-that-stop-requests).
+</Info>
+
 ## Setup with global HTTP override
 
 <Info>Available since 0.0.9</Info>
@@ -39,9 +43,11 @@ import 'package:xray_inspector/xray_inspector.dart';
 final networkInspector = XRayNetworkInspector(enableHttpOverride: true);
 ```
 
-<Warning>
-The HTTP override captures **all** traffic in the process, regardless of which HTTP client made the call. If you also use a Dio interceptor, Dio calls will appear in **both** inspectors — the Dio inspector and the HTTP override inspector.
-</Warning>
+The HTTP override captures **all** traffic in the process, regardless of which HTTP client made the call.
+
+<Info>
+Since 0.0.11, you can use the Dio interceptor and the HTTP override together. Each Dio call is recorded **once**, by the Dio interceptor: the interceptor tells the HTTP override to skip the requests it already records. Requests are matched on method and URL; nothing is added to the request itself.
+</Info>
 
 <Warning>
 Only one `XRayNetworkInspector` can have `enableHttpOverride: true` at a time. Enabling it on a second inspector throws a `StateError` at startup.
@@ -68,10 +74,10 @@ ValueListenableBuilder<List<XRayNetworkCall>>(
 
 ## Listening to new calls in code
 
-Implement `XRayNetworkInterceptorListener` and register it:
+Implement `XRayNetworkInspectorListener` and register it:
 
 ```dart
-class MyListener implements XRayNetworkInterceptorListener {
+class MyListener implements XRayNetworkInspectorListener {
   @override
   void onNetworkCallAdded(XRayNetworkCall call) {
     debugPrint('[Network] ${call.method} ${call.uri} → ${call.responseStatusCode}');
@@ -141,5 +147,5 @@ final dio = Dio()
 ```
 
 <Info>
-In this setup, Dio calls will appear in both inspectors — the Dio interceptor captures them with richer metadata, while the HTTP override captures them at the lower `dart:io` level.
+Since 0.0.11, each Dio call appears once in this setup, in the Dio inspector. The HTTP inspector shows every other request, such as calls made with `package:http`.
 </Info>

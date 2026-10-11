@@ -1,35 +1,43 @@
 ---
 title: Install on Windows
-description: Install the xRay Windows app with the per-user installer from GitHub Releases.
+description: Install the xRay Windows app with its installer.
 ---
 
 The xRay Windows app is the desktop UI client for inspecting Flutter apps that run the `xray_inspector` server. It is distributed as an installer on GitHub Releases.
 
 ## Requirements
 
-- Windows 10 or later, 64-bit
+- Windows 10 or 11, 64-bit (x64)
 - A running Flutter app with `xray_inspector` configured (see [Quick Start](/getting-started))
 
 ## Install
 
 1. Open the [xRay GitHub Releases page](https://github.com/impaktfull/xray/releases).
 2. Download the latest `xRay-<version>-setup.exe` asset.
-3. Run the installer. It installs xRay for your user only, so it doesn't need administrator rights.
+3. Run the installer. It installs xRay for your Windows user only, so it does not ask for administrator rights.
 4. Launch xRay from the Start menu.
 
-The installer is not code-signed yet, so Windows SmartScreen may warn you the first time you run it. Choose **More info**, then **Run anyway**.
+### "Windows protected your PC"
 
-## Allow network access
+The installer is not code-signed yet, so Microsoft Defender SmartScreen may stop it the first time with **Windows protected your PC**. Click **More info**, check that the app is `xRay-<version>-setup.exe`, and click **Run anyway**. Only do this for an installer you downloaded from the official [GitHub Releases page](https://github.com/impaktfull/xray/releases).
 
-xRay finds your app by sending a broadcast on your local network. The first time it scans, Windows Firewall asks whether xRay may use the network: allow it on **private networks**, or xRay can't find apps automatically. You can still connect manually with the app's IP address and port.
+## Allow xRay on your network
 
-## Verify the installation
+xRay finds your Flutter apps by listening on your local network. The first time you open **Add Connection**, xRay explains this, and then Windows Firewall asks whether xRay may use the network:
 
-Launch xRay and confirm the app starts. When your Flutter app with `xray_inspector` is running on the same network, it appears in the device list automatically via UDP discovery.
+- Allow it on **Private networks** (home or office Wi-Fi). Public networks are not needed.
+- If you clicked **Cancel** by mistake, open **Windows Security → Firewall & network protection → Allow an app through firewall**, and allow **xRay** on private networks.
 
-## Uninstall
+Without this, your apps will not appear in the device list. You can still connect by entering the device's IP address and port under **Or connect manually**.
 
-Open **Settings → Apps → Installed apps**, find **xRay** and choose **Uninstall**.
+## Sign in
+
+Signing in opens your browser. After you sign in, the browser asks to open xRay: allow it, and the sign-in continues in the app.
+
+## Update and uninstall
+
+- **Update:** xRay tells you when a new version is available. Download and run the new installer; it replaces the old version and keeps your settings.
+- **Uninstall:** **Settings → Apps → Installed apps → xRay → Uninstall**.
 
 ## Next steps
 

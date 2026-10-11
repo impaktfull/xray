@@ -44,6 +44,21 @@ final inspector = XRayNetworkInspector(enableHttpOverride: true);
 | `removeListener(l)`    | `void`                     | Unregister a listener                                                       |
 | `clear()`              | `void`                     | Clear all captured calls                                                    |
 
+### Global HTTP override
+
+Pass `enableHttpOverride: true` to capture every HTTP request the app makes through `dart:io`'s `HttpClient` — Dio, `package:http`, and any other client built on `dart:io` — without changing those clients:
+
+```dart
+final networkInspector = XRayNetworkInspector(enableHttpOverride: true);
+```
+
+- It records the method, URL, request and response headers and bodies, status code, duration and errors of each call.
+- Only one `XRayNetworkInspector` can enable it; a second one throws a `StateError`.
+- It is ignored on web, where `dart:io` is not available.
+- Combined with `xray_network_dio_interceptor`, each Dio call is recorded once, by the Dio interceptor _(since 0.0.11)_.
+
+See [Network Inspection](/guides/network-inspection#setup-with-global-http-override) for more.
+
 ## XRayLogInspector
 
 ```dart
@@ -86,14 +101,25 @@ final inspector = XRayKeyValueInspector(source: mySource);
 final server = XRayInspectorServer(
   config: XRayInspectorServerConfig(
     inspectors: [networkInspector, logInspector],
-    httpPort: 8080,
-    discoveryPort: 8081,
   ),
 );
 
 await server.start();
 await server.stop();
 ```
+
+`XRayInspectorServerConfig` options:
+
+| Option               | Type                       | Description                                                                                                 |
+| -------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `inspectors`         | `List<XRayInspector>`      | The inspectors to serve                                                                                     |
+| `httpPort`           | `int`                      | HTTP and WebSocket port (default: `7780`). Must be different for each app running on the same device.      |
+| `discoveryPort`      | `int`                      | UDP discovery port (default: `7781`). Apps on the same device can share it _(since 0.0.11)_.                |
+| `deviceName`         | `FutureOr<String> Function()?` | Shown in the xRay desktop app's device list so devices can be told apart                                |
+| `appName`            | `FutureOr<String> Function()?` | Shown in the device list next to the device name                                                        |
+| `allowInReleaseMode` | `bool`                     | Start the server in release builds too (default: `false`) _(since 0.0.11)_. See [Release builds](/guides/how-it-works#release-builds). |
+
+Since 0.0.11, in release builds `start()` does nothing unless `allowInReleaseMode` is `true`. See [How it works](/guides/how-it-works) for ports, manual connection and security.
 
 ## XRayKeyValueSource
 

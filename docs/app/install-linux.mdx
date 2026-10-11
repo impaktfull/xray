@@ -1,21 +1,34 @@
 ---
 title: Install on Linux
-description: Run the xRay Linux app as an AppImage from GitHub Releases.
+description: Run the xRay Linux app as an AppImage.
 ---
 
 The xRay Linux app is the desktop UI client for inspecting Flutter apps that run the `xray_inspector` server. It is distributed as an AppImage on GitHub Releases: one file that runs on most distributions, without installing anything as root.
 
 ## Requirements
 
-- A 64-bit (x86_64) Linux distribution with GTK 3
-- libsecret with a running keyring (GNOME Keyring or KWallet), to keep you signed in
-- WebKitGTK 4.1
+- A 64-bit (x86_64) Linux desktop
 - A running Flutter app with `xray_inspector` configured (see [Quick Start](/getting-started))
+- These system libraries:
+  - **GTK 3**, the desktop toolkit xRay is drawn with.
+  - **libsecret** and a keyring (GNOME Keyring or KWallet), where xRay stores your sign-in.
+  - **WebKitGTK 4.1**, needed by the sign-in component.
+  - **FUSE 2**, which AppImages use to run.
 
-On Ubuntu and Debian you can install the libraries with:
+Most desktop installations have all of them. If one is missing, install it with your package manager:
 
 ```bash
-sudo apt install libgtk-3-0 libsecret-1-0 libwebkit2gtk-4.1-0
+# Ubuntu 24.04 and later
+sudo apt install libgtk-3-0 libsecret-1-0 gnome-keyring libwebkit2gtk-4.1-0 libfuse2t64
+
+# Ubuntu 22.04, Debian
+sudo apt install libgtk-3-0 libsecret-1-0 gnome-keyring libwebkit2gtk-4.1-0 libfuse2
+
+# Fedora
+sudo dnf install gtk3 libsecret gnome-keyring webkit2gtk4.1 fuse-libs
+
+# Arch Linux
+sudo pacman -S gtk3 libsecret gnome-keyring webkit2gtk-4.1 fuse2
 ```
 
 ## Install
@@ -29,13 +42,15 @@ chmod +x xRay-*-x86_64.AppImage
 ./xRay-*-x86_64.AppImage
 ```
 
-xRay registers itself as the handler for sign-in links every time it starts, so signing in through your browser works without extra setup.
+Keep the AppImage where you saved it: xRay registers that file so your browser can return to it after signing in. To get xRay in your application menu, use an AppImage manager such as [Gear Lever](https://flathub.org/apps/it.mijorus.gearlever) or [AppImageLauncher](https://github.com/TheAssassin/AppImageLauncher).
 
-To get a menu entry and icon, integrate the AppImage with a tool like [AppImageLauncher](https://github.com/TheAssassin/AppImageLauncher) or [Gear Lever](https://flathub.org/apps/it.mijorus.gearlever).
+## Sign in
 
-## Verify the installation
+Signing in opens your browser. After you sign in, the browser asks to open xRay: allow it, and the sign-in continues in the app.
 
-Launch xRay and confirm the app starts. When your Flutter app with `xray_inspector` is running on the same network, it appears in the device list automatically via UDP discovery. If your firewall blocks UDP broadcasts, allow them on your local network or connect manually with the app's IP address and port.
+## Update
+
+xRay tells you when a new version is available. Download the new AppImage, make it executable, and remove the old one.
 
 ## Next steps
 
