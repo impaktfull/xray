@@ -1029,6 +1029,141 @@ footer {
 }
 
 /* =====================
+   Privacy and cookie policy pages
+   ===================== */
+.legal-header {
+  padding: 24px 80px;
+  border-bottom: 1px solid var(--border);
+}
+
+.legal {
+  position: relative;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 64px 24px 96px;
+  color: var(--fg-secondary);
+  font-size: 16px;
+}
+
+.legal h1 {
+  font-family: var(--font-display);
+  font-size: 44px;
+  line-height: 1.1;
+  color: var(--fg-primary);
+}
+
+.legal h2 {
+  margin: 48px 0 12px;
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--fg-primary);
+}
+
+.legal p,
+.legal ul,
+.legal table {
+  margin-top: 12px;
+}
+
+.legal ul {
+  padding-left: 22px;
+}
+
+.legal li + li {
+  margin-top: 6px;
+}
+
+.legal strong {
+  color: var(--fg-primary);
+}
+
+.legal a {
+  color: var(--accent-light);
+  text-decoration: underline;
+}
+
+.legal code {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--fg-primary);
+}
+
+.legal table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.legal th,
+.legal td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.legal th {
+  color: var(--fg-primary);
+  font-weight: 500;
+}
+
+.legal-updated {
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+
+.legal-draft {
+  padding: 12px 16px;
+  border: 1px solid var(--warning);
+  border-radius: var(--radius-sm);
+  color: var(--warning);
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+
+.legal-placeholder {
+  padding: 0 4px;
+  border-radius: 4px;
+  background: rgba(251, 191, 36, 0.2);
+  color: var(--warning);
+}
+
+.legal-button {
+  padding: 10px 18px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  background: var(--surface-tertiary);
+  color: var(--fg-primary);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.legal-button:hover {
+  background: var(--surface-hover);
+}
+
+.alpha-privacy a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .legal-header {
+    padding: 20px 16px;
+  }
+
+  .legal h1 {
+    font-size: 34px;
+  }
+
+  .legal table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+/* =====================
    Interactive demo, feature links and How it works
    ===================== */
 
