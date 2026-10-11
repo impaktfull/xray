@@ -22,7 +22,11 @@ const switches: { key: keyof DeviceSettings & ('boldText' | 'highContrast' | 'la
   { key: 'layoutBounds', label: 'Show layout bounds' },
   { key: 'performanceOverlay', label: 'Performance overlay' },
 ];
-const scaleTicks = [0.85, 1, 1.3, 1.6, 2, 3];
+const minScale = 0.85;
+const maxScale = 3;
+const scaleTicks = [minScale, 1, 1.3, 1.6, 2, maxScale];
+/** Where a value sits on the slider, 0–1. The scale isn't linear in the labels, so ticks are placed by value. */
+const position = (value: number) => (value - minScale) / (maxScale - minScale);
 
 function Label({ device, setting, children, value }: { device: DeviceState; setting: keyof DeviceSettings; children: string; value?: string }) {
   return (
@@ -76,26 +80,38 @@ export function QuickTab({ device }: { device: DeviceState }) {
         </Label>
         <div class="xr-slider">
           <span aria-hidden="true">A</span>
-          <input
-            type="range"
-            min={0.85}
-            max={3}
-            step={0.05}
-            value={scale}
-            aria-label="Text size"
-            onInput={(e) => setScale(Number((e.currentTarget as HTMLInputElement).value))}
-            onChange={(e) => dispatch(setDeviceSetting, 'textScale', Number((e.currentTarget as HTMLInputElement).value))}
-          />
+          <div class="xr-slider__track" style={{ '--p': position(scale) }}>
+            <input
+              type="range"
+              min={minScale}
+              max={maxScale}
+              step={0.05}
+              value={scale}
+              aria-label="Text size"
+              onInput={(e) => setScale(Number((e.currentTarget as HTMLInputElement).value))}
+              onChange={(e) => dispatch(setDeviceSetting, 'textScale', Number((e.currentTarget as HTMLInputElement).value))}
+            />
+            <div class="xr-slider__ticks" aria-hidden="true">
+              {scaleTicks.map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  tabIndex={-1}
+                  class={Math.abs(scale - t) < 0.03 ? 'is-current' : ''}
+                  style={{ '--p': position(t) }}
+                  onClick={() => {
+                    setScale(t);
+                    dispatch(setDeviceSetting, 'textScale', t);
+                  }}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
           <span aria-hidden="true" class="is-large">
             A
           </span>
-        </div>
-        <div class="xr-slider__ticks" aria-hidden="true">
-          {scaleTicks.map((t) => (
-            <span key={t} class={Math.abs(scale - t) < 0.03 ? 'is-current' : ''}>
-              {t}
-            </span>
-          ))}
         </div>
       </section>
       <section>

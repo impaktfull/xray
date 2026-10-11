@@ -155,32 +155,109 @@
 
 .xr-slider {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   color: var(--xr-text-3);
   font-size: var(--xr-caption);
 }
 
-.xr-slider .is-large {
+.xr-slider > span {
+  line-height: 16px;
+}
+
+.xr-slider > .is-large {
   font-size: 17px;
   font-weight: 600;
 }
 
-.xr-slider input {
+/* The thumb is 16px; its centre moves from 8px to (width - 8px). Ticks and the fill use the same
+   math (--p is the value's position, 0–1), so the thumb always sits right above its label. */
+.xr-slider__track {
+  --thumb: 16px;
+  --at: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--p));
+  position: relative;
   flex: 1;
-  accent-color: var(--xr-primary);
+  min-width: 0;
+}
+
+.xr-slider__track input[type='range'] {
+  display: block;
+  width: 100%;
+  height: var(--thumb);
+  margin: 0;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.xr-slider__track input[type='range']:focus-visible {
+  outline: 0;
+}
+
+.xr-slider__track input[type='range']::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--xr-primary) 0 var(--at), var(--xr-border-light) var(--at) 100%);
+}
+
+.xr-slider__track input[type='range']::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--xr-border-light);
+}
+
+.xr-slider__track input[type='range']::-moz-range-progress {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--xr-primary);
+}
+
+.xr-slider__track input[type='range']::-webkit-slider-thumb {
+  width: var(--thumb);
+  height: var(--thumb);
+  margin-top: calc((4px - var(--thumb)) / 2);
+  border: 3px solid var(--xr-primary);
+  border-radius: 50%;
+  background: #fff;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.xr-slider__track input[type='range']::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border: 3px solid var(--xr-primary);
+  border-radius: 50%;
+  background: #fff;
+}
+
+.xr-slider__track input[type='range']:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px var(--xr-accent-subtle);
+}
+
+.xr-slider__track input[type='range']:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 4px var(--xr-accent-subtle);
 }
 
 .xr-slider__ticks {
-  display: flex;
-  justify-content: space-between;
-  padding: 0 18px;
+  position: relative;
+  height: 14px;
+  margin-top: 6px;
+}
+
+.xr-slider__ticks button {
+  position: absolute;
+  left: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--p));
+  transform: translateX(-50%);
   color: var(--xr-text-3);
   font-family: var(--xr-font-mono);
   font-size: 10px;
+  white-space: nowrap;
 }
 
-.xr-slider__ticks .is-current {
+.xr-slider__ticks button:hover,
+.xr-slider__ticks button.is-current {
   color: var(--xr-text);
 }
 
