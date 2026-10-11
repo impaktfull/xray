@@ -51,9 +51,9 @@
   --xr-s5: 24px;
   --xr-s6: 32px;
 
-  --xr-font-display: 'Ubuntu', system-ui, sans-serif;
-  --xr-font-text: 'Geologica', system-ui, sans-serif;
-  --xr-font-mono: 'Geist Mono', ui-monospace, monospace;
+  --xr-font-display: var(--font-ubuntu);
+  --xr-font-text: var(--font-geologica);
+  --xr-font-mono: var(--font-geist-mono);
 
   --xr-caption: 11px;
   --xr-label: 12px;
