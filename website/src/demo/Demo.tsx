@@ -54,7 +54,7 @@ export default function Demo() {
   return (
     <DemoContext.Provider value={store}>
       <CompactContext.Provider value={compact}>
-      <div ref={root} class={`xr-demo ${compact ? 'is-compact' : ''}`} role="region" aria-label="Interactive demo of the xRay desktop app" onKeyDown={onKeyDown} aria-describedby="xr-demo-description">
+      <div ref={root} class="xr-demo" role="region" aria-label="Interactive demo of the xRay desktop app" onKeyDown={onKeyDown} aria-describedby="xr-demo-description">
         <p id="xr-demo-description" class="xr-sr-only">
           A working copy of the xRay desktop app connected to a sample app. Click around: open network calls, read logs, edit stored values and scrub the timeline.
         </p>

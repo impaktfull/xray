@@ -165,12 +165,14 @@
   gap: 4px;
 }
 
-.xr-demo.is-compact .xr-modal-overlay.is-command {
-  padding-top: 12px;
-}
+@container xr-demo (max-width: 899.98px) {
+  .xr-demo .xr-modal-overlay.is-command {
+    padding-top: 12px;
+  }
 
-.xr-demo.is-compact .xr-command__scope,
-.xr-demo.is-compact .xr-command__keys,
-.xr-demo.is-compact .xr-command__footer > span:not(:last-child) {
-  display: none;
+  .xr-demo .xr-command__scope,
+  .xr-demo .xr-command__keys,
+  .xr-demo .xr-command__footer > span:not(:last-child) {
+    display: none;
+  }
 }
