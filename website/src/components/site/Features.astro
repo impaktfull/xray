@@ -1,0 +1,33 @@
+---
+import { features } from '../../content/home';
+import PhosphorIcon from '../ui/PhosphorIcon.astro';
+---
+
+<section class="section features-section section-glow" id="features" aria-labelledby="features-title">
+  <div class="section-header">
+    <span class="eyebrow">Features</span>
+    <h2 class="section-title" id="features-title">
+      Everything you need<br />to debug<span class="accent">.</span>
+    </h2>
+    <p class="section-subtitle">One window for what your app sends, logs and stores.</p>
+  </div>
+
+  <div class="features-grid" role="list">
+    {
+      features.map((feature) => (
+        <article class="feature-card" role="listitem">
+          <div class="feature-icon-wrap accent" aria-hidden="true">
+            <PhosphorIcon name={feature.icon} />
+          </div>
+          <h3>{feature.title}</h3>
+          <p>{feature.body}</p>
+          {feature.demoStep && (
+            <a class="feature-try" href={`#demo/${feature.demoStep}`}>
+              Try it in the demo <span aria-hidden="true">→</span>
+            </a>
+          )}
+        </article>
+      ))
+    }
+  </div>
+</section>

@@ -323,6 +323,14 @@ h1, h2, h3, h4, h5, h6 {
     0 0 0 1px rgba(255, 255, 255, 0.03);
 }
 
+.hero-demo {
+  height: 720px;
+  padding: 0;
+  /* Hugs the demo window, which has the desktop app's 14px corners. */
+  border-radius: 14px;
+  overflow: hidden;
+}
+
 .hero-preview img {
   width: 100%;
   height: auto;
@@ -967,4 +975,87 @@ footer {
 
   --ct-button-radius: var(--radius-full);
   --ct-button-padding: 10px 18px;
+}
+
+/* =====================
+   Interactive demo, feature links and How it works
+   ===================== */
+
+.section-title .accent {
+  color: var(--accent-light);
+}
+
+.phosphor-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.phosphor-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-demo-caption {
+  margin-top: 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--fg-secondary);
+  text-align: center;
+}
+
+.feature-try {
+  margin-top: auto;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--accent-light);
+  text-decoration: none;
+}
+
+.feature-try:hover {
+  text-decoration: underline;
+}
+
+.how-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  width: 100%;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.how-step {
+  gap: 12px;
+}
+
+.how-step__number {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent-light);
+}
+
+.how-step h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--fg-primary);
+}
+
+.how-step p {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--fg-secondary);
+}
+
+@media (max-width: 900px) {
+  .how-steps {
+    grid-template-columns: 1fr;
+  }
+
 }

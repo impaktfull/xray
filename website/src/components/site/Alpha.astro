@@ -1,0 +1,111 @@
+<!-- =====================
+   Alpha Testers Section
+   ===================== -->
+<section
+  class="section alpha-section section-glow"
+  id="alpha"
+  aria-labelledby="alpha-title"
+>
+  <div class="section-header">
+    <span class="eyebrow">Alpha Program</span>
+    <h2 class="section-title" id="alpha-title">
+      Wanted<span style="color: var(--accent-light);">:</span><br />alpha testers<span style="color: var(--accent-light);">.</span>
+    </h2>
+    <p class="section-subtitle">
+      Drop your email to request access. We'll send you an invite to our
+      Discord where alpha testers share feedback, and we'll add you to
+      the alpha tester list.
+    </p>
+  </div>
+  <form
+    class="alpha-form"
+    id="alpha-form"
+    novalidate
+    aria-describedby="alpha-form-status"
+  >
+    <label class="sr-only" for="alpha-email">Email address</label>
+    <input
+      type="email"
+      id="alpha-email"
+      name="email"
+      placeholder="you@example.com"
+      autocomplete="email"
+      required
+      class="alpha-input"
+    />
+    <button type="submit" class="btn-primary alpha-submit">
+      <span class="alpha-submit-label">Request access</span>
+      <span class="alpha-spinner" aria-hidden="true"></span>
+    </button>
+  </form>
+  <p
+    class="alpha-status"
+    id="alpha-form-status"
+    role="status"
+    aria-live="polite"
+  ></p>
+</section>
+
+<script>
+  const endpoint = "https://versioncheck.xrayinspector.dev/alpha/request-access";
+
+  const form = document.querySelector<HTMLFormElement>("#alpha-form");
+  const input = form?.querySelector<HTMLInputElement>("#alpha-email");
+  const submit = form?.querySelector<HTMLButtonElement>(".alpha-submit");
+  const status = document.querySelector<HTMLElement>("#alpha-form-status");
+
+  if (form && input && submit && status) {
+    const setStatus = (message: string, kind: string) => {
+      status.textContent = message;
+      status.dataset.kind = kind;
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const email = input.value.trim();
+      if (!email || !input.checkValidity()) {
+        setStatus("Please enter a valid email address.", "error");
+        input.focus();
+        return;
+      }
+
+      submit.disabled = true;
+      input.disabled = true;
+      form.classList.add("is-loading");
+      setStatus("Sending your request…", "loading");
+
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+
+        if (response.ok) {
+          form.reset();
+          setStatus(
+            "Thanks! Check your inbox, we've sent you an invite to our Discord and added you to the alpha tester list.",
+            "success",
+          );
+        } else {
+          let message = "Something went wrong. Please try again.";
+          try {
+            const data: unknown = await response.json();
+            if (data && typeof data === "object" && "message" in data && typeof data.message === "string") {
+              message = data.message;
+            }
+          } catch {
+            // The server didn't send JSON; keep the generic message.
+          }
+          setStatus(message, "error");
+        }
+      } catch {
+        setStatus("Network error. Please check your connection and try again.", "error");
+      } finally {
+        submit.disabled = false;
+        input.disabled = false;
+        form.classList.remove("is-loading");
+      }
+    });
+  }
+</script>

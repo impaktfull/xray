@@ -1,0 +1,18 @@
+---
+// Phosphor icons on the static page, inlined at build time so they cost no JavaScript.
+interface Props {
+  name: string;
+  size?: number;
+}
+
+const { name, size = 24 } = Astro.props;
+const icons = import.meta.glob<string>('/node_modules/@phosphor-icons/core/assets/regular/*.svg', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+const svg = icons[`/node_modules/@phosphor-icons/core/assets/regular/${name}.svg`];
+if (!svg) throw new Error(`Unknown Phosphor icon: ${name}`);
+---
+
+<span class="phosphor-icon" style={`width:${size}px;height:${size}px`} aria-hidden="true" set:html={svg} />
