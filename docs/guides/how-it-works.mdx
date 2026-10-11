@@ -1,6 +1,6 @@
 ---
 title: How it works
-description: Understand xRay's local-network architecture, how it protects release builds, how to connect, and how to run multiple apps simultaneously.
+description: Understand xRay's local-network architecture, how it protects release builds, how to connect, what to check when a device is not discovered, and how to run multiple apps simultaneously.
 ---
 
 xRay is a local network debugging tool. All data stays on your device and local network — nothing is sent to any external server.
@@ -13,7 +13,7 @@ The xRay SDK runs a small server inside your app:
 - a **WebSocket** on that same HTTP port that pushes new network calls, log entries and key-value changes to the xRay desktop app as they happen;
 - a **UDP discovery listener** (default port `7781`) that answers when the xRay desktop app looks for devices.
 
-The xRay desktop app sends a UDP broadcast on the local network, every app running xRay answers with its HTTP port, and the desktop app then connects directly to that HTTP port. No cloud, no relay.
+The xRay desktop app sends a UDP broadcast on the local network and also asks every address of the network it is on directly, every app running xRay answers with its HTTP port, and the desktop app then connects directly to that HTTP port. No cloud, no relay.
 
 ## Security
 
@@ -51,12 +51,33 @@ Never ship a build with `allowInReleaseMode: true` to end users. It exposes your
 
 Debug and profile builds are not affected: the inspector starts as usual.
 
+## Troubleshooting discovery
+
+Discovery only works when your computer can reach the device directly on the local network. If your device does not show up in the device list after a scan, check the following, then [connect manually](#connecting-manually) if it still doesn't appear.
+
+**The app must be running and in the foreground.** The inspector only answers while your app runs in a debug or profile build (or a release build with `allowInReleaseMode`). On Android, apps in the background lose network access shortly after you leave them, so bring the app to the front and scan again.
+
+**Your computer and the device must be on the same network.** Discovery cannot work when:
+
+- the device is only on mobile data, or the computer and the device are on different Wi-Fi networks;
+- they are on different subnets of the same network (for example a separate guest network, or Wi-Fi and wired networks that are routed rather than bridged);
+- the network isolates devices from each other ("client isolation" or "AP isolation", common on guest, hotel, conference and corporate Wi-Fi);
+- the computer or the device is connected to a VPN that routes local traffic;
+- a firewall on the computer blocks incoming UDP for the xRay desktop app.
+
+A phone sharing a hotspot with the computer usually works, because both are on the hotspot's own network. Some hotspots isolate their clients; if so, connect manually.
+
+**Android devices on large networks.** Many Android devices drop broadcast messages on Wi-Fi to save battery, so the desktop app also asks every address of its own network directly. It assumes that network has at most 254 addresses: the device is found when the first three numbers of its IP address match the computer's (for example `192.168.1.23` and `192.168.1.40`). On larger networks, such as many office networks, an Android device with a different third number (for example `10.0.42.7` while the computer is `10.0.5.20`) is not found; connect manually.
+
+**Several apps on one Android device.** Each app in the foreground is listed separately. An xRay app in the background cannot answer, and if it was started after the app you are looking at, it can keep that app from being found. Close the background app, or restart the app you want to inspect.
+
+To find your device's IP address: on Android, open **Settings → Network & internet → Internet**, tap your Wi-Fi network and look for **IP address** (the path differs slightly between manufacturers); on iOS, open **Settings → Wi-Fi** and tap the **ⓘ** next to the network.
+
 ## Connecting manually
 
-Discovery relies on UDP broadcasts, which not every network allows. Connect manually when your device does not show up in the device list, for example when:
+Connect manually when your device does not show up in the device list, for example when:
 
-- the network blocks broadcasts or isolates devices from each other (common on guest and corporate Wi-Fi);
-- your computer and the device are on different subnets, or one of them is on a VPN;
+- the network setup prevents discovery (see [Troubleshooting discovery](#troubleshooting-discovery));
 - the app runs in an Android emulator, which is behind its own network (forward the port with `adb forward tcp:7780 tcp:7780` and connect to `127.0.0.1`);
 - the app could not open its discovery port (see [Multiple apps on the same device](#multiple-apps-on-the-same-device)).
 
