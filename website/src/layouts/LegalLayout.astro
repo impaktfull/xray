@@ -1,0 +1,59 @@
+---
+import '../styles/global.css';
+import { Font } from 'astro:assets';
+import CookieBanner from '../components/site/CookieBanner.astro';
+import Footer from '../components/site/Footer.astro';
+
+interface Props {
+  frontmatter: {
+    title: string;
+    description: string;
+    updated: string;
+    /** Shows a notice that the page still has parts waiting for legal review. */
+    draft?: boolean;
+  };
+}
+
+const { title, description, updated, draft } = Astro.props.frontmatter;
+// A value in [[double brackets]] is a placeholder that legal review still has to fill in.
+const updatedIsPlaceholder = updated.startsWith('[[');
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} — xRay</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <Font cssVariable="--font-ubuntu" />
+    <Font cssVariable="--font-geologica" preload={[{ weight: '400' }]} />
+    <Font cssVariable="--font-geist-mono" />
+  </head>
+
+  <body>
+    <header class="legal-header">
+      <a href="/" class="nav-left" aria-label="xRay home">
+        <div class="nav-logo" aria-hidden="true"></div>
+        <span class="nav-title">xRay</span>
+      </a>
+    </header>
+
+    <main class="legal">
+      {draft && (
+        <p class="legal-draft" role="note">
+          Draft for legal review. The highlighted parts are not filled in yet; this page is not in force.
+        </p>
+      )}
+      <h1>{title}</h1>
+      <p class="legal-updated">
+        Last updated: {updatedIsPlaceholder ? <mark class="legal-placeholder">{updated}</mark> : updated}
+      </p>
+      <slot />
+    </main>
+
+    <Footer />
+    <CookieBanner />
+  </body>
+</html>
