@@ -234,7 +234,7 @@ h1, h2, h3, h4, h5, h6 {
 .nav-logo {
   width: 28px;
   height: 28px;
-  background: url('https://xrayinspector.dev/assets/logo.svg') center/contain no-repeat;
+  background: url('/assets/logo.svg') center/contain no-repeat;
   flex-shrink: 0;
 }
 
@@ -784,7 +784,7 @@ footer {
 .foot-logo {
   width: 22px;
   height: 22px;
-  background: url('https://xrayinspector.dev/assets/logo.svg') center/contain no-repeat;
+  background: url('/assets/logo.svg') center/contain no-repeat;
   flex-shrink: 0;
 }
 
