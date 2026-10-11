@@ -106,10 +106,10 @@ Keep `inspectorServer` somewhere you can reach it if you want to stop it later (
 Anyone on the same network can find your app. Without protection, any xRay desktop app on that network can connect and read what the inspector captures, and the traffic is not encrypted.
 
 <Info>
-From `xray_inspector` 1.0.0 the inspector is protected by default: it only accepts desktop apps that know its password or that you listed as trusted, and the connection is encrypted. Leaving it open has to be switched on explicitly. Before 1.0.0, only use xRay on networks you trust, such as your home network.
+From `xray_inspector` 1.0.0 the inspector is protected by default and the connection is encrypted. Without a password or trusted desktops, the app creates a pairing code, prints it in its log, and the xRay desktop app asks for it once. Leaving the inspector open needs `allowUnprotected: true`. Before 1.0.0, only use xRay on networks you trust, such as your home network.
 </Info>
 
-From 1.0.0, pick one of the two:
+To skip the pairing code, for example for a team that shares one build, pick one of the two:
 
 - **A password**, which every developer enters once in the xRay desktop app. Keep it out of your source code by passing it at build time:
 
