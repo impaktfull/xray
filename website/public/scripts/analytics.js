@@ -1,9 +1,9 @@
 // xRay marketing site — GA4 event wiring.
 // Loaded with defer; runs after DOMContentLoaded-equivalent.
 //
-// All events flow through Google Consent Mode v2:
-//   - consent denied/undecided → cookieless ping
-//   - consent granted          → identified GA4 event
+// gtag only exists once the visitor accepted analytics cookies (see
+// src/lib/ga4.ts), so events are dropped until then and nothing is sent
+// to Google without consent.
 //
 // No PII is ever included as a parameter.
 
