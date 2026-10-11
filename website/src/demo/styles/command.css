@@ -31,6 +31,11 @@
   font-size: var(--xr-title);
 }
 
+/* The palette exists for this field and it always has focus, so it gets no focus ring of its own. */
+.xr-command__query input:focus-visible {
+  outline: 0;
+}
+
 .xr-command__scope {
   display: inline-flex;
   align-items: center;
