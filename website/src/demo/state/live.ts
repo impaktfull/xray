@@ -15,7 +15,8 @@ export interface LiveOptions {
 
 /**
  * Keeps the demo alive: advances its clock and, every few seconds, lets the active app make a
- * new call, log something or change a value. Pauses while a modal or the tour is open.
+ * new call, log something or change a value. New events pause while a modal or the tour is open;
+ * both the clock and new events pause while the demo is off-screen or the tab is hidden.
  */
 export function startLive(store: DemoStore, { canStream, intervalMs = [1_800, 4_500], seed = 2026 }: LiveOptions): () => void {
   const rng = createRng(seed);
@@ -33,6 +34,9 @@ export function startLive(store: DemoStore, { canStream, intervalMs = [1_800, 4_
   };
 
   const clock = setInterval(() => {
+    // Every tick re-renders the whole demo, so the clock stands still while nobody can see it.
+    // It catches up on the first tick back on screen, because it adds the wall time since the last tick.
+    if (!canStream()) return;
     const wall = Date.now();
     store.dispatch(tick, store.state.value.now + (wall - lastWall));
     lastWall = wall;
