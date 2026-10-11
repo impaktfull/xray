@@ -968,7 +968,9 @@ footer {
   --cc-secondary-color: var(--fg-secondary);
   --cc-link-color: var(--accent-light);
   --cc-modal-border-radius: var(--radius-md);
-  --cc-btn-border-radius: var(--radius-full);
+  /* The library also rounds the category blocks with this radius, so it stays
+     a card radius; the buttons get their pill shape below. */
+  --cc-btn-border-radius: var(--radius-sm);
   --cc-overlay-bg: rgba(10, 10, 16, 0.7);
 
   --cc-btn-primary-bg: var(--accent);
@@ -1010,6 +1012,26 @@ footer {
 #cc-main .cm__title,
 #cc-main .pm__title {
   font-family: var(--font-display);
+}
+
+/* .cm/.pm make these win over the library's own rules, which load later. */
+#cc-main .cm .cm__btn:not(.cm__btn--close),
+#cc-main .pm .pm__btn,
+#cc-main .pm .pm__close-btn {
+  border-radius: var(--radius-full);
+}
+
+#cc-main :focus {
+  outline: none;
+}
+
+#cc-main :focus-visible {
+  outline: 2px solid var(--accent-light);
+  outline-offset: 2px;
+}
+
+#cc-main .pm__section-title:focus-visible {
+  outline-offset: -2px;
 }
 
 /* Reopens the cookie settings; looks like the footer links next to it. */
