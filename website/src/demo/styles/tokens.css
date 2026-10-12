@@ -1,0 +1,69 @@
+/* Mirrors xray_app_ui's theme (xray_theme.dart, xray_colors.dart, xray_text_styles.dart).
+   Scoped to the demo so the marketing site's own tokens stay untouched. */
+.xr-demo {
+  --xr-canvas: #0d0d12;
+  --xr-card: #16161f;
+  --xr-card2: #1e1e2a;
+  --xr-border: #2a2a3a;
+  --xr-border-light: #3a3a4a;
+  --xr-hover: #252535;
+  --xr-hover-overlay: rgb(255 255 255 / 0.039);
+  --xr-pressed-overlay: rgb(255 255 255 / 0.071);
+  --xr-overlay: rgb(0 0 0 / 0.667);
+  --xr-shadow: rgb(0 0 0 / 0.5);
+
+  --xr-primary: #8b5cf6;
+  --xr-accent-light: #a78bfa;
+  --xr-accent-subtle: rgb(139 92 246 / 0.125);
+
+  --xr-text: #eeeef0;
+  --xr-text-2: #9898a6;
+  --xr-text-3: #808096;
+  --xr-text-inverse: #0d0d12;
+
+  --xr-success: #34d399;
+  --xr-warning: #fbbf24;
+  --xr-error: #f87171;
+  --xr-info: #60a5fa;
+  --xr-success-subtle: rgb(52 211 153 / 0.125);
+  --xr-warning-subtle: rgb(251 191 36 / 0.125);
+  --xr-error-subtle: rgb(248 113 113 / 0.125);
+  --xr-info-subtle: rgb(96 165 250 / 0.125);
+  --xr-neutral-subtle: rgb(152 152 166 / 0.082);
+  --xr-highlight: rgb(251 191 36 / 0.25);
+
+  --xr-method-get: #60a5fa;
+  --xr-method-post: #34d399;
+  --xr-method-put: #fbbf24;
+  --xr-method-patch: #a78bfa;
+  --xr-method-delete: #f87171;
+
+  --xr-r1: 4px;
+  --xr-r2: 6px;
+  --xr-r3: 10px;
+  --xr-r4: 14px;
+  --xr-r5: 16px;
+
+  --xr-s1: 4px;
+  --xr-s2: 8px;
+  --xr-s3: 12px;
+  --xr-s4: 16px;
+  --xr-s5: 24px;
+  --xr-s6: 32px;
+
+  --xr-font-display: var(--font-ubuntu);
+  --xr-font-text: var(--font-geologica);
+  --xr-font-mono: var(--font-geist-mono);
+
+  --xr-caption: 11px;
+  --xr-label: 12px;
+  --xr-body: 13px;
+  --xr-title: 15px;
+  --xr-heading: 16px;
+  --xr-mono: 12px;
+  --xr-mono-small: 11px;
+
+  color: var(--xr-text);
+  font-family: var(--xr-font-text);
+  font-size: var(--xr-body);
+}

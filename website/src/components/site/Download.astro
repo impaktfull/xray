@@ -1,0 +1,35 @@
+---
+import { platforms } from '../../content/home';
+import PhosphorIcon from '../ui/PhosphorIcon.astro';
+---
+
+<section class="section download-section" id="download" aria-labelledby="download-title">
+  <div class="section-header">
+    <span class="eyebrow">Download</span>
+    <h2 class="section-title" id="download-title">
+      On every<br />platform<span class="accent">.</span>
+    </h2>
+    <p class="section-subtitle">The xRay app runs on your development machine.</p>
+  </div>
+
+  <div class="download-grid" role="list">
+    {
+      platforms.map((platform) => (
+        <article class="download-card" role="listitem">
+          <div class="dl-icon-wrap accent" aria-hidden="true">
+            <PhosphorIcon name={platform.icon} size={28} />
+          </div>
+          <h3>{platform.name}</h3>
+          <p class="req">{platform.requirement}</p>
+          <p class="req">{platform.format}</p>
+          <a href={`/install?platform=${platform.id}`} class="btn-primary">
+            <span class="icon" aria-hidden="true">
+              <PhosphorIcon name="download-simple" size={16} />
+            </span>
+            Download
+          </a>
+        </article>
+      ))
+    }
+  </div>
+</section>

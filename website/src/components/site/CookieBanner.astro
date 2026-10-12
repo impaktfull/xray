@@ -1,0 +1,99 @@
+---
+import 'vanilla-cookieconsent/dist/cookieconsent.css';
+---
+
+<script>
+  import { acceptedCategory, run } from 'vanilla-cookieconsent';
+  import { GA4_ID, loadGa4, revokeGa4Analytics } from '../../lib/ga4';
+
+  run({
+    guiOptions: {
+      consentModal: {
+        layout: 'box',
+        position: 'bottom right',
+        // Refusing must be as easy and as visible as accepting.
+        equalWeightButtons: true,
+        flipButtons: false,
+      },
+      preferencesModal: {
+        layout: 'box',
+        equalWeightButtons: true,
+        flipButtons: false,
+      },
+    },
+
+    categories: {
+      necessary: {
+        enabled: true,
+        readOnly: true,
+      },
+      analytics: {
+        autoClear: {
+          cookies: [{ name: /^_ga/ }],
+        },
+      },
+    },
+
+    onConsent: () => {
+      if (acceptedCategory('analytics')) loadGa4();
+    },
+
+    onChange: ({ changedCategories }) => {
+      if (!changedCategories.includes('analytics')) return;
+      if (acceptedCategory('analytics')) {
+        loadGa4();
+      } else {
+        revokeGa4Analytics();
+      }
+    },
+
+    language: {
+      default: 'en',
+      translations: {
+        en: {
+          consentModal: {
+            title: 'Analytics cookies',
+            description:
+              'We would like to use Google Analytics cookies to see how visitors use this site. They stay off unless you accept, and you can change your choice at any time under Cookie settings at the bottom of the page. See our <a href="/cookies">Cookie Policy</a> and <a href="/privacy">Privacy Policy</a>.',
+            acceptAllBtn: 'Accept',
+            acceptNecessaryBtn: 'Decline',
+            showPreferencesBtn: 'Manage preferences',
+          },
+          preferencesModal: {
+            title: 'Cookie settings',
+            acceptAllBtn: 'Accept all',
+            acceptNecessaryBtn: 'Decline all',
+            savePreferencesBtn: 'Save preferences',
+            closeIconLabel: 'Close',
+            sections: [
+              {
+                title: 'Strictly necessary',
+                description: 'Remembers your cookie choice. Always on.',
+                linkedCategory: 'necessary',
+                cookieTable: {
+                  headers: { name: 'Cookie', domain: 'Domain', desc: 'Purpose', exp: 'Expires' },
+                  body: [
+                    { name: 'cc_cookie', domain: 'xrayinspector.dev', desc: 'Stores your cookie choice', exp: '6 months' },
+                  ],
+                },
+              },
+              {
+                title: 'Analytics',
+                description:
+                  'Google Analytics 4 measures visits and clicks so we can see which parts of the site help developers. Google receives your IP address and device information and may process them in the USA. Off until you accept; withdrawing deletes these cookies.',
+                linkedCategory: 'analytics',
+                cookieTable: {
+                  headers: { name: 'Cookie', domain: 'Domain', desc: 'Purpose', exp: 'Expires' },
+                  body: [
+                    { name: '_ga', domain: '.xrayinspector.dev', desc: 'Tells visits by the same browser apart', exp: '13 months' },
+                    { name: `_ga_${GA4_ID.slice(2)}`, domain: '.xrayinspector.dev', desc: 'Keeps the state of your visit', exp: '13 months' },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+  });
+</script>

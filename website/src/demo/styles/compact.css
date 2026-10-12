@@ -1,0 +1,453 @@
+/*
+ * Phone layout, below 900px of demo width. Matches the Pencil section "Website · Demo on phones".
+ * These are container queries rather than a class set from JavaScript, so the HTML rendered at
+ * build time already has the phone layout before the demo hydrates.
+ */
+
+@container xr-demo (max-width: 899.98px) {
+  .xr-demo .xr-topbar.is-compact {
+    gap: 6px;
+    padding: 0 6px 0 12px;
+  }
+
+  .xr-demo .xr-brand {
+    padding: 0;
+    border: 0;
+  }
+}
+
+.xr-conn-switcher {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  padding: 6px 10px;
+  background: var(--xr-canvas);
+  border: 1px solid var(--xr-border);
+  border-radius: 8px;
+  color: var(--xr-text-3);
+}
+
+.xr-conn-switcher .xr-conn-tab__app {
+  color: var(--xr-text);
+  font-weight: 600;
+}
+
+.xr-conn-switcher .xr-conn-tab__device {
+  flex-shrink: 0;
+  margin-right: auto;
+}
+
+/* The native select sits invisibly on top, so tapping opens the platform picker. */
+.xr-conn-switcher select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.xr-conn-switcher:focus-within {
+  outline: 2px solid var(--xr-primary);
+  outline-offset: -2px;
+}
+
+@container xr-demo (max-width: 899.98px) {
+  .xr-demo .xr-inspector-tab {
+    padding: 0 14px;
+  }
+
+  .xr-demo .xr-toolbar .xr-toolbar-button {
+    font-size: 0;
+    gap: 0;
+  }
+
+  .xr-demo .xr-toolbar .xr-toolbar-button .xr-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .xr-demo .xr-call-list__items {
+    flex: 1;
+  }
+
+  .xr-demo .xr-call-item {
+    padding: 9px 14px;
+  }
+
+  .xr-demo .xr-call-item__method {
+    width: 52px;
+  }
+
+  .xr-demo .xr-call-item__meta {
+    padding-left: 60px;
+  }
+}
+
+/* ---------- Call detail ---------- */
+
+.xr-detail.is-compact {
+  gap: 0;
+  padding: 0;
+}
+
+.xr-detail-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  flex-shrink: 0;
+  padding: 0 12px;
+  background: var(--xr-card);
+  border-bottom: 1px solid var(--xr-border);
+}
+
+.xr-detail-bar__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.xr-detail__scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+  padding: 14px;
+  overflow: hidden;
+}
+
+.xr-summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  background: var(--xr-card);
+  border: 1px solid var(--xr-border);
+  border-radius: var(--xr-r3);
+}
+
+.xr-summary-card__badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.xr-summary-card__url {
+  margin: 0;
+  font-family: var(--xr-font-mono);
+  font-size: var(--xr-mono);
+  overflow-wrap: anywhere;
+}
+
+.xr-side-switch {
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+  background: var(--xr-card);
+  border: 1px solid var(--xr-border);
+  border-radius: var(--xr-r3);
+}
+
+.xr-side-switch button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--xr-text-3);
+  font-size: var(--xr-label);
+  font-weight: 600;
+}
+
+.xr-side-switch button.is-request.is-active {
+  background: var(--xr-accent-subtle);
+  color: var(--xr-accent-light);
+}
+
+.xr-side-switch button.is-response.is-active {
+  background: var(--xr-success-subtle);
+  color: var(--xr-success);
+}
+
+.xr-detail.is-compact .xr-panel {
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.xr-detail.is-compact .xr-panel__content {
+  overflow: visible;
+}
+
+@container xr-demo (max-width: 899.98px) {
+  .xr-demo .xr-panel-tabs__label {
+    display: none;
+  }
+}
+
+/* ---------- Logs ---------- */
+
+@container xr-demo (max-width: 899.98px) {
+  .xr-demo .xr-log__summary {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'level time'
+      'message message';
+    gap: 8px 10px;
+    padding: 10px 14px;
+  }
+
+  .xr-demo .xr-log__summary .xr-level { grid-area: level; width: 64px; padding: 3px 0; font-size: 10px; }
+
+  .xr-demo .xr-log__time { grid-area: time; justify-self: end; }
+
+  .xr-demo .xr-log__message {
+    grid-area: message;
+    white-space: normal;
+    line-height: 1.4;
+  }
+
+  .xr-demo .xr-log__detail {
+    padding: 0 14px 14px;
+  }
+}
+
+/* ---------- Key-Value and Files ---------- */
+
+@container xr-demo (max-width: 899.98px) {
+  .xr-demo .xr-table__head {
+    display: none;
+  }
+
+  .xr-demo .xr-kv-cols {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'key type'
+      'value value';
+    gap: 3px 12px;
+    height: auto;
+    padding: 9px 14px;
+  }
+
+  .xr-demo .xr-kv-cols > :nth-child(1) { grid-area: key; }
+
+  .xr-demo .xr-kv-cols > :nth-child(2) { grid-area: value; }
+
+  .xr-demo .xr-kv-cols > :nth-child(3) { grid-area: type; font-size: var(--xr-mono-small); }
+
+  .xr-demo .xr-kv-cols > :nth-child(4) { display: none; }
+
+  .xr-demo .xr-files-cols {
+    grid-template-columns: 16px minmax(0, 1fr) auto;
+    height: 40px;
+  }
+
+  .xr-demo .xr-files-cols > :nth-child(4) {
+    display: none;
+  }
+
+  .xr-demo .xr-toolbar .xr-match-count {
+    display: none;
+  }
+
+  .xr-demo .xr-button.is-primary.is-small {
+    padding: 0 10px;
+  }
+}
+
+/* ---------- Modals become bottom sheets ---------- */
+
+@container xr-demo (max-width: 899.98px) {
+  .xr-demo .xr-modal-overlay {
+    place-items: end stretch;
+  }
+
+  .xr-demo .xr-modal {
+    width: 100% !important;
+    max-height: 85%;
+    border-radius: 18px 18px 0 0;
+    border-bottom: 0;
+    animation: xr-sheet-in 0.2s ease-out;
+  }
+
+  .xr-demo .xr-modal::before {
+    content: '';
+    align-self: center;
+    width: 36px;
+    height: 4px;
+    margin-top: 10px;
+    border-radius: 2px;
+    background: var(--xr-border-light);
+  }
+
+  .xr-demo .xr-modal__header {
+    height: 48px;
+    padding: 0 12px 0 18px;
+    border-bottom: 0;
+  }
+
+  .xr-demo .xr-modal__body {
+    padding: 8px 18px 18px;
+  }
+
+  .xr-demo .xr-modal__footer {
+    flex-wrap: wrap;
+    padding: 12px 18px 18px;
+    border-top: 0;
+  }
+
+  .xr-demo .xr-modal__footer .xr-spacer {
+    display: none;
+  }
+
+  .xr-demo .xr-modal__footer .xr-button {
+    flex: 1;
+  }
+}
+
+@keyframes xr-sheet-in {
+  from { transform: translateY(40px); opacity: 0; }
+}
+
+/* ---------- Timeline ---------- */
+
+@container xr-demo (max-width: 899.98px) {
+  .xr-demo .xr-toolbar .xr-search {
+    min-width: 0;
+  }
+}
+
+/* Phones keep the lane chips and Live; search, range and zoom stay on larger screens. */
+@container xr-demo (max-width: 899.98px) {
+  .xr-demo .xr-timeline-toolbar > :not(.xr-chips):not(.xr-live) {
+    display: none;
+  }
+
+  .xr-demo .xr-timeline-toolbar .xr-live {
+    margin-left: auto;
+  }
+
+  .xr-demo .xr-lane__label {
+    width: 18px;
+    font-size: 0;
+  }
+
+  .xr-demo .xr-overview__axis {
+    margin-left: 26px;
+  }
+
+  .xr-demo .xr-overview__selection {
+    left: 38px;
+  }
+
+  .xr-demo .xr-stream__row {
+    display: grid;
+    grid-template-columns: 13px minmax(0, 1fr);
+    grid-template-areas:
+      'icon summary'
+      'icon meta';
+    gap: 2px 10px;
+    height: 44px;
+  }
+
+  .xr-demo .xr-stream__row > .xr-icon { grid-area: icon; }
+
+  .xr-demo .xr-stream__row > .xr-level { display: none; }
+
+  .xr-demo .xr-stream__summary { grid-area: summary; }
+
+  .xr-demo .xr-stream__time {
+    grid-area: meta;
+    width: auto;
+    font-size: 10.5px;
+  }
+
+  .xr-demo .xr-stream__meta {
+    grid-area: meta;
+    margin-left: 84px;
+    font-size: 10.5px;
+  }
+
+  .xr-demo .xr-timeline-body {
+    position: relative;
+  }
+
+  .xr-demo .xr-event-detail {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    width: auto;
+    max-height: 75%;
+    gap: 12px;
+    padding: 18px;
+    border-left: 0;
+    border-top: 1px solid var(--xr-border);
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -16px 40px var(--xr-shadow);
+  }
+}
+
+/* The sheet doesn't scroll, so the stack trace is cut to its first lines; "Open in Logs" shows it all. */
+@container xr-demo (max-width: 899.98px) {
+  .xr-demo .xr-event-detail .xr-log__stack {
+    max-height: 72px;
+    overflow: hidden;
+  }
+}
+
+/* ---------- Tour ---------- */
+
+.xr-tour__callout.is-sheet {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-width: 1px 0 0;
+  border-radius: 18px 18px 0 0;
+  padding: 18px 18px 22px;
+}
+
+.xr-tour__callout.is-sheet.is-top {
+  top: 0;
+  bottom: auto;
+  border-width: 0 0 1px;
+  border-radius: 0 0 18px 18px;
+}
+
+@container xr-demo (max-width: 899.98px) {
+  .xr-demo .xr-tour-pill {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .xr-demo .xr-chips.is-inline {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+}
+
+/* Before the demo has measured itself, components that look different on phones render both
+   versions; only the one that fits the demo's width is shown. */
+.xr-contents {
+  display: contents;
+}
+
+@container xr-demo (min-width: 900px) {
+  .xr-demo .xr-compact-only {
+    display: none !important;
+  }
+}
+
+@container xr-demo (max-width: 899.98px) {
+  .xr-demo .xr-wide-only {
+    display: none !important;
+  }
+}

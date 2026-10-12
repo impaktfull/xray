@@ -1,0 +1,24 @@
+---
+import { steps } from '../../content/home';
+---
+
+<section class="section how-section" id="how-it-works" aria-labelledby="how-title">
+  <div class="section-header">
+    <span class="eyebrow">How it works</span>
+    <h2 class="section-title" id="how-title">
+      Three steps<span class="accent">.</span><br />No cloud<span class="accent">.</span>
+    </h2>
+  </div>
+
+  <ol class="how-steps">
+    {
+      steps.map((step, index) => (
+        <li class="feature-card how-step">
+          <span class="how-step__number" aria-hidden="true">{index + 1}</span>
+          <h3>{step.title}</h3>
+          <p>{step.body}</p>
+        </li>
+      ))
+    }
+  </ol>
+</section>
