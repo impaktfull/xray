@@ -6,7 +6,7 @@ updated: "[[date of publication]]"
 draft: true
 ---
 
-Cookies are small text files a website stores in your browser. This page lists the cookies on xrayinspector.dev and on xRay's sign-in pages. How we process personal data in general is in the [Privacy Policy](/privacy).
+Cookies are small text files a website stores in your browser. This page lists the cookies on xrayinspector.dev and on xRay's sign-in pages. How we process personal data in general is in the [Privacy Policy](/privacy). The impaktfull sign-in page itself (auth.impaktfull.com) is covered by the [impaktfull account privacy policy](https://account.impaktfull.com/privacy).
 
 ## Strictly necessary cookies
 
@@ -16,7 +16,7 @@ These are always on, because the site or the sign-in does not work without them.
 | --- | --- | --- | --- |
 | `cc_cookie` | xrayinspector.dev | Remembers your cookie choice | 6 months |
 | `xray_sso_flow` | xRay sign-in | Links the sign-in page to your sign-in attempt | 10 minutes, or when the sign-in finishes |
-| `xray_session` | xRay sign-in | Keeps you signed in to the admin portal | 30 days, or when you sign out |
+| `xray_session` | xRay sign-in | Keeps you signed in to the admin portal | 7 days at most; ends after 12 hours without use, or when you sign out |
 
 ## Analytics cookies, only with your consent
 
@@ -41,4 +41,4 @@ The documentation on docs.page uses no analytics cookies.
 
 ## Questions
 
-Email <mark class="legal-placeholder">[[privacy contact email address]]</mark>.
+Email [privacy@impaktfull.com](mailto:privacy@impaktfull.com).

@@ -8,9 +8,11 @@ draft: true
 
 ## Who we are
 
-xRay is made by <mark class="legal-placeholder">[[legal entity name and legal form]]</mark>, <mark class="legal-placeholder">[[registered address]]</mark>, Belgium, company number <mark class="legal-placeholder">[[company number]]</mark> ("impaktfull", "we"). We are the controller of the personal data described on this page.
+xRay is made by Impaktfull BV, Oudesteenweg 51 B1103, 2060 Antwerpen, Belgium, company number BE0803678850 ("impaktfull", "we"). We are the controller of the personal data described on this page.
 
-Questions and requests about your data: <mark class="legal-placeholder">[[privacy contact email address]]</mark>.
+Questions and requests about your data: [privacy@impaktfull.com](mailto:privacy@impaktfull.com).
+
+This page covers xRay only. You sign in to xRay with your impaktfull account, which is described in the [impaktfull account privacy policy](https://account.impaktfull.com/privacy). For impaktfull's website and other services, see the [impaktfull privacy policy](https://www.impaktfull.com/privacy-policy).
 
 ## What xRay does not collect
 
@@ -27,13 +29,15 @@ If that data contains personal data of your app's users, your company is the con
 
 ## The documentation (docs.page)
 
-The documentation is hosted by docs.page, operated by <mark class="legal-placeholder">[[docs.page operator and country]]</mark>, which processes your IP address and browser details to deliver it. The documentation does not use analytics.
+The documentation is hosted by docs.page, operated by <mark class="legal-placeholder">Invertase Limited, United Kingdom [[confirm]]</mark>, which processes your IP address and browser details to deliver it. The documentation does not use analytics.
 
 ## Your xRay account (desktop app and admin portal)
 
-You sign in with your impaktfull account (impaktfull SSO, operated by <mark class="legal-placeholder">[[SSO operator]]</mark>). We receive and store:
+You sign in with your impaktfull account. impaktfull's sign-in service passes xRay your email address, your name and an account identifier. Your impaktfull account itself (sign-in codes, sessions, security logs, connected Google or Microsoft accounts) is described in the [impaktfull account privacy policy](https://account.impaktfull.com/privacy).
 
-- your email address, name and SSO identifier;
+For xRay, we store:
+
+- your email address, name and account identifier;
 - when you signed in, and from which installations: the device name set on your computer (often its host name), platform, app version and, for the admin portal, your browser's user agent;
 - whether you have access, your access requests and our decisions;
 - the service emails we sent you;
@@ -48,37 +52,45 @@ How long we keep it:
 - sent emails: 90 days (180 days for emails that could not be delivered);
 - declined access requests: 12 months;
 - the audit log: 24 months;
-- your account: until you ask us to delete it.
+- your account: until you delete it.
 
-The platform runs on <mark class="legal-placeholder">[[hosting provider and region]]</mark>. Deleting your xRay account does not delete your impaktfull account; <mark class="legal-placeholder">[[where and how the impaktfull SSO account is deleted]]</mark>.
+The xRay platform runs on servers of <mark class="legal-placeholder">Hetzner Online GmbH in Germany [[confirm]]</mark>.
+
+### Deleting your account
+
+You can delete your xRay account in the desktop app under **Settings → Account → Delete account**, or ask us at [privacy@impaktfull.com](mailto:privacy@impaktfull.com). This deletes your xRay account, installations, sessions and access, and removes your address from our records.
+
+Deleting your xRay account does not delete your impaktfull account, which you may use for other impaktfull products. You delete that one under **Profile → GDPR** on [account.impaktfull.com](https://account.impaktfull.com).
 
 ## The desktop app
 
 The desktop app does not send analytics or crash reports. It contacts:
 
 - our server (api.xrayinspector.dev) to sign you in and to check for updates;
+- impaktfull's sign-in service (auth.impaktfull.com) when you sign in;
 - GitHub (api.github.com and github.com) to show the roadmap and to download updates, which shows your IP address to GitHub.
 
-What you inspect, export and configure in the app stays on your computer.
+What you inspect, export and configure in the app stays on your computer. **Settings → Account → Clear local data** removes the history the app keeps on your computer.
 
 ## Emails
 
-We only send service emails, such as the decision on your access request and notifications to our admins, through <mark class="legal-placeholder">[[email (SMTP) provider and its location]]</mark>. We do not send marketing emails.
+We only send service emails, such as the decision on your access request and notifications to our admins, through <mark class="legal-placeholder">Brevo (Sendinblue SAS), France [[confirm]]</mark>. We do not send marketing emails.
 
 ## Who receives personal data
 
-- GitHub, Inc.: website hosting, roadmap and app downloads;
+- GitHub, Inc. (USA): website hosting, roadmap and app downloads;
 - Google: website analytics, only with your consent;
 - docs.page: documentation hosting;
-- <mark class="legal-placeholder">[[hosting provider]]</mark>: hosting of the xRay platform;
-- <mark class="legal-placeholder">[[email (SMTP) provider]]</mark>: service emails;
-- <mark class="legal-placeholder">[[SSO operator]]</mark>: sign-in.
+- <mark class="legal-placeholder">Hetzner Online GmbH (Germany) [[confirm]]</mark>: hosting of the xRay platform;
+- <mark class="legal-placeholder">Brevo (France) [[confirm]]</mark>: service emails.
+
+Sign-in runs on impaktfull's own sign-in service, so your sign-in data stays with impaktfull.
 
 We do not sell personal data. Where data leaves the European Economic Area, the transfer relies on an adequacy decision (such as the EU-US Data Privacy Framework) or the European Commission's standard contractual clauses.
 
 ## Your rights
 
-You can ask us for access to your data, to correct or delete it, to restrict its processing, or for a copy to take elsewhere, and you can object to processing based on our legitimate interest. Email <mark class="legal-placeholder">[[privacy contact email address]]</mark>; we answer within one month.
+You can ask us for access to your data, to correct or delete it, to restrict its processing, or for a copy to take elsewhere, and you can object to processing based on our legitimate interest. Email [privacy@impaktfull.com](mailto:privacy@impaktfull.com); we answer within one month.
 
 You can also lodge a complaint with the Belgian Data Protection Authority (Gegevensbeschermingsautoriteit / Autorité de protection des données), Drukpersstraat 35, 1000 Brussels, [www.dataprotectionauthority.be](https://www.dataprotectionauthority.be).
 
