@@ -1,12 +1,12 @@
 {
   "$schema": "https://docs.page/schema.json",
   "name": "xRay (inspector)",
-  "description": "A comprehensive Flutter debugging toolkit for inspecting network calls, logs, and key-value storage.",
+  "description": "xRay is a desktop inspector for Flutter teams: network calls, logs, key-value storage and files of a running debug build on one timeline, over your local network.",
   "logo": {
     "light": "https://xrayinspector.dev/assets/logo_docs_dark.png",
     "dark": "https://xrayinspector.dev/assets/logo_docs.png"
   },
-  "theme":{
+  "theme": {
     "primaryLight": "#7d64f2",
     "primaryDark": "#7d64f2"
   },
@@ -25,7 +25,7 @@
     {
       "title": "Desktop App",
       "icon": "desktop",
-      "href": "xray/app/install-macos"
+      "href": "/app/install-macos"
     }
   ],
   "sidebar": [
@@ -41,13 +41,17 @@
       "pages": [
         { "title": "🍎 Install on macOS", "href": "/app/install-macos" },
         { "title": "🪟 Install on Windows", "href": "/app/install-windows" },
-        { "title": "🐧 Install on Linux", "href": "/app/install-linux" }
+        { "title": "🐧 Install on Linux", "href": "/app/install-linux" },
+        { "title": "👤 Account and access", "href": "/app/account-and-access" },
+        { "title": "🖥️ Using the desktop app", "href": "/app/desktop-app" },
+        { "title": "📤 Sessions and export", "href": "/app/sessions-and-export" }
       ]
     },
     {
       "group": "Guides",
       "pages": [
         { "title": "⚙️ How it works", "href": "/guides/how-it-works" },
+        { "title": "🔒 Protected connections", "href": "/guides/protected-connections" },
         { "title": "🌐 Network Inspection", "href": "/guides/network-inspection" },
         { "title": "📋 Log Inspection", "href": "/guides/log-inspection" },
         { "title": "🗄️ Key-Value Inspection", "href": "/guides/key-value-inspection" },
@@ -59,8 +63,11 @@
       "pages": [
         { "title": "📦 xray_inspector", "href": "/packages/xray-inspector" },
         { "title": "🔌 xray_network_dio_interceptor", "href": "/packages/xray-network-dio-interceptor" },
+        { "title": "🛰️ xray_serverpod_interceptor", "href": "/packages/xray-serverpod-interceptor" },
         { "title": "💾 xray_shared_preferences_inspector", "href": "/packages/xray-shared-preferences-inspector" },
-        { "title": "🔐 xray_secure_storage_inspector", "href": "/packages/xray-secure-storage-inspector" }
+        { "title": "🔐 xray_secure_storage_inspector", "href": "/packages/xray-secure-storage-inspector" },
+        { "title": "📱 xray_device_actions", "href": "/packages/xray-device-actions" },
+        { "title": "🧩 xray_inspector_core", "href": "/packages/xray-inspector-core" }
       ]
     },
     {
