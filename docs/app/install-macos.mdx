@@ -3,12 +3,13 @@ title: Install on macOS
 description: Install the xRay macOS app via Homebrew or a direct DMG download.
 ---
 
-The xRay macOS app is the desktop UI client for inspecting Flutter apps that run the `xray_inspector` server. It is distributed as a signed and notarized `.dmg` on GitHub Releases, and as a Homebrew Cask.
+The xRay macOS app connects to Flutter apps that run `xray_inspector` on your local network. It is distributed as a signed and notarized `.dmg` on GitHub Releases, and as a Homebrew Cask.
 
 ## Requirements
 
-- macOS 10.15 (Catalina) or later
+- macOS 12 (Monterey) or later
 - Apple Silicon (Intel not tested)
+- An impaktfull account with approved xRay alpha access (see [Account and access](/app/account-and-access))
 - A running Flutter app with `xray_inspector` configured (see [Quick Start](/getting-started))
 
 ## Option 1 — Homebrew (recommended)
@@ -48,13 +49,28 @@ brew uninstall --cask xray
 
 The DMG is signed with a Developer ID certificate and notarized by Apple, so Gatekeeper will open it without additional prompts.
 
-## Verify the installation
+## Allow xRay on your network
 
-Launch xRay and confirm the app starts. When your Flutter app with `xray_inspector` is running on the same network, it will appear in the device list automatically via UDP discovery.
+xRay finds your Flutter apps by listening on your local network. The first time xRay looks for apps, macOS asks whether xRay may find devices on your local network: allow it. If you declined, turn xRay on under **System Settings → Privacy & Security → Local Network**.
+
+## Sign in and get access
+
+1. Click **Continue with impaktfull**. Your browser opens to finish signing in with your impaktfull account.
+2. xRay is in alpha and open to approved testers. The first time, click **Request access**. You get an email once your request is approved; then click **Check again** to start using xRay.
+
+See [Account and access](/app/account-and-access) for what happens to your data and how the free alpha license works.
+
+## Connect to your app
+
+1. Run your Flutter app with `xray_inspector` set up (see [Quick Start](/getting-started)).
+2. In xRay, open **Add Connection**. Your app appears under **Discovered on your network**.
+3. Click it and enter the pairing code your app printed in its console, on the line that starts with `[xray_inspector] Pairing code:`. xRay remembers it for this app on this device. If the app uses a password or [trusted desktops](/guides/protected-connections#trusted-desktops) instead, enter the password, or connect without a prompt.
+
+If your app does not appear, see [Troubleshooting discovery](/guides/how-it-works#troubleshooting-discovery).
 
 ## Next steps
 
-- [Quick Start](/getting-started) — set up `xray_inspector` in your Flutter app
+- [Quick Start](/getting-started): set up `xray_inspector` in your Flutter app
+- [Using the desktop app](/app/desktop-app)
 - [Network Inspection](/guides/network-inspection)
-- [Log Inspection](/guides/log-inspection)
-- [Key-Value Inspection](/guides/key-value-inspection)
+- [Protected connections](/guides/protected-connections)

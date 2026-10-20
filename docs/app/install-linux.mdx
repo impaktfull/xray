@@ -3,11 +3,12 @@ title: Install on Linux
 description: Run the xRay Linux app as an AppImage.
 ---
 
-The xRay Linux app is the desktop UI client for inspecting Flutter apps that run the `xray_inspector` server. It is distributed as an AppImage on GitHub Releases: one file that runs on most distributions, without installing anything as root.
+The xRay Linux app connects to Flutter apps that run `xray_inspector` on your local network. It is distributed as an AppImage on GitHub Releases: one file that runs on most distributions, without installing anything as root.
 
 ## Requirements
 
 - A 64-bit (x86_64) Linux desktop
+- An impaktfull account with approved xRay alpha access (see [Account and access](/app/account-and-access))
 - A running Flutter app with `xray_inspector` configured (see [Quick Start](/getting-started))
 - These system libraries:
   - **GTK 3**, the desktop toolkit xRay is drawn with.
@@ -44,17 +45,28 @@ chmod +x xRay-*-x86_64.AppImage
 
 Keep the AppImage where you saved it: xRay registers that file so your browser can return to it after signing in. To get xRay in your application menu, use an AppImage manager such as [Gear Lever](https://flathub.org/apps/it.mijorus.gearlever) or [AppImageLauncher](https://github.com/TheAssassin/AppImageLauncher).
 
-## Sign in
-
-Signing in opens your browser. After you sign in, the browser asks to open xRay: allow it, and the sign-in continues in the app.
-
 ## Update
 
 xRay tells you when a new version is available. Download the new AppImage, make it executable, and remove the old one.
 
+## Sign in and get access
+
+1. Click **Continue with impaktfull**. Your browser opens to finish signing in with your impaktfull account. After you sign in, the browser asks to open xRay: allow it, and the sign-in continues in the app.
+2. xRay is in alpha and open to approved testers. The first time, click **Request access**. You get an email once your request is approved; then click **Check again** to start using xRay.
+
+See [Account and access](/app/account-and-access) for what happens to your data and how the free alpha license works.
+
+## Connect to your app
+
+1. Run your Flutter app with `xray_inspector` set up (see [Quick Start](/getting-started)).
+2. In xRay, open **Add Connection**. Your app appears under **Discovered on your network**.
+3. Click it and enter the pairing code your app printed in its console, on the line that starts with `[xray_inspector] Pairing code:`. xRay remembers it for this app on this device. If the app uses a password or [trusted desktops](/guides/protected-connections#trusted-desktops) instead, enter the password, or connect without a prompt.
+
+If your app does not appear, see [Troubleshooting discovery](/guides/how-it-works#troubleshooting-discovery).
+
 ## Next steps
 
-- [Quick Start](/getting-started) — set up `xray_inspector` in your Flutter app
+- [Quick Start](/getting-started): set up `xray_inspector` in your Flutter app
+- [Using the desktop app](/app/desktop-app)
 - [Network Inspection](/guides/network-inspection)
-- [Log Inspection](/guides/log-inspection)
-- [Key-Value Inspection](/guides/key-value-inspection)
+- [Protected connections](/guides/protected-connections)
