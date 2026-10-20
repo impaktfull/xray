@@ -14,10 +14,11 @@ description: xRay is a desktop inspector for Flutter teams. See a debug build's 
 - **Timeline**: calls, logs and key-value changes in the order they happened.
 - **Device actions**: change appearance, locale and text size, open deep links, send simulated pushes and override feature flags.
 - **Sessions**: export what you captured as an `.xray` file or HAR, with secrets redacted, and open a teammate's session read-only. Export a single call as cURL or Markdown.
+- **MCP**: let an AI assistant such as Claude Code, Cursor or VS Code read the apps open in xRay, redacted, while you debug. See [MCP](/app/mcp).
 
 ## Why teams use it
 
-- **It stays on your network.** What the inspectors capture goes straight from your app to the xRay desktop apps that connect to it, never to a cloud. Only your sign-in goes to the xRay platform, and xRay sends no telemetry.
+- **It stays on your network.** What the inspectors capture goes straight from your app to the xRay desktop apps that connect to it, never to a cloud. Only your sign-in goes to the xRay platform, and xRay sends no telemetry. If you connect an AI assistant through [MCP](/app/mcp), it reads that data on your computer.
 - **Protected and encrypted by default.** Your app accepts a connection only with its pairing code, a password, or from a trusted desktop, and all traffic is encrypted.
 - **Debug builds only.** The inspector does not start in release or profile builds, unless you explicitly allow it in a protected internal build.
 - **Free during the alpha** for approved testers.
@@ -62,6 +63,7 @@ The inspector server runs inside your app. The desktop app finds it on the local
 - [File Inspection](/guides/file-inspection)
 - [Using the desktop app](/app/desktop-app)
 - [Sessions and export](/app/sessions-and-export)
+- [MCP](/app/mcp): connect an AI assistant
 
 ## Packages
 
