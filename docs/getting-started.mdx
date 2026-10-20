@@ -191,5 +191,6 @@ await inspectorServer.stop();
 - **You are responsible for it.** If your app handles personal data of its users, that data can show up in xRay. Your company decides how it is handled, as the controller of that data.
 - **Use test accounts and test data** in builds with xRay, not real users' accounts.
 - **Credentials are masked by default.** `Authorization`, `Cookie` and other credential headers are masked before a call is stored. See [Masking credentials](/guides/network-inspection#masking-credentials).
+- **AI assistants read only what you allow.** With [MCP](/app/mcp) switched on, an assistant on your computer can read the apps open in xRay, always redacted. xRay sends nothing anywhere, but the assistant may send what it reads to its AI provider.
 - **Redact before you share.** Exported sessions are files that can contain tokens and personal data. The desktop app redacts common secrets by default when exporting; check what an export contains before you share it, and share it only with people who need it.
 - **Keep xRay out of builds that reach end users** or public beta testers, and never enable `allowInReleaseMode` in them.

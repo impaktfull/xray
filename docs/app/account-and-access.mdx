@@ -39,6 +39,7 @@ During the alpha, approved testers get the **Alpha Tester License**: you can use
 - **Update checks**: your xRay version, to tell you about new releases.
 - **Roadmap and changelog**: read from GitHub's public API. Nothing about you or your apps is sent.
 - **Your app's data**: network calls, logs, keys and files never leave your computer, except in the [exports](/app/sessions-and-export) you make yourself.
+- **To an AI assistant on this computer**, only while [MCP](/app/mcp) is on (**Settings → MCP**, off by default). xRay sends it nowhere else, but the assistant may send what it reads to its AI provider.
 
 xRay sends no analytics, telemetry or crash reports. The [privacy policy](https://xrayinspector.dev/privacy) has the details.
 
@@ -49,14 +50,14 @@ xRay remembers, on your computer only:
 - the apps it reopens on launch, with their app and device names, and their per-app settings;
 - recent deep links and saved push notifications (shown under **Settings → Privacy & data → Device action history**);
 - saved filters, redaction rules, pane sizes and display options;
-- the passwords and pairing codes of protected apps, and your desktop key, in your system's credential store (Keychain, Windows Credential Manager or the Secret Service on Linux);
+- the passwords and pairing codes of protected apps, your desktop key and the MCP token, in your system's credential store (Keychain, Windows Credential Manager or the Secret Service on Linux);
 - your sign-in.
 
 ### Clear local data
 
-**Settings → Account → Local data → Clear…** removes the apps reopened on launch, recent deep links, push presets, saved filters, per-app settings and every remembered app password. It keeps your account (use **Sign out** for that), your desktop key (use **Regenerate** for that), the discovery port and the language.
+**Settings → Account → Local data → Clear…** removes the apps reopened on launch, recent deep links, push presets, saved filters, per-app settings and every remembered app password. It also clears the MCP server's recent activity. It keeps your account (use **Sign out** for that), your desktop key and the MCP token (use **Regenerate** for those), the discovery port and the language.
 
-**Settings → Advanced → Reset all settings** puts remembered servers, filter presets, redaction rules, pane sizes, the discovery port and display options back to their defaults. You stay signed in.
+**Settings → Advanced → Reset all settings** puts remembered servers, filter presets, redaction rules, pane sizes, the discovery port and display options back to their defaults, and switches the MCP server off. You stay signed in, and the MCP token stays.
 
 ### Delete your account
 

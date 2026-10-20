@@ -62,4 +62,6 @@ A rule matches a whole name, ignoring case, and `*` matches any text.
 
 When redaction is off, the export says so: tokens, cookies and passwords are then exported as captured.
 
+The same rules always apply to what an AI assistant reads through [MCP](/app/mcp), and an assistant cannot turn them off.
+
 The SDK in your app also [masks credential headers](/guides/network-inspection#masking-credentials) before a call is stored, so `Authorization` and cookie values never reach xRay in full unless your app allows it.
