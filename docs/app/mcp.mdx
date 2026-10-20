@@ -188,12 +188,16 @@ Use **Other** in xRay: the URL `http://127.0.0.1:7799/mcp` with the header `Auth
 
 ## What the assistant can read
 
-The assistant sees the connection tabs open in xRay's window, live and recorded, as you see them, including tabs that disconnected and still hold their data. It cannot open, close, connect or pair a tab: protected apps are only visible once you have connected them yourself.
+xRay's MCP server has 27 tools: 18 that are always available and 9 actions. **Settings → MCP → Tools → View tools** lists them all in your language, with what each one does and a question to ask your assistant that makes it use the tool.
+
+The assistant sees the connection tabs open in xRay's window, live and recorded, as you see them, including tabs that disconnected and still hold their data.
 
 | Tool | What it does |
 | --- | --- |
-| `list_connections` | The apps open in xRay, with their inspectors and how many items each holds. |
-| `search` | Searches network calls, logs and key-value entries, like the command menu. |
+| `list_connections` | The apps open in xRay, with their inspectors, how many items each holds, and the app and OS version when the app uses [`xray_device_actions`](/packages/xray-device-actions). |
+| `list_available_apps` | Apps that are not open yet: the ones you connected before and the ones that announced themselves since xRay started, and whether the assistant can connect them. See [Connecting apps](#connecting-apps). |
+| `connect_app` | Opens a tab for an app you trusted before, without asking you anything. |
+| `search` | Searches network calls, logs and key-value entries, like the command menu, in one app or in several. |
 | `list_network_calls` | Network calls, newest first, filtered by method, status (`failed` too), host, URL, text, GraphQL operation and time. |
 | `get_network_call` | One call: headers, timing, GraphQL, its request or response body page by page, or its WebSocket messages. |
 | `list_logs` | Log entries, filtered by level, logger, text and time. |
@@ -202,14 +206,30 @@ The assistant sees the connection tabs open in xRay's window, live and recorded,
 | `get_key_value_entry` | One entry with its whole value. |
 | `list_files` | One folder of the app's files. The app must be connected. |
 | `read_text_file` | A text file of the app, up to 1 MiB. Binary files are refused. |
-| `get_timeline` | Calls, logs and key-value changes merged by time, as the Timeline tab shows them. |
+| `get_timeline` | Calls, logs and key-value changes merged by time, as the Timeline tab shows them, for one app or several. |
 | `get_device_state` | The quick settings, feature flags and routes from the Device actions drawer. |
 | `export_network_call` | One call as a cURL command or as Markdown, redacted. |
 | `show_in_xray` | Selects the app's tab in xRay and shows a call, log entry or key-value entry, so you can look at it. |
+| `wait_for` | Waits up to 30 seconds for the next network call or log entry that matches, for example right after an action. |
+| `open_session` | Opens a saved `.xray` session file as a recorded tab, so the assistant can read it. |
 
 Most tools work on the tab selected in xRay unless the assistant names another connection. Lists are newest first and paged, and long bodies are paged too, so the assistant reads only what it asks for.
 
 There is also a prompt, `debug_with_xray`, that tells the assistant how to start (in Claude Code: `/mcp__xray__debug_with_xray`).
+
+### Connecting apps
+
+An assistant can open a tab for an app only when you already gave xRay the trust it needs, so it never asks you for a pairing code or password:
+
+- the app trusts this computer's desktop key (trusted desktops);
+- you connected the app before and its pairing code or password is saved in your credential store;
+- you connected the app before and it has no protection.
+
+`list_available_apps` says for every app whether that is the case, and if not, why: an app you never connected, or one that needs a pairing code or password typed in now, has to be connected by you in xRay first. When the assistant connects an app, xRay shows a notice such as "claude-code connected to Acme Shop · Pixel 8" and lists it under **Recent activity**. The assistant cannot close tabs.
+
+### Several apps at once
+
+When you test two phones, or an app and its backend, the assistant can read them together: `get_timeline` and `search` take several connections, or all open tabs, and merge the result by time, with the app on every row. The other tools read one app at a time.
 
 ### Example prompts
 
@@ -217,6 +237,8 @@ There is also a prompt, `debug_with_xray`, that tells the assistant how to start
 - "List the failed calls of the last 5 minutes and the error logs around them."
 - "Compare the request body of the last two POST /api/orders calls."
 - "What's stored in shared preferences for the user session?"
+- "Connect the Pixel and the iPhone and compare their logs around the crash."
+- "Open checkout-bug.xray from my Downloads folder and find the failing call."
 - With actions on: "Export this session as HAR." or "Open shop://cart and tell me which calls it makes."
 
 ## Actions
@@ -271,7 +293,9 @@ xRay sends nothing anywhere, but your assistant may send what it reads to its AI
 
 **It still fails after a new token or port.** Most assistants read their MCP setup when they start. Restart the assistant, or reconnect the server, after changing the setup.
 
-**The assistant sees no apps.** It only sees the tabs open in xRay. Connect your app in xRay first with **Add Connection**.
+**The assistant sees no apps.** It sees the tabs open in xRay, and can open apps you trusted before. Connect your app in xRay first with **Add Connection**.
+
+**"Needs the pairing code or password".** The assistant can't type a code for you. Connect the app once in xRay; after that its code is saved and the assistant can connect it.
 
 **Values show as `●●●●`.** Your redaction rules hid them. That is on purpose; the assistant should not guess them.
 
