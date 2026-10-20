@@ -1,19 +1,19 @@
 ---
 title: xray_shared_preferences_inspector
-description: Key-value inspector for SharedPreferences.
+description: Key-value inspector for SharedPreferences. Browse, edit, add and delete preferences with their types from the xRay desktop app.
 ---
 
 [![pub package](https://img.shields.io/pub/v/xray_shared_preferences_inspector.svg)](https://pub.dev/packages/xray_shared_preferences_inspector)
 
-Exposes `SharedPreferences` entries in the inspector UI, with support for reading, writing, and deleting values at runtime.
+Shows your app's `SharedPreferences` in the **Key-Value** tab of the xRay desktop app, where you can browse, edit, add and delete them while the app runs.
 
 ## Installation
 
 ```yaml
 dependencies:
-  xray_inspector: ^0.0.1
-  xray_shared_preferences_inspector: ^0.0.1
-  shared_preferences: ^2.0.0
+  xray_inspector: ^0.1.0
+  xray_shared_preferences_inspector: ^0.1.0
+  shared_preferences: ^2.2.0
 ```
 
 ## Usage
@@ -26,16 +26,17 @@ final prefs = await SharedPreferences.getInstance();
 final inspector = XRaySharedPreferencesInspector(prefs: prefs);
 ```
 
-Then pass it to `XRayInspectorServerConfig`. See [Quick Start](/getting-started) for full server setup.
+Then pass it to `XRayInspectorServerConfig`. See [Quick Start](/getting-started) for the full server setup.
 
 ## Capabilities
 
-- **Read** — lists all stored key-value pairs
-- **Write** — updates a value by key (stored as string)
-- **Delete** — removes a key
-- **Refresh** — re-reads all values on demand
+- **Read**: lists every key with its value and type (`String`, `bool`, `int`, `double` or `List<String>`).
+- **Edit**: writes the new value back with the type the key already has, so your app keeps reading it with the same getter. A value that does not fit that type is refused with a message.
+- **Add**: creates a key with any of these types.
+- **Delete**: removes a key.
+- **Refresh**: re-reads all values on demand.
 
 ## Notes
 
-- All values are read and written as strings. Typed values (int, bool, etc.) stored by `SharedPreferences` will appear as their string representation.
-- The inspector title defaults to `"SharedPreferences"` and is shown in the remote UI.
+- String lists are shown and edited as JSON arrays.
+- The inspector's title is `"Shared Preferences"`, shown in the desktop app.

@@ -1,50 +1,56 @@
 ---
 title: xray_secure_storage_inspector
-description: Key-value inspector for flutter_secure_storage.
+description: Key-value inspector for flutter_secure_storage. Browse, edit, add and delete secure storage entries from the xRay desktop app.
 ---
 
 [![pub package](https://img.shields.io/pub/v/xray_secure_storage_inspector.svg)](https://pub.dev/packages/xray_secure_storage_inspector)
 
-Exposes `flutter_secure_storage` entries in the inspector UI, with support for reading, writing, and deleting values at runtime.
+Shows your app's `flutter_secure_storage` entries in the **Key-Value** tab of the xRay desktop app, where you can browse, edit, add and delete them while the app runs.
 
 ## Installation
 
 ```yaml
 dependencies:
-  xray_inspector: ^0.0.1
-  xray_secure_storage_inspector: ^0.0.1
-  flutter_secure_storage: ^9.0.0
+  xray_inspector: ^0.1.0
+  xray_secure_storage_inspector: ^0.1.0
+  flutter_secure_storage: ^10.0.0 # 9.x, 10.x and 11.x are supported
 ```
 
 ## Usage
 
 ```dart
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:xray_secure_storage_inspector/xray_secure_storage_inspector.dart';
 
-final inspector = XRaySecureStorageInspector(
-  secureStorage: const FlutterSecureStorage(),
-);
+final inspector = XRaySecureStorageInspector();
 ```
 
-Then pass it to `XRayInspectorServerConfig`. See [Quick Start](/getting-started) for full server setup.
+It uses a default `const FlutterSecureStorage()`. When your app sets options, pass the same instance your app uses:
+
+```dart
+final inspector = XRaySecureStorageInspector(storage: secureStorage);
+```
+
+Then pass it to `XRayInspectorServerConfig`. See [Quick Start](/getting-started) for the full server setup.
 
 ## Capabilities
 
-- **Read** — lists all stored key-value pairs
-- **Write** — updates a value by key
-- **Delete** — removes a key
-- **Refresh** — re-reads all values on demand
+- **Read**: lists every stored key and value.
+- **Edit**: updates a value by key.
+- **Add**: creates a key. Secure storage only stores strings, so that is the one type it offers.
+- **Delete**: removes a key.
+- **Refresh**: re-reads all values on demand.
+
+The inspector's title is `"Secure Storage"`, shown in the desktop app.
 
 ## Security notice
 
-This package is intended for **development and QA builds only**. Exposing secure storage contents over the network is a security risk. Do not include this inspector in production builds.
+Secure storage often holds tokens and passwords, so include this inspector in debug builds only, and keep the connection [protected](/guides/protected-connections). Exposing secure storage over the network in builds that reach end users is a security risk.
+
+If you set up xRay outside a `kReleaseMode` guard, add this inspector only when `kDebugMode` is true:
 
 ```dart
-// Recommended: only add in debug/profile builds
+final inspectors = <XRayInspector>[networkInspector, logInspector];
 if (kDebugMode) {
-  inspectors.add(XRaySecureStorageInspector(
-    secureStorage: const FlutterSecureStorage(),
-  ));
+  inspectors.add(XRaySecureStorageInspector());
 }
 ```
