@@ -40,7 +40,7 @@ The **Timeline** tab (⌘0) shows everything your app did on one time axis: netw
 
 | Tab | Shortcut | What it shows | Guide |
 | --- | -------- | ------------- | ----- |
-| **Network** | ⌘1 | HTTP calls, GraphQL operations, WebSockets and Serverpod calls | [Network Inspection](/guides/network-inspection) |
+| **Network** | ⌘1 | HTTP calls, GraphQL operations, WebSockets, protobuf bodies and Serverpod calls | [Network Inspection](/guides/network-inspection) |
 | **Logs** | ⌘2 | Log entries with level, logger, error and stack trace | [Log Inspection](/guides/log-inspection) |
 | **Key-Value** | ⌘3 | Shared preferences, secure storage and your own stores; edit and add keys | [Key-Value Inspection](/guides/key-value-inspection) |
 | **Files** | ⌘4 | Your app's files: browse, preview, save and delete | [File Inspection](/guides/file-inspection) |
@@ -53,6 +53,7 @@ A tab your app did not register says so, with a link to the setup.
 - Each call shows its request and response headers and bodies, with JSON as a tree or as raw text, its timing and its payload sizes, also for large, binary, streamed and compressed bodies.
 - **GraphQL** operations are shown by name, with tabs for the **Operation**, **Variables**, **Data**, **Errors** and **Extensions**. Errors returned with a `200` are counted as failures. Filter on **Query**, **Mutation** or **Subscription**.
 - **WebSockets** show a **Messages** tab with every message in both directions, and how the connection closed.
+- **Protobuf**, gRPC-web and Connect bodies are decoded into a tree, by field number or, with your `.proto` files pinned, by name. See [Protocol Buffers](/guides/protobuf).
 - **Serverpod** calls show their endpoint and method, the server, whether the call was signed in and the user id.
 - Calls from background isolates show which isolate made them.
 - Right-click a header or a JSON key to copy its name, value or both, or a call to export it. See [Export a single call](/app/sessions-and-export#export-a-single-call).
@@ -87,7 +88,7 @@ Drag the dividers to resize the calls list, the request and response split and t
 **Settings → Inspectors** changes how every tab shows what it captured. Changes apply to open tabs right away.
 
 - **Display**: **Row density** (**Comfortable** or **Compact**, which fits about a third more rows), **Wrap long lines**, how **JSON bodies** open (tree or raw), and **Timestamps** (clock time with milliseconds, or the time since the app connected).
-- **Network**: **Open a call on** (which response tab is selected first), **Detect GraphQL operations**, **Count GraphQL errors as failed calls**, and **Hide hosts**: calls to these hosts (`api.example.com`, or `*.example.com` for a domain and its subdomains) are still captured, and exported, but left out of lists and search.
+- **Network**: **Open a call on** (which response tab is selected first), **Detect GraphQL operations**, **Count GraphQL errors as failed calls**, **Protobuf schemas** (the [schema folders](/guides/protobuf#pin-your-schema-folders) pinned per app), and **Hide hosts**: calls to these hosts (`api.example.com`, or `*.example.com` for a domain and its subdomains) are still captured, and exported, but left out of lists and search.
 - **Captured data**: **Clear when an app reconnects**.
 - **Filter presets**: the presets you saved from the Network or Logs filter.
 

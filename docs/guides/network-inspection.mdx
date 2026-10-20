@@ -1,6 +1,6 @@
 ---
 title: Network Inspection
-description: Capture HTTP calls, GraphQL operations, WebSockets and Serverpod calls from Dio, package:http or any dart:io client, with credentials masked by default.
+description: Capture HTTP calls, GraphQL operations, WebSockets, protobuf bodies and Serverpod calls from Dio, package:http or any dart:io client, with credentials masked by default.
 ---
 
 The network inspector captures every request, response and error your app makes, and keeps them in memory so the xRay desktop app can show them as they happen. This page describes `xray_inspector` 0.1.0.
@@ -74,6 +74,10 @@ The desktop app also redacts sessions and calls you export, with rules you manag
 GraphQL needs no setup. The desktop app recognises GraphQL operations in the calls the network inspector captures and shows them by operation name, with their variables, and errors returned with a `200`. You can turn this off under **Settings → Inspectors → Detect GraphQL operations**.
 
 Subscriptions over a WebSocket that uses `graphql-transport-ws` or `subscriptions-transport-ws` are shown as GraphQL subscriptions.
+
+## Protocol Buffers
+
+Protobuf, gRPC-web and Connect bodies need no setup either. The inspector keeps their bytes, and the desktop app decodes them by field number or, with your `.proto` files pinned, by name. See [Protocol Buffers](/guides/protobuf). Native gRPC over HTTP/2 is not captured.
 
 ## WebSockets
 
