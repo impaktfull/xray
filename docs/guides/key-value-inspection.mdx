@@ -1,13 +1,11 @@
 ---
 title: Key-Value Inspection
-description: Inspect, edit, and delete SharedPreferences and flutter_secure_storage entries at runtime.
+description: Browse, edit, add and delete SharedPreferences, flutter_secure_storage or any other key-value store from the xRay desktop app.
 ---
 
-Key-value inspectors let you read, write, and delete entries in persistent storage (SharedPreferences, flutter_secure_storage) from the remote UI at runtime.
+Key-value inspectors let you browse, edit, add and delete entries in persistent storage (SharedPreferences, flutter_secure_storage, or a store of your own) from the xRay desktop app while your app runs.
 
 ## SharedPreferences
-
-### Setup
 
 ```dart
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,22 +15,23 @@ final prefs = await SharedPreferences.getInstance();
 final sharedPrefsInspector = XRaySharedPreferencesInspector(prefs: prefs);
 ```
 
-Pass it to `XRayInspectorServerConfig` alongside your other inspectors. See [Quick Start](/getting-started) for full server setup.
+Values keep their type: the desktop app shows each key's type (`String`, `bool`, `int`, `double` or `List<String>`) and writes an edit back with that type, so your app keeps reading it with the same getter. New keys can be added with any of these types. See [`xray_shared_preferences_inspector`](/packages/xray-shared-preferences-inspector).
 
-## Secure Storage
-
-### Setup
+## Secure storage
 
 ```dart
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:xray_secure_storage_inspector/xray_secure_storage_inspector.dart';
 
-final secureStorageInspector = XRaySecureStorageInspector(
-  secureStorage: const FlutterSecureStorage(),
-);
+final secureStorageInspector = XRaySecureStorageInspector();
 ```
 
-> **Security notice:** Only include this inspector in debug/QA builds. Exposing secure storage over the network is a security risk — do not ship it in production.
+It uses a default `FlutterSecureStorage`. Pass your own with `storage:` when your app sets options such as Android or iOS settings. See [`xray_secure_storage_inspector`](/packages/xray-secure-storage-inspector).
+
+<Warning>
+Secure storage often holds tokens and passwords. Only include this inspector in debug builds, and keep the connection [protected](/guides/protected-connections).
+</Warning>
+
+Pass the inspectors to `XRayInspectorServerConfig` alongside your other inspectors. See [Quick Start](/getting-started) for the full server setup.
 
 ## Custom key-value source
 
@@ -46,8 +45,8 @@ class MyCustomSource implements XRayKeyValueSource {
   String get title => 'My Store';
 
   @override
-  Future<Map<String, String>> readAll() async {
-    // Return all key-value pairs
+  Future<Map<String, String?>> readAll() async {
+    // Return all key-value pairs, as text
     return {'key': 'value'};
   }
 
@@ -62,56 +61,90 @@ class MyCustomSource implements XRayKeyValueSource {
   }
 }
 
-// Use it with XRayKeyValueInspector
-final customInspector = XRayKeyValueInspector(
-  source: MyCustomSource(),
-);
+final customInspector = XRayKeyValueInspector(source: MyCustomSource());
+```
+
+### Typed values
+
+Two optional interfaces let the desktop app show and create values with their type:
+
+- **`XRayTypedKeyValueSource`** adds `readTypes()`, which returns the Dart type of each key (`String`, `bool`, `int`, `double` or `List<String>`). The desktop app then shows and edits each value as that type.
+- **`XRayTypedWriteKeyValueSource`** adds `supportedTypes` and `writeTyped(key, value, type)`, so the desktop app can **add** keys your app has not written yet. Throw a `FormatException` when a value is not valid for its type; the desktop app shows the message.
+
+```dart
+class MyTypedSource
+    implements XRayTypedKeyValueSource, XRayTypedWriteKeyValueSource {
+  // title, readAll, write and delete as above
+
+  @override
+  Future<Map<String, String>> readTypes() async => {'launch_count': 'int'};
+
+  @override
+  List<XRayKeyValueType> get supportedTypes => [
+        XRayKeyValueType.string,
+        XRayKeyValueType.integer,
+      ];
+
+  @override
+  Future<void> writeTyped(String key, String value, XRayKeyValueType type) async {
+    // Store value (numbers as text, lists as a JSON array) as type
+  }
+}
 ```
 
 ## Accessing entries in code
 
 ```dart
-// Trigger a refresh (reads all entries from the source)
+// Read all entries from the source
 await inspector.refresh();
 
-// Reactive entries
-ValueListenableBuilder<List<InspectorKeyValueEntry>>(
-  valueListenable: inspector.entriesNotifier,
-  builder: (context, entries, _) {
-    return ListView(
-      children: entries.map((e) => Text('${e.key}: ${e.value}')).toList(),
-    );
-  },
-);
+// Called whenever the entries change
+void onEntriesChanged() {
+  for (final entry in inspector.entriesNotifier.value) {
+    debugPrint('${entry.key} (${entry.type}): ${entry.value}');
+  }
+}
+
+inspector.entriesNotifier.addListener(onEntriesChanged);
+
+// Clean up when done
+inspector.entriesNotifier.removeListener(onEntriesChanged);
 ```
+
+`entriesNotifier` is a small `Watchable` from `xray_inspector`, not a Flutter `ValueListenable`. To rebuild a widget, call `setState` from the listener.
 
 ## Writing and deleting entries
 
 ```dart
 await inspector.write('theme', 'dark');
+await inspector.writeTyped('launch_count', '3', XRayKeyValueType.integer);
 await inspector.delete('onboarding_complete');
 ```
 
-Calling `write` or `delete` automatically triggers a refresh.
+`write`, `writeTyped` and `delete` refresh the entries afterwards. `writeTyped` throws an `UnsupportedError` when the source cannot create keys.
 
 ## Clearing all entries
 
 ```dart
-inspector.clear(); // Deletes all keys from the source
+inspector.clear(); // Deletes every key from the source
 ```
 
 ## Key-value entry model
 
-| Field   | Type     | Description                 |
-| ------- | -------- | --------------------------- |
-| `key`   | `String` | Entry key                   |
-| `value` | `String` | Entry value (always string) |
+| Field   | Type      | Description |
+| ------- | --------- | ----------- |
+| `key`   | `String`  | Entry key |
+| `value` | `String?` | Entry value, as text |
+| `type`  | `String?` | Dart type of the stored value, when the source knows it |
 
-## Remote UI capabilities
+## In the desktop app
 
-When connected via the remote UI, you can:
+The **Key-Value** tab lists every store your app registered. You can:
 
-- Browse all entries alphabetically
-- Edit values inline
-- Delete individual entries
-- Refresh the list on demand
+- browse and filter keys, alphabetically;
+- edit a value in the **Edit Value** dialog. For JSON, change any value in the tree and add, remove, rename or retype keys, or switch to **Raw** to edit the full text;
+- **add** a key with the type you choose, to shared preferences, secure storage, or a source that implements `XRayTypedWriteKeyValueSource`;
+- delete a key;
+- right-click to copy a key, a value or both.
+
+Every change appears on the [Timeline](/app/desktop-app#timeline), and is written on the device immediately.
