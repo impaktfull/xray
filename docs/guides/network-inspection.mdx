@@ -1,41 +1,21 @@
 ---
 title: Network Inspection
-description: Capture and inspect HTTP network calls from Dio or any dart:io HttpClient.
+description: Capture HTTP calls, GraphQL operations, WebSockets and Serverpod calls from Dio, package:http or any dart:io client, with credentials masked by default.
 ---
 
-The network inspector captures every HTTP request, response, and error made through your HTTP client, storing them in memory for real-time inspection.
+The network inspector captures every request, response and error your app makes, and keeps them in memory so the xRay desktop app can show them as they happen. This page describes `xray_inspector` 0.1.0.
 
 ## Packages
 
 | Use case | Package |
 | -------- | ------- |
-| Dio | `xray_network_dio_interceptor` |
-| All `dart:io` clients (Dio, `package:http`, and any other client that delegates to `dart:io`) | `xray_inspector` (`enableHttpOverride`) |
+| All `dart:io` clients (Dio, `package:http`, and any other client that uses `dart:io`), and WebSockets | `xray_inspector` (`enableHttpOverride`) |
+| Dio, including requests other interceptors stop | [`xray_network_dio_interceptor`](/packages/xray-network-dio-interceptor) |
+| Serverpod clients | [`xray_serverpod_interceptor`](/packages/xray-serverpod-interceptor) |
 
-## Setup with Dio
+## Capture all HTTP traffic
 
-```dart
-import 'package:xray_inspector/xray_inspector.dart';
-import 'package:xray_network_dio_interceptor/xray_network_dio_interceptor.dart';
-import 'package:dio/dio.dart';
-
-final networkInspector = XRayNetworkInspector();
-
-final dio = Dio()
-  ..interceptors.add(
-    XRayNetworkDioInterceptor(inspector: networkInspector),
-  );
-```
-
-<Info>
-If another interceptor can stop a request with `handler.reject(...)` or `handler.resolve(...)`, see [Interceptors that stop requests](/packages/xray-network-dio-interceptor#interceptors-that-stop-requests).
-</Info>
-
-## Setup with global HTTP override
-
-<Info>Available since 0.0.9</Info>
-
-Pass `enableHttpOverride: true` to intercept **every** HTTP request made in the app at the `dart:io` level — Dio, `package:http`, and any other client that uses `dart:io` under the hood. No changes to individual clients are needed.
+Pass `enableHttpOverride: true` to capture **every** HTTP request made in the app at the `dart:io` level: Dio, `package:http`, and any other client that uses `dart:io` under the hood. No changes to individual clients are needed.
 
 ```dart
 import 'package:xray_inspector/xray_inspector.dart';
@@ -43,36 +23,161 @@ import 'package:xray_inspector/xray_inspector.dart';
 final networkInspector = XRayNetworkInspector(enableHttpOverride: true);
 ```
 
-The HTTP override captures **all** traffic in the process, regardless of which HTTP client made the call.
+- Each call is recorded with its method, URL, request and response headers and bodies, status code, duration and error.
+- WebSockets opened through `dart:io` are recorded too, see [WebSockets](#websockets).
+- It covers the main isolate only, see [Background isolates](#background-isolates).
+- Only one `XRayNetworkInspector` can have `enableHttpOverride: true` at a time. Enabling it on a second inspector throws a `StateError`.
+- It is ignored on web, where `dart:io` is not available.
 
-<Info>
-Since 0.0.11, you can use the Dio interceptor and the HTTP override together. Each Dio call is recorded **once**, by the Dio interceptor: the interceptor tells the HTTP override to skip the requests it already records. Requests are matched on method and URL; nothing is added to the request itself.
-</Info>
+## Setup with Dio
 
-<Warning>
-Only one `XRayNetworkInspector` can have `enableHttpOverride: true` at a time. Enabling it on a second inspector throws a `StateError` at startup.
-</Warning>
+```dart
+import 'package:dio/dio.dart';
+import 'package:xray_inspector/xray_inspector.dart';
+import 'package:xray_network_dio_interceptor/xray_network_dio_interceptor.dart';
 
-<Info>
-`enableHttpOverride` is silently ignored on web — `dart:io` is not available there.
-</Info>
+final networkInspector = XRayNetworkInspector(enableHttpOverride: true);
 
-## Accessing captured calls
+final dio = Dio();
+XRayNetworkDioInterceptor.attach(dio, inspector: networkInspector);
+```
+
+`attach` records every request, including the ones another interceptor rejects or answers itself, for example from a cache. See [`xray_network_dio_interceptor`](/packages/xray-network-dio-interceptor) for the details.
+
+You can use the Dio interceptor and the HTTP override together. Each Dio call is recorded **once**, by the Dio interceptor: it tells the HTTP override to skip the requests it already records. Requests are matched on method and URL; nothing is added to the request itself.
+
+## Masking credentials
+
+Credential headers are masked before a call is stored, so tokens and session cookies never reach a connected desktop app or an exported session file. By default these are `Authorization`, `Proxy-Authorization`, `Cookie`, `Set-Cookie` and `X-Api-Key`, matched case-insensitively. A masked value keeps its scheme and, for long secrets, the last 4 characters, so you can still tell two tokens apart: `Bearer …a1b2`.
+
+This applies to every call the network inspector records: through the HTTP override, background isolates, WebSockets, the Dio interceptor and the Serverpod interceptor. Choose your own headers with `redactHeaders`, or pass an empty set to record them in full:
+
+```dart
+final networkInspector = XRayNetworkInspector(
+  enableHttpOverride: true,
+  redactHeaders: {...XRayNetworkInspector.defaultRedactedHeaders, 'X-Auth-Token'},
+);
+```
+
+Bodies are recorded as they are. To hide secrets in them, such as the tokens of a sign-in response, pass `redactBody`. It gets the call and each body, and returns what to store, or `null` to store nothing:
+
+```dart
+XRayNetworkInspector(
+  redactBody: (call, body) => call.uri.endsWith('/oauth/token') ? null : body,
+);
+```
+
+The desktop app also redacts sessions and calls you export, with rules you manage in its settings. See [Sessions and export](/app/sessions-and-export#redaction-rules).
+
+## GraphQL
+
+GraphQL needs no setup. The desktop app recognises GraphQL operations in the calls the network inspector captures and shows them by operation name, with their variables, and errors returned with a `200`. You can turn this off under **Settings → Inspectors → Detect GraphQL operations**.
+
+Subscriptions over a WebSocket that uses `graphql-transport-ws` or `subscriptions-transport-ws` are shown as GraphQL subscriptions.
+
+## WebSockets
+
+With `enableHttpOverride: true`, every WebSocket opened through `dart:io` is recorded automatically: `WebSocket.connect`, and `WebSocketChannel.connect` or `IOWebSocketChannel` from `web_socket_channel` on mobile and desktop. xRay records its messages in both directions, open and close times, and the close code and reason. Create the inspector before the app opens its first WebSocket.
+
+Other connections (Flutter web, custom transports, a WebSocket opened before xRay started) can be recorded with `recordWebSocket`. Start recording before connecting and report each event:
+
+```dart
+final recorder = networkInspector.recordWebSocket(
+  uri,
+  protocols: ['graphql-transport-ws'],
+);
+final channel = WebSocketChannel.connect(uri, protocols: ['graphql-transport-ws']);
+await channel.ready;
+recorder.opened();
+channel.stream.listen(
+  recorder.received,
+  onDone: () => recorder.closed(code: channel.closeCode, reason: channel.closeReason),
+  onError: recorder.failed,
+);
+
+// Wherever the app sends a message:
+recorder.sent(message);
+channel.sink.add(message);
+```
+
+A connection you record yourself is never captured a second time by the override. The desktop app shows it as a `WS` call with its messages. The newest 500 messages per connection are kept (`maxWebSocketMessages`), each up to 32 KB of text.
+
+## Background isolates
+
+`enableHttpOverride: true` captures the calls of the main isolate only, because every isolate has its own `HttpOverrides`. To capture the calls of a background isolate (`Isolate.run`, `compute`, `Isolate.spawn`), prepare a capture in the main isolate before spawning, and install it at the start of the isolate's code:
+
+```dart
+final xrayCapture = XRayIsolateCapture.prepare();
+final users = await Isolate.run(() {
+  xrayCapture.install();
+  return fetchUsers();
+}, debugName: 'sync');
+```
+
+With `compute` or `Isolate.spawn` and a top-level function, send the capture along in the message:
+
+```dart
+final users = await compute(parseUsers, (XRayIsolateCapture.prepare(), json));
+
+List<User> parseUsers((XRayIsolateCapture, String) message) {
+  final (xrayCapture, json) = message;
+  xrayCapture.install();
+  // ...
+}
+```
+
+The calls show up in the same network inspector, labelled with the isolate's `debugName` (or `background` when it has none).
+
+- `XRayIsolateCapture.prepare()` needs an `XRayNetworkInspector(enableHttpOverride: true)`. Without one, for example in a release build without xRay or on the web, `install()` does nothing.
+- Calling `install()` more than once in the same isolate records every call once.
+- A call that is still running when its isolate exits is shown as failed.
+
+## Serverpod
+
+Pass an `XRayServerpodHttpClient` to your generated Serverpod client to see its calls by endpoint and method (`user.getProfile`), with readable arguments, results and server exceptions:
+
+```dart
+final client = Client(
+  'https://api.example.com/',
+  httpClientOverride: XRayServerpodHttpClient(inspector: networkInspector),
+);
+```
+
+See [`xray_serverpod_interceptor`](/packages/xray-serverpod-interceptor) for the details.
+
+## Memory limits
+
+The inspector keeps the newest 1000 calls (`maxCalls`); older ones are dropped, so a long session cannot grow your app's memory without limit. Once the stored bodies add up to more than `maxBodyLength` characters (about 33 million by default), the oldest calls keep their details but lose their bodies.
+
+```dart
+final networkInspector = XRayNetworkInspector(
+  enableHttpOverride: true,
+  maxCalls: 500,
+);
+```
+
+## Accessing captured calls in code
 
 ```dart
 // All captured calls (snapshot)
 final calls = networkInspector.calls;
 
-// Reactive — rebuilds your widget when calls change
-ValueListenableBuilder<List<XRayNetworkCall>>(
-  valueListenable: networkInspector.callsNotifier,
-  builder: (context, calls, _) {
-    return Text('${calls.length} calls captured');
-  },
-);
+// Called whenever the list changes
+void onCallsChanged() {
+  debugPrint('${networkInspector.callsNotifier.value.length} calls captured');
+}
+
+networkInspector.callsNotifier.addListener(onCallsChanged);
+
+// Clean up when done
+networkInspector.callsNotifier.removeListener(onCallsChanged);
 ```
 
-## Listening to new calls in code
+`callsNotifier` is a small `Watchable` from `xray_inspector`, not a Flutter `ValueListenable`, so the package also works in Dart apps without Flutter. To rebuild a widget, call `setState` from the listener.
+
+`isRecording` tells whether the inspector records calls. It is `false` in release and profile builds until an inspector server that is allowed to run in them starts.
+
+## Listening to new calls
 
 Implement `XRayNetworkInspectorListener` and register it:
 
@@ -91,15 +196,14 @@ networkInspector.addListener(listener);
 networkInspector.removeListener(listener);
 ```
 
-## Finding a call by ID
+WebSocket messages have their own listener: `addWebSocketMessageListener((callId, message) { ... })`.
+
+## Finding and clearing calls
 
 ```dart
 final call = networkInspector.findById('some-call-id');
-```
+final messages = networkInspector.webSocketMessagesOf('some-call-id');
 
-## Clearing calls
-
-```dart
 networkInspector.clear();
 ```
 
@@ -109,31 +213,39 @@ networkInspector.clear();
 final networkInspector = XRayNetworkInspector(title: 'API Calls');
 ```
 
-The title is displayed in the remote UI and used to generate the inspector's ID.
+The title is shown in the desktop app. The inspector's `id` is derived from it; pass `id` yourself when two inspectors of an app would otherwise get the same one.
 
 ## Network call model
 
 Each captured call is an `XRayNetworkCall` with these fields:
 
-| Field                | Type                    | Description                       |
-| -------------------- | ----------------------- | --------------------------------- |
-| `id`                 | `String`                | Unique ID (timestamp-based)       |
-| `method`             | `String`                | HTTP method (`GET`, `POST`, etc.) |
-| `uri`                | `String`                | Full request URI                  |
-| `requestHeaders`     | `Map<String, dynamic>?` | Request headers                   |
-| `requestBody`        | `dynamic`               | Request body                      |
-| `responseStatusCode` | `int?`                  | HTTP status code                  |
-| `responseHeaders`    | `Map<String, dynamic>?` | Response headers                  |
-| `responseBody`       | `dynamic`               | Response body                     |
-| `status`             | `XRayNetworkCallStatus` | `loading` / `success` / `error`   |
-| `startTime`          | `DateTime`              | When the request started          |
-| `endTime`            | `DateTime?`             | When the request completed        |
-| `durationMs`         | `int?`                  | Duration in milliseconds          |
-| `error`              | `String?`               | Error message if failed           |
+| Field                  | Type                          | Description |
+| ---------------------- | ----------------------------- | ----------- |
+| `id`                   | `String`                      | Unique ID |
+| `method`               | `String`                      | HTTP method (`GET`, `POST`, …), or `WS` for a WebSocket |
+| `uri`                  | `String`                      | Full request URI |
+| `requestHeaders`       | `Map<String, dynamic>?`       | Request headers, credentials masked |
+| `requestBody`          | `dynamic`                     | Request body |
+| `responseStatusCode`   | `int?`                        | HTTP status code |
+| `responseHeaders`      | `Map<String, dynamic>?`       | Response headers, credentials masked |
+| `responseBody`         | `dynamic`                     | Response body |
+| `status`               | `XRayNetworkCallStatus`       | `loading` / `success` / `error` |
+| `startTime`            | `DateTime`                    | When the request started |
+| `endTime`              | `DateTime?`                   | When the request completed |
+| `durationMs`           | `int?`                        | Duration in milliseconds |
+| `error`                | `String?`                     | Error message if it failed |
+| `note`                 | `String?`                     | How the call ended when that is not obvious, for example "Resolved by interceptor" |
+| `requestBodySize`      | `XRayBodySize?`               | Real size of the request body (`bytes`, `transferredBytes`, `isComplete`) |
+| `responseBodySize`     | `XRayBodySize?`               | Real size of the response body |
+| `webSocketMessages`    | `List<XRayWebSocketMessage>?` | Messages of a WebSocket connection, oldest first |
+| `webSocketCloseCode`   | `int?`                        | Close code of a WebSocket connection once it closed |
+| `webSocketCloseReason` | `String?`                     | Reason sent with the close code |
+| `rpc`                  | `XRayRpcInfo?`                | What the call means to an RPC framework such as Serverpod: name, server, signed in, user id |
+| `isolateName`          | `String?`                     | The background isolate that made the call; `null` for the main isolate |
 
 ## Multiple network inspectors
 
-You can run multiple network inspectors simultaneously. Each must have a distinct title (used to generate the inspector's ID). A common pattern is one inspector for Dio and one for all other HTTP traffic:
+You can run several network inspectors side by side. Each needs a distinct title (or `id`). A common pattern is one inspector for Dio and one for all other HTTP traffic:
 
 ```dart
 final networkDioInspector = XRayNetworkInspector(title: 'Network (Dio)');
@@ -142,10 +254,8 @@ final networkHttpInspector = XRayNetworkInspector(
   enableHttpOverride: true,
 );
 
-final dio = Dio()
-  ..interceptors.add(XRayNetworkDioInterceptor(inspector: networkDioInspector));
+final dio = Dio();
+XRayNetworkDioInterceptor.attach(dio, inspector: networkDioInspector);
 ```
 
-<Info>
-Since 0.0.11, each Dio call appears once in this setup, in the Dio inspector. The HTTP inspector shows every other request, such as calls made with `package:http`.
-</Info>
+Each Dio call appears once in this setup, in the Dio inspector. The HTTP inspector shows every other request, such as calls made with `package:http`.
