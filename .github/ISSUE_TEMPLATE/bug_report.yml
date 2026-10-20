@@ -1,0 +1,69 @@
+name: Bug report
+description: Something in the xRay desktop app or an xRay package does not work as it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. Issues are public: leave out tokens, passwords, pairing codes
+        and captured data from your app that you would not want shown.
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where does it happen?
+      options:
+        - Desktop app
+        - xray_inspector (core SDK)
+        - xray_network_dio_interceptor
+        - xray_shared_preferences_inspector
+        - xray_secure_storage_inspector
+        - xray_device_actions
+        - xray_serverpod_interceptor
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: desktop
+    attributes:
+      label: xRay desktop app version and operating system
+      description: The app shows its version in Settings → About.
+      placeholder: 0.0.4 on macOS 26.1
+    validations:
+      required: true
+  - type: input
+    id: package
+    attributes:
+      label: Package and version in your app
+      description: From your pubspec.lock.
+      placeholder: xray_inspector 0.1.0
+  - type: input
+    id: flutter
+    attributes:
+      label: Flutter version
+      description: The first line of `flutter --version`.
+      placeholder: Flutter 3.47.7
+  - type: input
+    id: device
+    attributes:
+      label: Device the app runs on
+      placeholder: Pixel 8, Android 16 (emulator)
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Start the app with XRayInspectorServer
+        2. Connect from the desktop app
+        3. ...
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or logs
+      description: Drag images in, or paste the relevant log lines from your app or the desktop app.

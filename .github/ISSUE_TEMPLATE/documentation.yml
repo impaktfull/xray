@@ -1,0 +1,23 @@
+name: Documentation
+description: Something in the docs is wrong, unclear or missing.
+labels: [documentation]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Which page?
+      description: The link to the page, or "missing" if there is no page for it yet.
+      placeholder: https://docs.page/impaktfull/xray/getting-started
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong or missing?
+      description: Quote the sentence or code sample if it is wrong, and say what happened when you followed it.
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: What should it say?

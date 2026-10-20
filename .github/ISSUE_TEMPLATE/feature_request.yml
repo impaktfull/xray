@@ -1,0 +1,20 @@
+name: Feature request
+description: An idea that would make xRay better for you or your team.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: The problem or the workflow, before the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would help?
+      description: How you picture it working, in the desktop app or in your app's code.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What do you do today instead?
