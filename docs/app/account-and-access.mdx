@@ -1,0 +1,65 @@
+---
+title: Account and access
+description: Sign in to the xRay desktop app with your impaktfull account, get approved alpha access, and see what the xRay platform receives and how to clear or delete your data.
+---
+
+The xRay desktop app needs an impaktfull account with approved access. Sign-in is the only thing that goes to the xRay platform: what the inspectors capture in your app stays on your network.
+
+## Sign in
+
+1. Open xRay and click **Continue with impaktfull**.
+2. Your browser opens. Sign in with your impaktfull account, or create one. If you sign in with an email address you have not verified yet, verify it with impaktfull first and sign in again.
+3. The browser returns you to xRay.
+
+You stay signed in until you choose **Sign out** under **Settings → Account**. **Manage impaktfull account** there opens your impaktfull account, for your name, password and sign-in methods.
+
+## Alpha access
+
+xRay is in alpha and open to approved testers. There are two ways to ask for access:
+
+- **In the app:** after signing in for the first time, click **Request access**.
+- **On the website:** enter your email address under **Request access** on [xrayinspector.dev](https://xrayinspector.dev). Use the email address of your impaktfull account.
+
+An admin reviews your request, and you get an email with the outcome:
+
+- While you wait, xRay shows **Waiting for approval**. Once you have the approval email, click **Check again**.
+- If your request is not approved, xRay shows **Access not granted**. You can ask again, sometimes only from a later date that xRay shows.
+
+**Settings → Account** shows your **xRay access** and your **License**.
+
+## The alpha license
+
+During the alpha, approved testers get the **Alpha Tester License**: you can use xRay for free while it is in alpha. Paid licenses come later; their subscription and invoices will show under **Settings → Account**. See [License](/license) for the license terms of the packages.
+
+## What the xRay platform receives
+
+**Settings → Privacy & data → What xRay sends** lists it in the app:
+
+- **Sign-in and access checks**, to the xRay platform, with your impaktfull account. The platform keeps your email address, name and account identifier, when you signed in and from which installation (the device name of your computer, often its host name, the platform and the xRay version), and your access requests with their decisions.
+- **Update checks**: your xRay version, to tell you about new releases.
+- **Roadmap and changelog**: read from GitHub's public API. Nothing about you or your apps is sent.
+- **Your app's data**: network calls, logs, keys and files never leave your computer, except in the [exports](/app/sessions-and-export) you make yourself.
+
+xRay sends no analytics, telemetry or crash reports. The [privacy policy](https://xrayinspector.dev/privacy) has the details.
+
+## What xRay keeps on your computer
+
+xRay remembers, on your computer only:
+
+- the apps it reopens on launch, with their app and device names, and their per-app settings;
+- recent deep links and saved push notifications (shown under **Settings → Privacy & data → Device action history**);
+- saved filters, redaction rules, pane sizes and display options;
+- the passwords and pairing codes of protected apps, and your desktop key, in your system's credential store (Keychain, Windows Credential Manager or the Secret Service on Linux);
+- your sign-in.
+
+### Clear local data
+
+**Settings → Account → Local data → Clear…** removes the apps reopened on launch, recent deep links, push presets, saved filters, per-app settings and every remembered app password. It keeps your account (use **Sign out** for that), your desktop key (use **Regenerate** for that), the discovery port and the language.
+
+**Settings → Advanced → Reset all settings** puts remembered servers, filter presets, redaction rules, pane sizes, the discovery port and display options back to their defaults. You stay signed in.
+
+### Delete your account
+
+**Settings → Account → Delete account → Delete…** deletes your xRay account, its devices and sessions, and your access, for good. Your impaktfull account stays; delete it at [auth.impaktfull.com](https://auth.impaktfull.com) if you want to.
+
+If you are the only admin of an xRay platform, make somebody else admin first.
