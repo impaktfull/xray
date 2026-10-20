@@ -1,0 +1,147 @@
+---
+title: xray_device_actions
+description: Drive your Flutter app from the xRay desktop app. Appearance, locale, text size, animations and debug overlays, plus deep links, simulated push notifications and feature-flag overrides.
+---
+
+[![pub package](https://img.shields.io/pub/v/xray_device_actions.svg)](https://pub.dev/packages/xray_device_actions)
+
+Change your app while you inspect it, from the **Device actions** drawer of the xRay desktop app: switch between light and dark, try another language or a larger text size, slow down or turn off animations, show layout bounds, open a deep link, send a simulated push notification, or override a feature flag. Useful for developers and for QA testing a build.
+
+Everything is opt-in: the desktop app only offers what your app registers.
+
+| Drawer tab | What you can do | What your app needs |
+| ---------- | --------------- | ------------------- |
+| **Quick** | Appearance, locale, text size, animations, bold text, high contrast, layout bounds, performance overlay | `XRayDeviceOverrides` from this package |
+| **Deep Links** | Open a link, see whether it was handled, list your routes | A `deepLinkHandler` |
+| **Push** | Send a simulated notification to your foreground, background or opened handler | A `pushHandler` |
+| **Flags** | See and override feature flags and remote config values | One or more `featureFlagAdapters` |
+
+`XRayDeviceInspector`, the handlers and the flag adapters are part of `xray_inspector`. This package adds the widget that applies the quick settings.
+
+## Installation
+
+```yaml
+dependencies:
+  xray_inspector: ^0.1.0
+  xray_device_actions: ^0.1.0
+```
+
+## Setup
+
+Register an `XRayDeviceInspector` with the inspector server, and wrap your app in `XRayDeviceOverrides`:
+
+```dart
+import 'package:xray_device_actions/xray_device_actions.dart';
+import 'package:xray_inspector/xray_inspector.dart';
+
+final deviceInspector = XRayDeviceInspector(
+  appVersion: () => '3.4.1 (412)', // shown in the drawer header
+);
+
+final server = XRayInspectorServer(
+  config: XRayInspectorServerConfig(
+    inspectors: [deviceInspector /* , networkInspector, … */],
+  ),
+);
+// Debug builds only, see the Quick Start.
+if (!kReleaseMode) await server.start();
+
+runApp(XRayDeviceOverrides(
+  inspector: deviceInspector,
+  supportedLocales: AppLocalizations.supportedLocales,
+  child: const MyApp(),
+));
+```
+
+`XRayDeviceOverrides` must sit **above** `MaterialApp`. Appearance, text size, bold text, high contrast and "animations off" reach your app through `MediaQuery`. For the locale override, pass the chosen locale to your app:
+
+```dart
+MaterialApp(
+  locale: XRayDeviceOverrides.localeOf(context), // null keeps your own logic
+  supportedLocales: AppLocalizations.supportedLocales,
+  // …
+)
+```
+
+- **Appearance** overrides the platform brightness, so it works when your app follows the system theme (`ThemeMode.system`).
+- **Show layout bounds** is Flutter's `debugPaintSizeEnabled` and only paints in debug builds.
+- Quick settings live in memory: restarting the app brings back its own values.
+- Every override shows an **Overridden** badge in the drawer, and **Reset all** returns the app to its own values.
+
+## Deep links
+
+```dart
+deviceInspector.deepLinkHandler = XRayDeepLinkHandler(
+  name: 'GoRouter',
+  onOpen: (uri) {
+    router.go(uri.hasScheme ? uri.path : uri.toString());
+    return XRayDeepLinkResult.handled(
+      destination: router.routerDelegate.currentConfiguration.uri.toString(),
+    );
+  },
+  routes: () => const [
+    XRayRoute(path: '/', name: 'HomeScreen'),
+    XRayRoute(path: '/product/:id', name: 'ProductScreen'),
+  ],
+);
+```
+
+Handlers can be assigned after construction, for example once your router exists. Return `XRayDeepLinkResult.notHandled('reason')` for links your app does not know. A handler that throws is reported as not handled. The desktop app remembers recent links per app.
+
+## Push notifications
+
+Push notifications sent from the desktop app are **simulated**: nothing goes through APNs or FCM. The inspector calls your handlers in-process with the title, body and data payload, so you test what your app does with a message, not the delivery itself. Point the handlers at the same code your push SDK's callbacks run.
+
+```dart
+deviceInspector.pushHandler = XRayPushHandler(
+  onForeground: (message) => showInAppBanner(message.title, message.body),
+  onBackground: (message) => syncInBackground(message.data),
+  onOpened: (message) => router.go(message.data['deeplink'] as String),
+);
+```
+
+A delivery without a handler is reported in the desktop app as not delivered. Save a notification as a preset to send it again later.
+
+## Feature flags
+
+Implement `XRayFeatureFlagAdapter` for each flag source (your remote config, a vendor SDK, local debug flags) and register it with `featureFlagAdapters`. Store overrides on the device, so they survive restarts until they are reset from the desktop app:
+
+```dart
+class RemoteConfigAdapter implements XRayFeatureFlagAdapter {
+  @override
+  String get name => 'Remote Config';
+
+  @override
+  Future<List<XRayFeatureFlag>> readFlags() async => [
+        XRayFeatureFlag(
+          key: 'new_checkout_flow',
+          type: XRayFeatureFlagType.boolean,
+          remoteValue: remoteConfig.getBool('new_checkout_flow'),
+          overrideValue: _override('new_checkout_flow'),
+          isOverridden: prefs.containsKey('override.new_checkout_flow'),
+        ),
+      ];
+
+  @override
+  Future<void> setOverride(String key, Object? value) =>
+      prefs.setString('override.$key', jsonEncode(value));
+
+  @override
+  Future<void> clearOverride(String key) => prefs.remove('override.$key');
+
+  Object? _override(String key) {
+    final raw = prefs.getString('override.$key');
+    return raw == null ? null : jsonDecode(raw);
+  }
+}
+
+final deviceInspector = XRayDeviceInspector(
+  featureFlagAdapters: [RemoteConfigAdapter()],
+);
+```
+
+Your app reads the override first and falls back to the remote value. Flag types are `boolean`, `integer`, `decimal`, `string` and `json`; the desktop app shows a matching control and checks the value you enter. Adapter names must be unique.
+
+## In the desktop app
+
+Open the drawer with the device button in the top bar, **Device actions** in the command menu, or ⌘⇧D (Ctrl+Shift+D on Windows and Linux). It acts on the connection tab you are looking at, so you can watch the effect in Network and Logs behind it. When your app has not registered something, the drawer shows how to enable it.

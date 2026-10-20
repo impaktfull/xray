@@ -1,0 +1,71 @@
+---
+title: xray_serverpod_interceptor
+description: Show the calls your app makes to a Serverpod backend in the xRay network inspector, by endpoint and method, with readable arguments, results and errors.
+---
+
+[![pub package](https://img.shields.io/pub/v/xray_serverpod_interceptor.svg)](https://pub.dev/packages/xray_serverpod_interceptor)
+
+Shows the calls your Flutter or Dart app makes to a [Serverpod](https://serverpod.dev) backend in the xRay network inspector: by endpoint and method (`user.getProfile`), with the arguments and results as formatted JSON, server exceptions with their type and fields, and whether the call was made signed in.
+
+## Requirements
+
+`serverpod_client` 4.0.0 or newer: the package plugs into the client's `httpClientOverride`.
+
+## Installation
+
+```yaml
+dependencies:
+  xray_inspector: ^0.1.0
+  xray_serverpod_interceptor: ^0.1.0
+```
+
+## Setup
+
+Pass an `XRayServerpodHttpClient` to your generated client:
+
+```dart
+import 'package:xray_inspector/xray_inspector.dart';
+import 'package:xray_serverpod_interceptor/xray_serverpod_interceptor.dart';
+
+final networkInspector = XRayNetworkInspector();
+
+final client = Client(
+  'https://api.example.com/',
+  httpClientOverride: XRayServerpodHttpClient(inspector: networkInspector),
+)..authSessionManager = FlutterAuthSessionManager();
+```
+
+Register `networkInspector` with your `XRayInspectorServer` as usual. See [Quick Start](/getting-started).
+
+- **Your own HTTP client.** To keep a platform client such as `CupertinoClient` or `CronetClient`, pass it as `inner`: `XRayServerpodHttpClient(inspector: networkInspector, inner: CupertinoClient.defaultSessionConfiguration())`. `httpClientOverride` cannot be combined with Serverpod's `securityContext`; configure the context on the inner client instead.
+- **Timeouts.** Serverpod applies its `connectionTimeout` outside the HTTP client, so xRay marks a call as timed out after its own `connectionTimeout`. It defaults to 20 seconds, like Serverpod's; if you changed the client's timeout, pass the same value.
+
+## What you see
+
+- **Title:** `endpoint.method`. Module endpoints include the module name as the server knows it, for example `serverpod_auth_core.status.isSignedIn`.
+- **Arguments and results** as formatted JSON. Binary values (`ByteData`) are shown as `<binary, N bytes>`, and bodies over 1 MB are cut off.
+- **Server exceptions** (`SerializableException`) mark the call as failed with the exception's class name; the response body shows its fields. Other non-200 responses fail as `HTTP <status>`.
+- **Network failures** (no connection, timeout) mark the call as failed with the reason.
+- **Signed in:** whether the call carried the user's auth key, and the user id for JWT sessions (`serverpod_auth_core`). Server-side sessions and legacy `serverpod_auth` keys carry no user id.
+- **Auth key masked:** the `authorization` header is recorded as the scheme plus at most the last 4 characters of the key (`Bearer …a1b2`), like the other credential headers the network inspector masks by default. Use `redactHeaders` on the `XRayNetworkInspector` to change this; see [Masking credentials](/guides/network-inspection#masking-credentials).
+- **Server:** the host each call went to, so several clients in one app can be told apart.
+
+## File uploads
+
+Serverpod's `FileUploader` does not use `httpClientOverride`. Use `XRayServerpodFileUploader` instead; it has the same API and calls `FileUploader` for you:
+
+```dart
+final description = await client.files.getUploadDescription('avatar.png');
+final uploader = XRayServerpodFileUploader(description!, inspector: networkInspector);
+final success = await uploader.uploadByteData(bytes);
+```
+
+The upload shows up as `Upload avatar.png` with its size, destination, duration and whether it succeeded.
+
+## Not captured yet
+
+**Streaming methods and streams** run over a WebSocket that Serverpod opens without any hook for other packages, so they do not show up. This needs a client interceptor in Serverpod ([serverpod/serverpod#5141](https://github.com/serverpod/serverpod/issues/5141)); the package will switch to it once it ships.
+
+## Using it together with `enableHttpOverride`
+
+The client tells the global HTTP override to skip the requests it already records, so every Serverpod call shows up once. Requests are matched on method and URL; no header or other marker is added to the request.
