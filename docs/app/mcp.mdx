@@ -1,0 +1,302 @@
+---
+title: MCP
+description: Let an AI assistant such as Claude Code, Cursor or VS Code read the apps open in xRay through MCP. Switch it on, connect your assistant, and see what it can read and do.
+---
+
+xRay can serve the apps you have open in it to an AI assistant on your computer, through the [Model Context Protocol](https://modelcontextprotocol.io) (MCP). Ask your assistant "why does checkout fail on my Pixel?" and it reads the failed calls, the log lines around them and the stored values itself, instead of you copying them into the chat. Everything it reads is redacted with your redaction rules first.
+
+The MCP server runs inside the xRay desktop app: xRay has to be open, with the server switched on.
+
+## Which assistants work
+
+Any MCP client on the same computer as xRay. This page has the setup for:
+
+- Claude Code
+- Claude Desktop
+- Cursor
+- VS Code (GitHub Copilot)
+- Windsurf
+- Zed
+- Codex
+
+<Warning>
+**claude.ai in the browser can't connect.** Its custom connectors are called from Anthropic's cloud and need a public URL; xRay's server only listens on your own computer. Use Claude Desktop or Claude Code instead.
+</Warning>
+
+## Switch it on
+
+Open **Settings → MCP** and turn on **Let AI assistants use xRay**. It is off by default.
+
+The status row then shows **Running on http://127.0.0.1:7799/mcp**. The server:
+
+- listens on `127.0.0.1` only, so nothing else on your network can reach it;
+- uses port **7799**. A development build of xRay uses **7798**, so both can run side by side. Change it under **Port**;
+- only runs while xRay is open. Quitting xRay stops it.
+
+Two more switches decide what an assistant may do:
+
+- **Allow actions**: let it change the app, see [Actions](#actions). Off by default.
+- **Include hidden hosts**: off, an assistant sees the calls the network table shows; on, it also sees calls to the hosts you hid under **Settings → Inspectors → Hide hosts**, in reads and exports. Off by default.
+
+## Connect an assistant
+
+Under **Connect an assistant**, pick your assistant, and for the ones that support both, **HTTP** or **Command**. **Copy** copies the setup with your port and token filled in, and the line under it says where it goes. **Other** shows the URL, the header and the command separately. **Setup guide** opens this page.
+
+### The token
+
+Every HTTP request needs the header `Authorization: Bearer <token>`. xRay creates the token, starting with `xrmcp_`, the first time you switch the server on, and keeps it in your system's credential store (Keychain, Windows Credential Manager or the Secret Service on Linux). **Settings → MCP → Token** shows it masked, with **Copy** and **Regenerate…**.
+
+The setups below write it as `<your token from xRay>`. **Copy** fills in the real one. Treat it like a password, and don't commit it.
+
+**Regenerate…** replaces the token and restarts the server. HTTP setups with the old token stop working: copy the setup again and restart your assistant. Command setups read the token from xRay, so they keep working.
+
+### HTTP or command
+
+- **HTTP**: the assistant talks to `http://127.0.0.1:7799/mcp` with the token. Use this when your assistant supports it.
+- **Command**: the assistant starts `xray-mcp`, a small program that comes with xRay, and talks MCP to it over stdin and stdout. `xray-mcp` passes everything on to the running xRay, and reads the port and token from xRay itself, so the setup holds no token. Claude Desktop only supports this way.
+
+Where `xray-mcp` is:
+
+| OS | Command |
+| --- | --- |
+| macOS | `/Applications/xRay.app/Contents/MacOS/xray-mcp` |
+| Windows | `%LOCALAPPDATA%\Programs\xRay\xray-mcp.exe` |
+| Linux | the AppImage itself, with `--mcp-stdio`: `/path/to/xRay-<version>-x86_64.AppImage --mcp-stdio` |
+
+The setup that **Copy** gives you has the path of your own install. A development build of xRay adds `--instance <name>`, for example `--instance dev.debug`, so `xray-mcp` connects to that build instead of the released one. `xray-mcp --help` lists its options.
+
+On Windows, `xray-mcp.exe` is not code-signed yet, so Microsoft Defender SmartScreen may warn the first time it runs. See [Install on Windows](/app/install-windows).
+
+On Linux, the path changes when you download a new AppImage. Update the setup when you update xRay.
+
+## Setup per assistant
+
+The examples use the release port, 7799, and the macOS path of `xray-mcp`. **Copy** in xRay gives the right ones for your computer.
+
+### Claude Code
+
+HTTP:
+
+```sh
+claude mcp add --transport http --scope user xray http://127.0.0.1:7799/mcp --header "Authorization: Bearer <your token from xRay>"
+```
+
+Command:
+
+```sh
+claude mcp add --transport stdio --scope user xray -- "/Applications/xRay.app/Contents/MacOS/xray-mcp"
+```
+
+`--scope user` makes xRay available in every project. Check it with `/mcp` in Claude Code.
+
+### Claude Desktop
+
+Claude Desktop starts the command. Add this to its config file and restart Claude Desktop:
+
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "xray": {
+      "command": "/Applications/xRay.app/Contents/MacOS/xray-mcp",
+      "args": []
+    }
+  }
+}
+```
+
+On Windows the command is the full path with escaped backslashes, for example `"C:\\Users\\<you>\\AppData\\Local\\Programs\\xRay\\xray-mcp.exe"`.
+
+### Cursor
+
+Add to `~/.cursor/mcp.json` (every project) or `.cursor/mcp.json` (one project):
+
+```json
+{
+  "mcpServers": {
+    "xray": {
+      "url": "http://127.0.0.1:7799/mcp",
+      "headers": { "Authorization": "Bearer <your token from xRay>" }
+    }
+  }
+}
+```
+
+For the command, use `"command"` and `"args"` instead of `"url"` and `"headers"`, as for Claude Desktop.
+
+### VS Code
+
+Add to `.vscode/mcp.json`, or to your user `mcp.json` (**MCP: Open User Configuration**). VS Code asks for the token the first time and keeps it, so it never lands in a file you commit:
+
+```json
+{
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "xray-token",
+      "description": "xRay MCP token (Settings → MCP)",
+      "password": true
+    }
+  ],
+  "servers": {
+    "xray": {
+      "type": "http",
+      "url": "http://127.0.0.1:7799/mcp",
+      "headers": { "Authorization": "Bearer ${input:xray-token}" }
+    }
+  }
+}
+```
+
+For the command: `"xray": { "type": "stdio", "command": "/Applications/xRay.app/Contents/MacOS/xray-mcp", "args": [] }`.
+
+### Windsurf
+
+Open Windsurf's MCP settings, edit its raw config (`mcp_config.json`) and add:
+
+```json
+{
+  "mcpServers": {
+    "xray": {
+      "serverUrl": "http://127.0.0.1:7799/mcp",
+      "headers": { "Authorization": "Bearer <your token from xRay>" }
+    }
+  }
+}
+```
+
+### Zed
+
+Add to Zed's `settings.json`:
+
+```json
+{
+  "context_servers": {
+    "xray": {
+      "url": "http://127.0.0.1:7799/mcp",
+      "headers": { "Authorization": "Bearer <your token from xRay>" }
+    }
+  }
+}
+```
+
+For the command: `"xray": { "command": "/Applications/xRay.app/Contents/MacOS/xray-mcp", "args": [] }`.
+
+### Codex
+
+HTTP, in `~/.codex/config.toml`, with the token in an environment variable:
+
+```toml
+[mcp_servers.xray]
+url = "http://127.0.0.1:7799/mcp"
+bearer_token_env_var = "XRAY_MCP_TOKEN"
+```
+
+```sh
+export XRAY_MCP_TOKEN="<your token from xRay>"
+```
+
+Command:
+
+```sh
+codex mcp add xray -- "/Applications/xRay.app/Contents/MacOS/xray-mcp"
+```
+
+### Other assistants
+
+Use **Other** in xRay: the URL `http://127.0.0.1:7799/mcp` with the header `Authorization: Bearer <token>` for Streamable HTTP, or the `xray-mcp` command for stdio.
+
+## What the assistant can read
+
+The assistant sees the connection tabs open in xRay's window, live and recorded, as you see them, including tabs that disconnected and still hold their data. It cannot open, close, connect or pair a tab: protected apps are only visible once you have connected them yourself.
+
+| Tool | What it does |
+| --- | --- |
+| `list_connections` | The apps open in xRay, with their inspectors and how many items each holds. |
+| `search` | Searches network calls, logs and key-value entries, like the command menu. |
+| `list_network_calls` | Network calls, newest first, filtered by method, status (`failed` too), host, URL, text, GraphQL operation and time. |
+| `get_network_call` | One call: headers, timing, GraphQL, its request or response body page by page, or its WebSocket messages. |
+| `list_logs` | Log entries, filtered by level, logger, text and time. |
+| `get_log_entry` | One log entry with its message, error and stack trace. |
+| `list_key_value_entries` | The entries of a key-value store, such as shared preferences or secure storage. |
+| `get_key_value_entry` | One entry with its whole value. |
+| `list_files` | One folder of the app's files. The app must be connected. |
+| `read_text_file` | A text file of the app, up to 1 MiB. Binary files are refused. |
+| `get_timeline` | Calls, logs and key-value changes merged by time, as the Timeline tab shows them. |
+| `get_device_state` | The quick settings, feature flags and routes from the Device actions drawer. |
+| `export_network_call` | One call as a cURL command or as Markdown, redacted. |
+| `show_in_xray` | Selects the app's tab in xRay and shows a call, log entry or key-value entry, so you can look at it. |
+
+Most tools work on the tab selected in xRay unless the assistant names another connection. Lists are newest first and paged, and long bodies are paged too, so the assistant reads only what it asks for.
+
+There is also a prompt, `debug_with_xray`, that tells the assistant how to start (in Claude Code: `/mcp__xray__debug_with_xray`).
+
+### Example prompts
+
+- "Why does checkout fail on my Pixel?"
+- "List the failed calls of the last 5 minutes and the error logs around them."
+- "Compare the request body of the last two POST /api/orders calls."
+- "What's stored in shared preferences for the user session?"
+- With actions on: "Export this session as HAR." or "Open shop://cart and tell me which calls it makes."
+
+## Actions
+
+With **Allow actions** on, the assistant can also change the app. While it is off, these tools are not offered to the assistant at all; turning it on or off updates the list in assistants that are connected.
+
+| Tool | What it does |
+| --- | --- |
+| `open_deep_link` | Opens a deep link or a route in the app. |
+| `send_push` | Hands a simulated push notification to the app's push handlers. It is not sent through APNs or FCM. |
+| `set_feature_flag` | Overrides a feature flag, or resets it. |
+| `set_quick_settings` | Changes appearance, locale, text scale, animations and the other quick settings, or resets them all. |
+| `set_key_value_entry` | Writes one key-value entry. |
+| `delete_key_value_entry` | Deletes one key-value entry. |
+| `delete_file` | Deletes a file, or a folder with everything in it. |
+| `clear_inspector` | Clears the network calls or the logs of the app. |
+| `export_session` | Saves the session as a `.xray` file or a HAR in your Downloads folder, redacted. |
+
+Device actions need [`xray_device_actions`](/packages/xray-device-actions) in your app, as for the drawer. Actions only work on a connected app, never on a recorded session.
+
+Actions run without asking you first, so an assistant can work while you look elsewhere. Instead, xRay shows a notice in its window for every action, such as "claude-code opened a deep link", with the app it acted on, and lists it under **Recent activity**. The name is the one the assistant reports for itself.
+
+## Privacy
+
+- **Redaction always applies.** Everything an assistant reads, and every export it makes, goes through your redaction rules (**Settings → Privacy & data → Redact on export**, see [Redaction rules](/app/sessions-and-export#redaction-rules)), on top of the SDK's own masking. Hidden values show as `●●●●`. An assistant cannot turn a rule off: to show it a value, remove the rule.
+- **xRay sends nothing anywhere.** The server only answers the assistant on your computer. xRay does not call any AI service.
+- **The assistant may send what it reads to its AI provider**, such as Anthropic, OpenAI, Cursor or GitHub. That depends on the assistant and how your team set it up.
+- **Captured data can contain personal data of your app's users.** Connect only assistants your team is allowed to use for that data, and prefer test accounts and test data.
+
+<Warning>
+xRay sends nothing anywhere, but your assistant may send what it reads to its AI provider. Captured data can contain personal data of your app's users.
+</Warning>
+
+### Recent activity
+
+**Settings → MCP → Recent activity** lists the last 50 tool calls: when, which assistant, which tool and which app, and whether it worked. Hover a row to see its arguments. The list is kept in memory only, until xRay quits; **Clear** empties it, and so does **Clear local data**. What the assistant read is never kept.
+
+### Security
+
+- The server listens on `127.0.0.1` only. Requests with another `Host` header, and any request from a web page (with an `Origin` header), are refused.
+- Every request needs the token, so other users of your computer and other local programs can't use it.
+- For `xray-mcp`, xRay writes the port and token to a file only your user can read: `~/.config/impaktfull_xray/mcp/production.json`. It is removed when the server stops. Programs that run as your own user can read it, as they can read the setups of your assistants.
+- If you think the token leaked, **Regenerate…** it.
+
+## Troubleshooting
+
+**"xRay is not running, or its MCP server is off".** Open xRay, turn on **Settings → MCP → Let AI assistants use xRay**, and reconnect the server in your assistant (`/mcp` in Claude Code, or restart it). After xRay quits, tool calls answer "xRay stopped running"; open xRay again and the next call reconnects.
+
+**"Port 7799 is in use by another app".** Another program listens on that port. Click **Change port** or enter another **Port**, then copy the setup again: HTTP setups hold the port in their URL.
+
+**"Missing or wrong xRay MCP token" (401).** The token in your setup is not the current one, usually after **Regenerate…**. Copy the setup again from **Settings → MCP**.
+
+**It still fails after a new token or port.** Most assistants read their MCP setup when they start. Restart the assistant, or reconnect the server, after changing the setup.
+
+**The assistant sees no apps.** It only sees the tabs open in xRay. Connect your app in xRay first with **Add Connection**.
+
+**Values show as `●●●●`.** Your redaction rules hid them. That is on purpose; the assistant should not guess them.
+
+**Claude Desktop shows no xRay tools.** Check the path in the config, then restart Claude Desktop. Its log is in `~/Library/Logs/Claude/mcp-server-xray.log` on macOS and in `%APPDATA%\Claude\logs` on Windows; `xray-mcp` writes what went wrong there.
+
+**Windows blocks `xray-mcp.exe`.** SmartScreen may warn about the unsigned program. Open it once from File Explorer, choose **More info → Run anyway**, close the window it opens, and restart your assistant.

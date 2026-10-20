@@ -44,7 +44,8 @@
         { "title": "🐧 Install on Linux", "href": "/app/install-linux" },
         { "title": "👤 Account and access", "href": "/app/account-and-access" },
         { "title": "🖥️ Using the desktop app", "href": "/app/desktop-app" },
-        { "title": "📤 Sessions and export", "href": "/app/sessions-and-export" }
+        { "title": "📤 Sessions and export", "href": "/app/sessions-and-export" },
+        { "title": "🤖 MCP", "href": "/app/mcp" }
       ]
     },
     {
