@@ -1,0 +1,125 @@
+---
+title: Protocol Buffers
+description: Read protobuf, gRPC-web and Connect bodies in the network inspector, decoded with or without your own .proto files, with redaction and export.
+---
+
+xRay decodes the Protocol Buffers bodies your app sends and receives over HTTP: plain protobuf APIs, gRPC-web behind a proxy such as Envoy, and Connect. Without a schema you see field numbers and a smart guess of each value. Pin a folder of your `.proto` files and you see field names, enums and nested messages, kept current while you work on them.
+
+<Info>
+Protobuf needs a version of `xray_inspector` (and `xray_network_dio_interceptor`, if you use Dio) newer than 0.1.1, and a desktop app newer than 0.0.6. Older versions record these bodies as `<binary body, N bytes>`.
+</Info>
+
+## What is captured
+
+No setup is needed beyond the [network inspector](/guides/network-inspection): the HTTP override and the Dio interceptor both keep protobuf bodies. A body is treated as protobuf when the call's `Content-Type` is one of:
+
+| Content type | Read as |
+| ------------ | ------- |
+| `application/x-protobuf`, `application/protobuf`, `application/vnd.google.protobuf`, `application/x-google-protobuf`, `application/proto` | One message, the whole body |
+| `application/grpc-web`, `application/grpc-web+proto`, `application/grpc`, `application/grpc+proto` | gRPC frames: one or more messages, then the trailers |
+| `application/grpc-web-text`, `application/grpc-web-text+proto` | Base64 text of gRPC-web frames |
+| `application/connect+proto` | Connect frames, including the end-of-stream message |
+
+Parameters such as `; charset=utf-8` and upper case are ignored.
+
+The first 1 MB of each body is kept, like any other body. The inspector sends it to the desktop app as a `data:` URI (`data:application/x-protobuf;base64,…`), so a `redactBody` callback in your app gets that string too. When a body was cut off, xRay says so above the decoded message.
+
+### What isn't captured
+
+- **Native gRPC over HTTP/2.** `package:grpc`'s default channel opens its own socket and never goes through `dart:io`'s `HttpClient` or Dio, so these calls don't show up at all. gRPC-web and Connect clients that send ordinary HTTP/1.1 requests are captured.
+- **`application/octet-stream`.** Bodies with this type are still recorded as `<binary body, N bytes>`, so they can't be decoded as protobuf. Send a protobuf content type from your server or client instead.
+
+## The decoded view
+
+Open a call and pick the request or response **Body** tab. The toolbar's format switch has three views:
+
+- **Decoded**: a tree of fields, with expand and collapse, copy on hover and right-click.
+- **JSON**: the same message in the protobuf JSON mapping (names when they are known, numbers otherwise, 64-bit integers as strings, bytes as base64).
+- **Hex**: offset, the bytes in hex and an ASCII column.
+
+gRPC and Connect bodies show each frame on its own, as **Message 1 of 3** and so on, with the **Trailers** as a header list. A `grpc-status` other than `0` marks the response as failed and shows its `grpc-message`. A message the app compressed is shown as bytes: xRay can't decode it.
+
+### Without a schema
+
+Without a schema, every field is shown by its number with its wire type, the way `protoc --decode_raw` does:
+
+- Numbers are shown as signed 64-bit values; fixed 32- and 64-bit fields as unsigned integers.
+- For a length-delimited field, xRay guesses: readable text becomes a **string**, bytes that parse as a complete message become a nested **message**, and anything else stays **bytes**, shown as hex.
+- If the guess is wrong, use **Read as** on the field to switch between message, string, bytes and packed numbers. Only the readings that decode are offered, and your choice is kept for that field while the tab is open.
+
+A body that is malformed is decoded up to the first bad byte, with a note such as "Could not decode past byte 42".
+
+### With a schema
+
+Once a message type applies (see [Choosing the message type](#choosing-the-message-type)), the tree shows field names, enum value names, nested and repeated fields, maps as key and value, and `oneof` members under their own name. Well-known types are built in: a `Timestamp` is shown as a date, a `Duration` as `1.5s`, wrappers as their value, `Struct` as JSON and `Any` decoded when its type is in your schema.
+
+- Turn on **Field numbers** in the toolbar to see `name (3)` next to every field.
+- A field the schema doesn't know is still shown, by number, marked **Not in the schema**.
+- A field sent with a different wire type than the schema declares is shown as it was sent, with a note.
+
+The schema line above the body says where the type came from, for example `Schemas: ~/work/acme-protos · acme.orders.v1.Order`, or `No schema for Shop: field numbers only` with a link to pin a folder.
+
+## Pin your schema folders
+
+Schemas are pinned **per app**: by the app name your app announces, so a pin keeps working after reconnecting, on every device that runs the app, and in recorded sessions of that app.
+
+1. Right-click the app's connection tab and choose **Protobuf schemas…**, or use **Protobuf schemas…** in the command menu (⌘K). The **Pin a folder…** link on a body's schema line opens the same window.
+2. Click **Pin a folder…** and choose a folder, for example a checkout of your API's `.proto` files. Pin more than one if your schemas are spread out; they are combined in the order you pinned them.
+
+**Settings → Inspectors → Protobuf schemas** lists every app with its folders and remembered types, where you can add and unpin folders.
+
+### What xRay reads
+
+- **`.proto` files**, proto2 and proto3: messages, nested types, enums, `oneof`, `map<K, V>`, groups, services and imports. xRay reads them itself; you don't need `protoc`.
+- **Descriptor sets** (`.desc`, `.pb`, `.protoset`, `.binpb`), as made by `buf build -o` or `protoc --descriptor_set_out`.
+- Imports are resolved against each pinned folder and the importing file's folder, and the well-known types (`google/protobuf/timestamp.proto` and the others) are built in.
+- Folders such as `node_modules`, `build`, `target`, `vendor` and hidden folders are skipped. xRay reads at most 5,000 schema files, of up to 10 MB each.
+- When the same file is in two pinned folders, the first folder wins.
+
+### Reload on change
+
+xRay watches the pinned folders and reads them again shortly after a file changes, so a `git pull` or a schema you are editing shows up without doing anything. A folder that is gone, for example on a disconnected drive, stays pinned and is shown as **Folder not found** until it is back.
+
+### Schema problems
+
+A file with a mistake never costs you the rest of the folder: xRay skips what it doesn't understand and keeps going. The schema line and the **Protobuf schemas** window then show a link such as **2 schema problems**, listing each file, its line and what went wrong. An import that can't be found is listed there too; fields of its types are decoded without a schema.
+
+## Choosing the message type
+
+xRay picks the message type in this order:
+
+1. **The gRPC path.** gRPC-web, gRPC and Connect calls go to `/package.Service/Method`. If a pinned schema has that service, the method's input type decodes the request and its output type the response. The schema line says `acme.orders.v1.Order · from rpc GetOrder`.
+2. **Decode as…** For other calls, click **Decode as…** in the toolbar and pick a type from a searchable list of every message in the app's schemas. Up to three **Suggested** types that fit the body are listed first. Your choice is remembered for that endpoint, separately for the request and the response: the method plus the host and path, where id-like parts such as `/orders/42` or a UUID count as the same endpoint. The next calls to it are decoded right away.
+3. **No type.** Otherwise the body is decoded without a schema.
+
+To go back, open **Decode as…** and choose **Without a type**.
+
+## Redaction
+
+Exports and what an AI assistant reads through [MCP](/app/mcp) are redacted with your [redaction rules](/app/sessions-and-export#redaction-rules), protobuf bodies included:
+
+- **With a schema**, a field whose name, or dotted path such as `credentials.password`, matches a rule is hidden: text and bytes are replaced, nested messages are emptied and numbers are left out.
+- **Without a schema** field names are unknown, so name rules can't match. Bearer tokens, JWTs and other credential-shaped text are still hidden in every text field.
+
+The redacted message is encoded again, so it still decodes in xRay and other tools.
+
+## Export
+
+| Format | A protobuf body becomes |
+| ------ | ----------------------- |
+| `.xray` session | The bytes as captured, redacted. Whoever opens the session decodes it again with their own pinned schemas, so names never go stale. |
+| HAR | The bytes as base64 (`encoding: "base64"` on responses), plus the decoded JSON in `_xrayDecoded`. |
+| cURL | A replayable command: the bytes are piped through `base64 --decode` into `curl --data-binary @-`. A body that was cut off is left out, with a comment. |
+| Markdown | The decoded message in text format (`name: value`, like `protoc --decode`) with its type, and the base64 in a collapsed block. |
+
+See [Sessions and export](/app/sessions-and-export) for how to export.
+
+## Troubleshooting
+
+- **The body shows `<binary body, N bytes>`.** The content type isn't one of the [protobuf types](#what-is-captured) (often `application/octet-stream`), or the app uses an `xray_inspector` without protobuf support. Check the call's `Content-Type` header and update the packages.
+- **The body shows a long `data:…;base64,…` text.** The desktop app is older than the SDK in your app. Update xRay.
+- **Only field numbers, no names.** No folder is pinned for this app, or no type applies. Check the schema line: pin a folder, or choose a type with **Decode as…**.
+- **My pin doesn't apply to another build.** Pins follow the app name your app announces (`appName` in `XRayInspectorServerConfig`). Builds with another name, such as a staging flavor, need their own pin.
+- **A type is missing from Decode as….** Open **Protobuf schemas…** and look for schema problems: the file may not parse, or an import may be missing from your pinned folders.
+- **Values look wrong.** The schema may not match what the server sends, for example an old checkout. Fields that don't match are marked; pull the latest schemas and they reload.
+- **My gRPC calls don't show up at all.** Native gRPC over HTTP/2 isn't captured, see [What isn't captured](#what-isnt-captured).

@@ -22,7 +22,7 @@
 
 # xRay (inspector)
 
-**xRay is a desktop inspector for Flutter teams.** Developers, QA and product people connect the xRay desktop app (macOS, Windows, Linux) to a running debug build on the local network, and see its network calls (HTTP, GraphQL, WebSockets, Serverpod), logs, key-value storage and files on one timeline. They can act on the device (appearance, locale, deep links, simulated pushes, feature flags) and record a session to hand a reproducible bug to a teammate.
+**xRay is a desktop inspector for Flutter teams.** Developers, QA and product people connect the xRay desktop app (macOS, Windows, Linux) to a running debug build on the local network, and see its network calls (HTTP, GraphQL, WebSockets, protobuf and gRPC-web, Serverpod), logs, key-value storage and files on one timeline. They can act on the device (appearance, locale, deep links, simulated pushes, feature flags) and record a session to hand a reproducible bug to a teammate.
 
 - **It stays on your network.** What the inspectors capture goes straight from your app to the desktop app, never to a cloud. Only your sign-in goes to the xRay platform.
 - **Protected and encrypted by default**, with a pairing code, a password or trusted desktops.

@@ -199,7 +199,7 @@ The assistant sees the connection tabs open in xRay's window, live and recorded,
 | `connect_app` | Opens a tab for an app you trusted before, without asking you anything. |
 | `search` | Searches network calls, logs and key-value entries, like the command menu, in one app or in several. |
 | `list_network_calls` | Network calls, newest first, filtered by method, status (`failed` too), host, URL, text, GraphQL operation and time. |
-| `get_network_call` | One call: headers, timing, GraphQL, its request or response body page by page, or its WebSocket messages. |
+| `get_network_call` | One call: headers, timing, GraphQL, its request or response body page by page, or its WebSocket messages. [Protobuf](/guides/protobuf) bodies come back decoded as JSON, with the message type xRay uses for them, message by message. |
 | `list_logs` | Log entries, filtered by level, logger, text and time. |
 | `get_log_entry` | One log entry with its message, error and stack trace. |
 | `list_key_value_entries` | The entries of a key-value store, such as shared preferences or secure storage. |
@@ -214,6 +214,8 @@ The assistant sees the connection tabs open in xRay's window, live and recorded,
 | `open_session` | Opens a saved `.xray` session file as a recorded tab, so the assistant can read it. |
 
 Most tools work on the tab selected in xRay unless the assistant names another connection. Lists are newest first and paged, and long bodies are paged too, so the assistant reads only what it asks for.
+
+A protobuf body is decoded the way the call's tab shows it: with the type from the gRPC path or your **Decode as…** choice and the app's pinned schemas, or by field number without them. Name rules hide matching fields, and text search in `list_network_calls` and `wait_for` matches the decoded text, not the bytes. The bytes themselves, as base64, are only sent when the assistant asks for them, redacted too.
 
 There is also a prompt, `debug_with_xray`, that tells the assistant how to start (in Claude Code: `/mcp__xray__debug_with_xray`).
 

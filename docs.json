@@ -54,6 +54,7 @@
         { "title": "⚙️ How it works", "href": "/guides/how-it-works" },
         { "title": "🔒 Protected connections", "href": "/guides/protected-connections" },
         { "title": "🌐 Network Inspection", "href": "/guides/network-inspection" },
+        { "title": "🧬 Protocol Buffers", "href": "/guides/protobuf" },
         { "title": "📋 Log Inspection", "href": "/guides/log-inspection" },
         { "title": "🗄️ Key-Value Inspection", "href": "/guides/key-value-inspection" },
         { "title": "📁 File Inspection", "href": "/guides/file-inspection" }
