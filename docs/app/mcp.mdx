@@ -40,7 +40,9 @@ Two more switches decide what an assistant may do:
 
 ## Connect an assistant
 
-Under **Connect an assistant**, pick your assistant, and for the ones that support both, **HTTP** or **Command**. **Copy** copies the setup with your port and token filled in, and the line under it says where it goes. **Other** shows the URL, the header and the command separately. **Setup guide** opens this page.
+Under **Connect an assistant**, pick your assistant. **Copy** copies the setup with your port and token filled in, and the line under it says where it goes. **Other** gives a JSON setup and the URL and header separately. **Setup guide** opens this page.
+
+Every assistant talks to xRay over HTTP, at `http://127.0.0.1:7799/mcp` with the token. xRay has no command for an assistant to start.
 
 ### The token
 
@@ -48,50 +50,29 @@ Every HTTP request needs the header `Authorization: Bearer <token>`. xRay create
 
 The setups below write it as `<your token from xRay>`. **Copy** fills in the real one. Treat it like a password, and don't commit it.
 
-**Regenerate…** replaces the token and restarts the server. HTTP setups with the old token stop working: copy the setup again and restart your assistant. Command setups read the token from xRay, so they keep working.
-
-### HTTP or command
-
-- **HTTP**: the assistant talks to `http://127.0.0.1:7799/mcp` with the token. Use this when your assistant supports it.
-- **Command**: the assistant starts `xray-mcp`, a small program that comes with xRay, and talks MCP to it over stdin and stdout. `xray-mcp` passes everything on to the running xRay, and reads the port and token from xRay itself, so the setup holds no token. Claude Desktop only supports this way.
-
-Where `xray-mcp` is:
-
-| OS | Command |
-| --- | --- |
-| macOS | `/Applications/xRay.app/Contents/MacOS/xray-mcp` |
-| Windows | `%LOCALAPPDATA%\Programs\xRay\xray-mcp.exe` |
-| Linux | the AppImage itself, with `--mcp-stdio`: `/path/to/xRay-<version>-x86_64.AppImage --mcp-stdio` |
-
-The setup that **Copy** gives you has the path of your own install. A development build of xRay adds `--instance <name>`, for example `--instance dev.debug`, so `xray-mcp` connects to that build instead of the released one. `xray-mcp --help` lists its options.
-
-On Windows, `xray-mcp.exe` is not code-signed yet, so Microsoft Defender SmartScreen may warn the first time it runs. See [Install on Windows](/app/install-windows).
-
-On Linux, the path changes when you download a new AppImage. Update the setup when you update xRay.
+**Regenerate…** replaces the token and restarts the server. Setups with the old token stop working: copy the setup again and restart your assistant.
 
 ## Setup per assistant
 
-The examples use the release port, 7799, and the macOS path of `xray-mcp`. **Copy** in xRay gives the right ones for your computer.
+The examples use the release port, 7799. **Copy** in xRay fills in your port and token.
 
 ### Claude Code
 
-HTTP:
-
 ```sh
 claude mcp add --transport http --scope user xray http://127.0.0.1:7799/mcp --header "Authorization: Bearer <your token from xRay>"
-```
-
-Command:
-
-```sh
-claude mcp add --transport stdio --scope user xray -- "/Applications/xRay.app/Contents/MacOS/xray-mcp"
 ```
 
 `--scope user` makes xRay available in every project. Check it with `/mcp` in Claude Code.
 
 ### Claude Desktop
 
-Claude Desktop starts the command. Add this to its config file and restart Claude Desktop:
+Claude Desktop's config file only starts programs on your computer; it has no setting for a local HTTP server. Its **Connectors** settings don't help either: those connect from Anthropic's cloud, which can't reach your computer. So the setup starts [`mcp-remote`](https://www.npmjs.com/package/mcp-remote), a community npm package that passes MCP between Claude Desktop and xRay's HTTP server.
+
+<Info>
+`mcp-remote` is a third-party package, not part of xRay. It needs [Node.js](https://nodejs.org); `npx` downloads the package the first time Claude Desktop starts it.
+</Info>
+
+Add this to Claude Desktop's config file and restart Claude Desktop:
 
 - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
@@ -100,14 +81,23 @@ Claude Desktop starts the command. Add this to its config file and restart Claud
 {
   "mcpServers": {
     "xray": {
-      "command": "/Applications/xRay.app/Contents/MacOS/xray-mcp",
-      "args": []
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "http://127.0.0.1:7799/mcp",
+        "--header",
+        "Authorization:${XRAY_AUTHORIZATION}"
+      ],
+      "env": {
+        "XRAY_AUTHORIZATION": "Bearer <your token from xRay>"
+      }
     }
   }
 }
 ```
 
-On Windows the command is the full path with escaped backslashes, for example `"C:\\Users\\<you>\\AppData\\Local\\Programs\\xRay\\xray-mcp.exe"`.
+The header goes in through `env` because Claude Desktop on Windows doesn't quote arguments with spaces.
 
 ### Cursor
 
@@ -123,8 +113,6 @@ Add to `~/.cursor/mcp.json` (every project) or `.cursor/mcp.json` (one project):
   }
 }
 ```
-
-For the command, use `"command"` and `"args"` instead of `"url"` and `"headers"`, as for Claude Desktop.
 
 ### VS Code
 
@@ -149,8 +137,6 @@ Add to `.vscode/mcp.json`, or to your user `mcp.json` (**MCP: Open User Configur
   }
 }
 ```
-
-For the command: `"xray": { "type": "stdio", "command": "/Applications/xRay.app/Contents/MacOS/xray-mcp", "args": [] }`.
 
 ### Windsurf
 
@@ -182,11 +168,9 @@ Add to Zed's `settings.json`:
 }
 ```
 
-For the command: `"xray": { "command": "/Applications/xRay.app/Contents/MacOS/xray-mcp", "args": [] }`.
-
 ### Codex
 
-HTTP, in `~/.codex/config.toml`, with the token in an environment variable:
+In `~/.codex/config.toml`, with the token in an environment variable:
 
 ```toml
 [mcp_servers.xray]
@@ -198,15 +182,9 @@ bearer_token_env_var = "XRAY_MCP_TOKEN"
 export XRAY_MCP_TOKEN="<your token from xRay>"
 ```
 
-Command:
-
-```sh
-codex mcp add xray -- "/Applications/xRay.app/Contents/MacOS/xray-mcp"
-```
-
 ### Other assistants
 
-Use **Other** in xRay: the URL `http://127.0.0.1:7799/mcp` with the header `Authorization: Bearer <token>` for Streamable HTTP, or the `xray-mcp` command for stdio.
+Use **Other** in xRay: the URL `http://127.0.0.1:7799/mcp` with the header `Authorization: Bearer <token>`, over Streamable HTTP. Its JSON setup works for most assistants; some name the URL differently, like Windsurf's `serverUrl`. An assistant that can only start a command can use `mcp-remote`, as for Claude Desktop.
 
 ## What the assistant can read
 
@@ -280,14 +258,14 @@ xRay sends nothing anywhere, but your assistant may send what it reads to its AI
 
 - The server listens on `127.0.0.1` only. Requests with another `Host` header, and any request from a web page (with an `Origin` header), are refused.
 - Every request needs the token, so other users of your computer and other local programs can't use it.
-- For `xray-mcp`, xRay writes the port and token to a file only your user can read: `~/.config/impaktfull_xray/mcp/production.json`. It is removed when the server stops. Programs that run as your own user can read it, as they can read the setups of your assistants.
+- The token is in your assistant's setup, and for Claude Desktop in its config file. Programs that run as your own user can read those files.
 - If you think the token leaked, **Regenerate…** it.
 
 ## Troubleshooting
 
-**"xRay is not running, or its MCP server is off".** Open xRay, turn on **Settings → MCP → Let AI assistants use xRay**, and reconnect the server in your assistant (`/mcp` in Claude Code, or restart it). After xRay quits, tool calls answer "xRay stopped running"; open xRay again and the next call reconnects.
+**The assistant can't reach xRay (connection refused).** xRay isn't running, or its MCP server is off. Open xRay, turn on **Settings → MCP → Let AI assistants use xRay**, and reconnect the server in your assistant (`/mcp` in Claude Code, or restart it).
 
-**"Port 7799 is in use by another app".** Another program listens on that port. Click **Change port** or enter another **Port**, then copy the setup again: HTTP setups hold the port in their URL.
+**"Port 7799 is in use by another app".** Another program listens on that port. Click **Change port** or enter another **Port**, then copy the setup again: every setup holds the port in its URL.
 
 **"Missing or wrong xRay MCP token" (401).** The token in your setup is not the current one, usually after **Regenerate…**. Copy the setup again from **Settings → MCP**.
 
@@ -297,6 +275,4 @@ xRay sends nothing anywhere, but your assistant may send what it reads to its AI
 
 **Values show as `●●●●`.** Your redaction rules hid them. That is on purpose; the assistant should not guess them.
 
-**Claude Desktop shows no xRay tools.** Check the path in the config, then restart Claude Desktop. Its log is in `~/Library/Logs/Claude/mcp-server-xray.log` on macOS and in `%APPDATA%\Claude\logs` on Windows; `xray-mcp` writes what went wrong there.
-
-**Windows blocks `xray-mcp.exe`.** SmartScreen may warn about the unsigned program. Open it once from File Explorer, choose **More info → Run anyway**, close the window it opens, and restart your assistant.
+**Claude Desktop shows no xRay tools.** Check that [Node.js](https://nodejs.org) is installed (`npx --version` in a terminal), that the token in the config is the current one, then restart Claude Desktop. Its log is in `~/Library/Logs/Claude/mcp-server-xray.log` on macOS and in `%APPDATA%\Claude\logs` on Windows; `mcp-remote` writes what went wrong there.
