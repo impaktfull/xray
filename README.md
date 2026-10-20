@@ -4,113 +4,93 @@
 
 <p align="center">
   <a href="https://pub.dev/packages/xray_inspector"><img src="https://img.shields.io/pub/v/xray_inspector?label=pub.dev&labelColor=333940&logo=dart&color=00589B" alt="pub"></a>
-  <a href="https://github.com/impaktfull/xray"><img src="https://img.shields.io/github/stars/impaktfull/xray_inspector?style=flat&label=stars&labelColor=333940&color=8957e5&logo=github" alt="github"></a>
+  <a href="https://github.com/impaktfull/xray"><img src="https://img.shields.io/github/stars/impaktfull/xray?style=flat&label=stars&labelColor=333940&color=8957e5&logo=github" alt="github"></a>
 </p>
 
 <p align="center">
   <a href="https://docs.page/impaktfull/xray">Documentation</a> •
   <a href="https://docs.page/impaktfull/xray/getting-started">Quick Start</a> •
-  <a href="https://docs.page/impaktfull/xray/guides/network-inspection">Network Inspection</a>
+  <a href="https://docs.page/impaktfull/xray/app/desktop-app">Desktop app</a> •
+  <a href="https://xrayinspector.dev">Website</a>
 </p>
 
 <p align="center">
-  <a href="https://xrayinspector.dev/install?platform=macos">macOS App</a>
+  <a href="https://docs.page/impaktfull/xray/app/install-macos">macOS</a> •
+  <a href="https://docs.page/impaktfull/xray/app/install-windows">Windows</a> •
+  <a href="https://docs.page/impaktfull/xray/app/install-linux">Linux</a>
 </p>
 
 # xRay (inspector)
 
-> A comprehensive Flutter debugging toolkit that captures and displays **network calls**, **logs**, and **key-value storage** — all inspectable in real-time via the xRay app.
+**xRay is a desktop inspector for Flutter teams.** Developers, QA and product people connect the xRay desktop app (macOS, Windows, Linux) to a running debug build on the local network, and see its network calls (HTTP, GraphQL, WebSockets, Serverpod), logs, key-value storage and files on one timeline. They can act on the device (appearance, locale, deep links, simulated pushes, feature flags) and record a session to hand a reproducible bug to a teammate.
 
-- 🔍 **Why?**: Debugging Flutter apps shouldn't require print statements or platform-specific tools. xRay (inspector) gives you a live, structured view of everything happening inside your app.
-- 👥 **Who?**: Built for Flutter developers who need deep insight into network traffic, app logs, and persistent storage during development and QA.
-- 🚀 **What?**: A composable, dependency-injection-friendly inspection layer that runs an HTTP/WebSocket server inside your app and lets the xRay app connect to it in real-time.
+- **It stays on your network.** What the inspectors capture goes straight from your app to the desktop app, never to a cloud. Only your sign-in goes to the xRay platform.
+- **Protected and encrypted by default**, with a pairing code, a password or trusted desktops.
+- **Debug builds only**, unless you explicitly allow a protected internal build.
+- **Free during the alpha** for approved testers. The desktop app needs an impaktfull account with approved access: see [Account and access](https://docs.page/impaktfull/xray/app/account-and-access).
 
-### Core Features
-
-- 🌐 **Network inspection**: Capture every HTTP request, response, and error with full headers and body.
-- 📋 **Log inspection**: Structured log levels (verbose, debug, info, warning, error) with real-time streaming.
-- 🗄️ **Key-value inspection**: Browse, edit, and delete entries from SharedPreferences and flutter_secure_storage — live.
-- 📡 **Remote UI**: Connect the xRay app (macOS, iOS, Android) over the local network via UDP discovery — no config needed.
-- ♻️ **Reactive**: All data exposed as `ValueNotifier` for seamless Flutter rebuilds.
-- 🧩 **Composable**: Add only the inspectors you need. No forced singletons, no hidden globals.
-
----
-
-> **Disclaimer:** This is a commercial package. To use this package, you need
-> to have either a commercial xRay license or a free xRay Community License.
-> The xRay macOS, iOS, and Android apps are the authorized UI clients for this library.
-> For more details, please check the [LICENSE](https://xrayinspector.dev/license) file.
-
-## Apps
-
-| Platform | Download                                                       |
-| -------- | -------------------------------------------------------------- |
-| macOS    | [Download](https://xrayinspector.dev/install?platform=macos)   |
-
-## Packages
-
-| Package                                                                                           | Description                                       |
-| ------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| [`xray_inspector`](https://pub.dev/packages/xray_inspector)                                       | Core package — inspectors + HTTP/WebSocket server |
-| [`xray_network_dio_interceptor`](https://pub.dev/packages/xray_network_dio_interceptor)           | Dio HTTP interceptor                              |
-| [`xray_shared_preferences_inspector`](https://pub.dev/packages/xray_shared_preferences_inspector) | SharedPreferences key-value inspector             |
-| [`xray_secure_storage_inspector`](https://pub.dev/packages/xray_secure_storage_inspector)         | flutter_secure_storage inspector                  |
-
-## Architecture
-
-```
-Your Flutter app
-       │
-       ├── XRayNetworkInspector   ◄── XRayNetworkDioInterceptor
-       ├── XRayLogInspector
-       ├── XRaySharedPreferencesInspector
-       └── XRaySecureStorageInspector
-                        │
-              XRayInspectorServer  (HTTP + WebSocket + UDP discovery)
-                        │
-                  xRay App (macOS / iOS / Android)
-```
-
-The inspector server runs inside your app and broadcasts data over HTTP and WebSocket. The xRay app connects to it automatically via UDP discovery — no configuration needed.
-
-## Quick Start
-
-Add the packages you need:
+## Quick start
 
 ```yaml
 dependencies:
-  xray_inspector: ^0.0.1
-  xray_network_dio_interceptor: ^0.0.1 # if you use Dio
-  xray_shared_preferences_inspector: ^0.0.1 # optional
-  xray_secure_storage_inspector: ^0.0.1 # optional
+  xray_inspector: ^0.1.0
+  xray_network_dio_interceptor: ^0.1.0 # if you use Dio
 ```
-
-Set up inspectors at app startup:
 
 ```dart
-final networkInspector = XRayNetworkInspector();
-final logInspector = XRayLogInspector();
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:xray_inspector/xray_inspector.dart';
 
-final dio = Dio()
-  ..interceptors.add(
-    XRayNetworkDioInterceptor(inspector: networkInspector),
-  );
-
-final server = XRayInspectorServer(
-  config: XRayInspectorServerConfig(
-    inspectors: [networkInspector, logInspector],
-  ),
-);
-
-await server.start();
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (!kReleaseMode) {
+    final networkInspector = XRayNetworkInspector(enableHttpOverride: true);
+    final logInspector = XRayLogInspector();
+    await XRayInspectorServer(
+      config: XRayInspectorServerConfig(
+        deviceName: () => 'Pixel 8',
+        appName: () => 'Shop',
+        inspectors: [networkInspector, logInspector],
+      ),
+    ).start();
+  }
+  runApp(const MyApp());
+}
 ```
 
-Then open the xRay app on macOS, iOS, or Android — it will auto-discover your running server on the local network.
+Run your app, open **Add Connection** in the xRay desktop app, pick your app and enter the pairing code it printed in its console. See the [Quick Start guide](https://docs.page/impaktfull/xray/getting-started) for the full setup.
 
-See the [Quick Start guide](https://docs.page/impaktfull/xray/getting-started) for the full setup.
+## Desktop apps
 
-## Design Principles
+| Platform | Install |
+| -------- | ------- |
+| macOS 12 or later | [Homebrew or DMG](https://docs.page/impaktfull/xray/app/install-macos) |
+| Windows 10 or 11 | [Installer](https://docs.page/impaktfull/xray/app/install-windows) |
+| Linux (x86_64) | [AppImage](https://docs.page/impaktfull/xray/app/install-linux) |
 
-- **No singletons** — all dependencies are passed explicitly via constructors.
-- **No disk I/O** — all captured data lives in memory only.
-- **Composable** — add only the inspectors you need.
+Downloads are on the [releases page](https://github.com/impaktfull/xray/releases).
+
+## Packages
+
+| Package | What it adds |
+| ------- | ------------ |
+| [`xray_inspector`](https://pub.dev/packages/xray_inspector) | The inspectors and the protected server. Start here |
+| [`xray_network_dio_interceptor`](https://pub.dev/packages/xray_network_dio_interceptor) | Records Dio calls, including requests other interceptors stop |
+| [`xray_serverpod_interceptor`](https://pub.dev/packages/xray_serverpod_interceptor) | Shows Serverpod calls by endpoint and method |
+| [`xray_shared_preferences_inspector`](https://pub.dev/packages/xray_shared_preferences_inspector) | SharedPreferences in the Key-Value tab |
+| [`xray_secure_storage_inspector`](https://pub.dev/packages/xray_secure_storage_inspector) | flutter_secure_storage in the Key-Value tab |
+| [`xray_device_actions`](https://pub.dev/packages/xray_device_actions) | Device actions: appearance, locale, text size, animations, debug overlays |
+| [`xray_inspector_core`](https://pub.dev/packages/xray_inspector_core) | Shared models, included with `xray_inspector` |
+
+## Roadmap and feedback
+
+Planned features are [issues labelled `roadmap`](https://github.com/impaktfull/xray/issues?q=is%3Aissue+is%3Aopen+label%3Aroadmap). Vote with a 👍, or open an issue to suggest a feature or report a bug.
+
+---
+
+> **Disclaimer:** This is a commercial package. To use it, you need either a
+> commercial xRay license or a free xRay Community License. The xRay desktop
+> apps for macOS, Windows and Linux are the authorized UI clients for this
+> library. See the [License](https://docs.page/impaktfull/xray/license) and the
+> [Terms & Conditions](https://docs.page/impaktfull/xray/terms-and-conditions).
