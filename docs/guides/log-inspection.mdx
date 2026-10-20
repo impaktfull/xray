@@ -1,9 +1,9 @@
 ---
 title: Log Inspection
-description: Capture structured log entries with levels for real-time inspection.
+description: Capture structured log entries with levels, logger names, errors and stack traces for real-time inspection.
 ---
 
-`XRayLogInspector` captures structured log entries with severity levels, storing them in memory for real-time inspection via the remote UI.
+`XRayLogInspector` captures log entries with a level, an optional logger name, error and stack trace, and keeps them in memory so the xRay desktop app can show them as they happen.
 
 ## Setup
 
@@ -12,58 +12,88 @@ import 'package:xray_inspector/xray_inspector.dart';
 
 final logInspector = XRayLogInspector();
 
-// Optional: custom title shown in the remote UI
-final logInspector = XRayLogInspector(title: 'App Logs');
+// Optional: a custom title shown in the desktop app
+final appLogs = XRayLogInspector(title: 'App Logs');
 ```
+
+Pass it to `XRayInspectorServerConfig` alongside your other inspectors. See [Quick Start](/getting-started) for the full server setup.
 
 ## Logging messages
 
 ```dart
 logInspector.verbose('Detailed trace message');
 logInspector.debug('Debug information');
-logInspector.info('User signed in');
+logInspector.info('User signed in', logger: 'AuthRepository');
 logInspector.warning('Deprecated API used');
-logInspector.error('Failed to load data');
+logInspector.error('Failed to load data', error: error, stackTrace: stackTrace);
+logInspector.fatal('Database corrupted', error: error, stackTrace: stackTrace);
 
 // Or with an explicit level
-logInspector.log('Custom message', level: XRayLogInspectorLevel.info);
+logInspector.log('Order placed', level: XRayLogInpectorLevel.success);
 ```
+
+- `logger` names the class or logger that wrote the entry. The desktop app can filter on it.
+- `error` and `stackTrace` are shown with the entry. `warning`, `error`, `fatal` and `log` accept them.
 
 ## Log levels
 
+The level constants live in `XRayLogInpectorLevel`.
+
 | Level   | Constant                        | Use for                        |
 | ------- | ------------------------------- | ------------------------------ |
-| verbose | `XRayLogInspectorLevel.verbose` | Fine-grained trace output      |
-| debug   | `XRayLogInspectorLevel.debug`   | Debugging information          |
-| info    | `XRayLogInspectorLevel.info`    | General informational messages |
-| warning | `XRayLogInspectorLevel.warning` | Potentially harmful situations |
-| error   | `XRayLogInspectorLevel.error`   | Errors and exceptions          |
+| verbose | `XRayLogInpectorLevel.verbose`  | Fine-grained trace output      |
+| debug   | `XRayLogInpectorLevel.debug`    | Debugging information          |
+| info    | `XRayLogInpectorLevel.info`     | General informational messages |
+| success | `XRayLogInpectorLevel.success`  | Something that worked          |
+| warning | `XRayLogInpectorLevel.warning`  | Potentially harmful situations |
+| error   | `XRayLogInpectorLevel.error`    | Errors and exceptions          |
+| fatal   | `XRayLogInpectorLevel.fatal`    | Errors the app cannot recover from |
 
-## Accessing log entries
+## Limits
+
+```dart
+final logInspector = XRayLogInspector(
+  maxEntries: 5000,          // the default
+  maxMessageLength: 64 * 1024, // the default, in characters
+);
+```
+
+- The inspector keeps the newest `maxEntries` entries; older ones are dropped, so a long session cannot grow your app's memory without limit.
+- Messages, errors and stack traces longer than `maxMessageLength` characters are cut off with a marker.
+- In release and profile builds, log calls do nothing until an inspector server that is allowed to run in them starts.
+
+## Accessing log entries in code
 
 ```dart
 // Snapshot of all entries
 final entries = logInspector.entries;
 
-// Reactive — rebuilds widget when entries change
-ValueListenableBuilder<List<XRayLogInspectorEntry>>(
-  valueListenable: logInspector.entriesNotifier,
-  builder: (context, entries, _) {
-    return Text('${entries.length} log entries');
-  },
-);
+// Called whenever the list changes
+void onEntriesChanged() {
+  debugPrint('${logInspector.entriesNotifier.value.length} log entries');
+}
+
+logInspector.entriesNotifier.addListener(onEntriesChanged);
+
+// Clean up when done
+logInspector.entriesNotifier.removeListener(onEntriesChanged);
 ```
+
+`entriesNotifier` is a small `Watchable` from `xray_inspector`, not a Flutter `ValueListenable`. To rebuild a widget, call `setState` from the listener.
 
 ## Log entry model
 
 Each entry is an `XRayLogInspectorEntry` with:
 
-| Field       | Type       | Description                |
-| ----------- | ---------- | -------------------------- |
-| `id`        | `String`   | Unique entry ID            |
-| `message`   | `String`   | Log message                |
-| `level`     | `String`   | Severity level             |
-| `timestamp` | `DateTime` | When the entry was created |
+| Field        | Type       | Description                                  |
+| ------------ | ---------- | -------------------------------------------- |
+| `id`         | `String`   | Unique entry ID                              |
+| `message`    | `String`   | Log message                                  |
+| `level`      | `String`   | Severity level, one of the constants above   |
+| `timestamp`  | `DateTime` | When the entry was created                   |
+| `logger`     | `String?`  | Name of the logger or class that wrote it    |
+| `error`      | `String?`  | `toString()` of the error logged with it     |
+| `stackTrace` | `String?`  | Stack trace logged with it                   |
 
 ## Clearing entries
 
@@ -76,23 +106,27 @@ logInspector.clear();
 Route your existing logging through the inspector:
 
 ```dart
-// Example: wrapping a logger
 class AppLogger {
-  final XRayLogInspector _inspector;
+  AppLogger(this._inspector, this._name);
 
-  AppLogger(this._inspector);
+  final XRayLogInspector? _inspector;
+  final String _name;
 
   void info(String message) {
     debugPrint('[INFO] $message');
-    _inspector.info(message);
+    _inspector?.info(message, logger: _name);
   }
 
-  void error(String message, [Object? error]) {
+  void error(String message, [Object? error, StackTrace? stackTrace]) {
     debugPrint('[ERROR] $message${error != null ? ': $error' : ''}');
-    _inspector.error(error != null ? '$message: $error' : message);
+    _inspector?.error(message, logger: _name, error: error, stackTrace: stackTrace);
   }
 }
 ```
+
+## In the desktop app
+
+The **Logs** tab shows entries as they arrive. Search messages, and filter by level, logger, time range, and entries with an error object or stack trace. Save a filter as a preset, or use **Errors & warnings** and **Last 5 minutes**. Log entries also appear on the [Timeline](/app/desktop-app#timeline).
 
 ## Multiple log inspectors
 
@@ -101,4 +135,4 @@ final appLogs = XRayLogInspector(title: 'App');
 final networkLogs = XRayLogInspector(title: 'Network');
 ```
 
-Both will appear as separate tabs in the remote UI.
+Each needs a distinct title (or `id`).

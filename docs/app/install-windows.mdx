@@ -1,0 +1,59 @@
+---
+title: Install on Windows
+description: Install the xRay Windows app with its installer.
+---
+
+The xRay Windows app connects to Flutter apps that run `xray_inspector` on your local network. It is distributed as an installer on GitHub Releases.
+
+## Requirements
+
+- Windows 10 or 11, 64-bit (x64)
+- An impaktfull account with approved xRay alpha access (see [Account and access](/app/account-and-access))
+- A running Flutter app with `xray_inspector` configured (see [Quick Start](/getting-started))
+
+## Install
+
+1. Open the [xRay GitHub Releases page](https://github.com/impaktfull/xray/releases).
+2. Download the latest `xRay-<version>-setup.exe` asset.
+3. Run the installer. It installs xRay for your Windows user only, so it does not ask for administrator rights.
+4. Launch xRay from the Start menu.
+
+### "Windows protected your PC"
+
+The installer is not code-signed yet, so Microsoft Defender SmartScreen may stop it the first time with **Windows protected your PC**. Click **More info**, check that the app is `xRay-<version>-setup.exe`, and click **Run anyway**. Only do this for an installer you downloaded from the official [GitHub Releases page](https://github.com/impaktfull/xray/releases).
+
+## Allow xRay on your network
+
+xRay finds your Flutter apps by listening on your local network. The first time you open **Add Connection**, xRay explains this, and then Windows Firewall asks whether xRay may use the network:
+
+- Allow it on **Private networks** (home or office Wi-Fi). Public networks are not needed.
+- If you clicked **Cancel** by mistake, open **Windows Security → Firewall & network protection → Allow an app through firewall**, and allow **xRay** on private networks.
+
+Without this, your apps will not appear in the device list. You can still connect by entering the device's IP address and port under **Or connect manually**.
+
+## Update and uninstall
+
+- **Update:** xRay tells you when a new version is available. Download and run the new installer; it replaces the old version and keeps your settings.
+- **Uninstall:** **Settings → Apps → Installed apps → xRay → Uninstall**.
+
+## Sign in and get access
+
+1. Click **Continue with impaktfull**. Your browser opens to finish signing in with your impaktfull account. After you sign in, the browser asks to open xRay: allow it, and the sign-in continues in the app.
+2. xRay is in alpha and open to approved testers. The first time, click **Request access**. You get an email once your request is approved; then click **Check again** to start using xRay.
+
+See [Account and access](/app/account-and-access) for what happens to your data and how the free alpha license works.
+
+## Connect to your app
+
+1. Run your Flutter app with `xray_inspector` set up (see [Quick Start](/getting-started)).
+2. In xRay, open **Add Connection**. Your app appears under **Discovered on your network**.
+3. Click it and enter the pairing code your app printed in its console, on the line that starts with `[xray_inspector] Pairing code:`. xRay remembers it for this app on this device. If the app uses a password or [trusted desktops](/guides/protected-connections#trusted-desktops) instead, enter the password, or connect without a prompt.
+
+If your app does not appear, see [Troubleshooting discovery](/guides/how-it-works#troubleshooting-discovery).
+
+## Next steps
+
+- [Quick Start](/getting-started): set up `xray_inspector` in your Flutter app
+- [Using the desktop app](/app/desktop-app)
+- [Network Inspection](/guides/network-inspection)
+- [Protected connections](/guides/protected-connections)

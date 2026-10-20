@@ -1,48 +1,73 @@
 ---
 title: xray_inspector
-description: Core inspector package — network, log, and key-value inspectors plus the HTTP server for remote inspection.
+description: The main xRay package. Network, log, key-value, file and device inspectors plus the protected server the xRay desktop app connects to.
 ---
 
 [![pub package](https://img.shields.io/pub/v/xray_inspector.svg)](https://pub.dev/packages/xray_inspector)
 
-Core orchestration package. Contains the inspector classes, repository layer, and the HTTP/WebSocket server that broadcasts inspector data to remote UI clients.
+The main package. It contains the inspectors and the server that the xRay desktop app connects to over your local network. It is pure Dart, so it works in Flutter apps and in Dart apps without Flutter.
 
 ## Installation
 
 ```yaml
 dependencies:
-  xray_inspector: ^0.0.1
+  xray_inspector: ^0.1.0
 ```
+
+For a full setup, see [Quick Start](/getting-started).
 
 ## What's included
 
-- `XRayNetworkInspector` — captures and stores network calls
-- `XRayLogInspector` — captures and stores log entries
-- `XRayKeyValueInspector` — base class for key-value inspectors
-- `XRayInspectorServer` — HTTP + WebSocket + UDP discovery server
-- `XRayInspectorServerConfig` — server configuration
+- `XRayNetworkInspector`: captures HTTP calls and WebSockets, see [Network Inspection](/guides/network-inspection)
+- `XRayIsolateCapture`: captures calls made in background isolates
+- `XRayLogInspector`: captures log entries, see [Log Inspection](/guides/log-inspection)
+- `XRayKeyValueInspector`, `XRayKeyValueSource`: inspect any key-value store, see [Key-Value Inspection](/guides/key-value-inspection)
+- `XRayFileInspector`, `XRayFileRoot`: browse your app's files, see [File Inspection](/guides/file-inspection)
+- `XRayDeviceInspector`: deep links, simulated pushes and feature flags, see [`xray_device_actions`](/packages/xray-device-actions)
+- `XRayInspectorServer`, `XRayInspectorServerConfig`: the server, its protection and discovery
+
+The shared models, such as `XRayNetworkCall`, come from [`xray_inspector_core`](/packages/xray-inspector-core) and are exported by this package.
 
 ## XRayNetworkInspector
 
 ```dart
-// Dio — wire up via XRayNetworkDioInterceptor
-final inspector = XRayNetworkInspector();
-
-// Global dart:io override — captures all HttpClient traffic automatically
 final inspector = XRayNetworkInspector(enableHttpOverride: true);
 ```
 
-| Member                 | Type                       | Description                                                                 |
-| ---------------------- | -------------------------- | --------------------------------------------------------------------------- |
-| `title`                | `String`                   | Display name (default: `"Network"`)                                         |
-| `enableHttpOverride`   | `bool`                     | When `true`, installs a global `dart:io` override to capture all HTTP traffic. Only one inspector can have this enabled at a time. Ignored on web. _(since 0.0.9)_ |
-| `id`                   | `String`                   | Derived from title, used as server route ID                                 |
-| `calls`                | `List<XRayNetworkCall>`    | Current captured calls (snapshot)                                           |
-| `callsNotifier`        | `ValueNotifier<List<...>>` | Reactive calls list                                                         |
-| `findById(id)`         | `XRayNetworkCall?`         | Look up a call by ID                                                        |
-| `addListener(l)`       | `void`                     | Register a listener                                                         |
-| `removeListener(l)`    | `void`                     | Unregister a listener                                                       |
-| `clear()`              | `void`                     | Clear all captured calls                                                    |
+| Member | Type | Description |
+| ------ | ---- | ----------- |
+| `title` | `String` | Display name (default: `"Network"`) |
+| `id` | `String` | Identifies the inspector to the desktop app. Derived from `title` unless you pass one |
+| `enableHttpOverride` | `bool` | Captures every `dart:io` HTTP call and WebSocket. Only one inspector can enable it. Ignored on web |
+| `redactHeaders` | `Set<String>` | Headers whose values are masked (default: `defaultRedactedHeaders`: `Authorization`, `Proxy-Authorization`, `Cookie`, `Set-Cookie`, `X-Api-Key`). Pass `{}` to record them in full |
+| `redactBody` | `XRayBodyRedactor?` | Rewrites request and response bodies before they are stored; return `null` to store nothing |
+| `maxCalls` | `int` | Keeps the newest calls (default: `1000`) |
+| `maxWebSocketMessages` | `int` | Messages kept per WebSocket connection (default: `500`) |
+| `maxBodyLength` | `int` | Characters of bodies kept in total before the oldest calls lose their bodies |
+| `isRecording` | `bool` | `false` in release and profile builds until an allowed server starts |
+| `calls` | `List<XRayNetworkCall>` | Captured calls (snapshot) |
+| `callsNotifier` | `Watchable<List<XRayNetworkCall>>` | Notifies listeners when the calls change |
+| `findById(id)` | `XRayNetworkCall?` | Look up a call by ID |
+| `webSocketMessagesOf(id)` | `List<XRayWebSocketMessage>?` | Messages of a WebSocket call |
+| `recordWebSocket(uri, …)` | `XRayWebSocketRecorder` | Record a WebSocket connection the override cannot see |
+| `addListener(l)` / `removeListener(l)` | `void` | Register an `XRayNetworkInspectorListener` |
+| `addWebSocketMessageListener(l)` / `removeWebSocketMessageListener(l)` | `void` | Called with every WebSocket message |
+| `clear()` | `void` | Clear all captured calls |
+| `dispose()` | `void` | Remove the HTTP override and stop notifying |
+
+`Watchable` is a small listenable from `xray_inspector`: read `value`, and call `addListener` and `removeListener`. It is not a Flutter `ValueListenable`, so the package works without Flutter.
+
+## XRayIsolateCapture
+
+```dart
+final xrayCapture = XRayIsolateCapture.prepare();
+await Isolate.run(() {
+  xrayCapture.install();
+  return fetchUsers();
+});
+```
+
+Captures the HTTP calls of a background isolate in the same network inspector. Needs an `XRayNetworkInspector(enableHttpOverride: true)`. See [Background isolates](/guides/network-inspection#background-isolates).
 
 ## XRayLogInspector
 
@@ -50,35 +75,67 @@ final inspector = XRayNetworkInspector(enableHttpOverride: true);
 final inspector = XRayLogInspector(title: 'Logs');
 ```
 
-| Member                 | Type                          | Description                      |
-| ---------------------- | ----------------------------- | -------------------------------- |
-| `title`                | `String`                      | Display name (default: `"Logs"`) |
-| `entries`              | `List<XRayLogInspectorEntry>` | Current log entries              |
-| `entriesNotifier`      | `ValueNotifier<List<...>>`    | Reactive entries list            |
-| `verbose(message)`     | `void`                        | Log at verbose level             |
-| `debug(message)`       | `void`                        | Log at debug level               |
-| `info(message)`        | `void`                        | Log at info level                |
-| `warning(message)`     | `void`                        | Log at warning level             |
-| `error(message)`       | `void`                        | Log at error level               |
-| `log(message, level:)` | `void`                        | Log with explicit level          |
-| `clear()`              | `void`                        | Clear all entries                |
+| Member | Type | Description |
+| ------ | ---- | ----------- |
+| `title` | `String` | Display name (default: `"Logs"`) |
+| `id` | `String` | Derived from `title` unless you pass one |
+| `maxEntries` | `int` | Keeps the newest entries (default: `5000`) |
+| `maxMessageLength` | `int` | Longer messages, errors and stack traces are cut off (default: `65536` characters) |
+| `entries` | `List<XRayLogInspectorEntry>` | Current log entries |
+| `entriesNotifier` | `Watchable<List<XRayLogInspectorEntry>>` | Notifies listeners when the entries change |
+| `verbose(message, {logger})` | `void` | Log at verbose level |
+| `debug(message, {logger})` | `void` | Log at debug level |
+| `info(message, {logger})` | `void` | Log at info level |
+| `warning(message, {logger, error, stackTrace})` | `void` | Log at warning level |
+| `error(message, {logger, error, stackTrace})` | `void` | Log at error level |
+| `fatal(message, {logger, error, stackTrace})` | `void` | Log at fatal level |
+| `log(message, {level, logger, error, stackTrace})` | `void` | Log with an explicit `XRayLogInpectorLevel` |
+| `clear()` | `void` | Clear all entries |
 
 ## XRayKeyValueInspector
 
-Base class used by `XRaySharedPreferencesInspector` and `XRaySecureStorageInspector`.
+The class behind `XRaySharedPreferencesInspector` and `XRaySecureStorageInspector`.
 
 ```dart
 final inspector = XRayKeyValueInspector(source: mySource);
 ```
 
-| Member              | Type                                          | Description                         |
-| ------------------- | --------------------------------------------- | ----------------------------------- |
-| `title`             | `String`                                      | Derived from `source.title`         |
-| `entriesNotifier`   | `ValueNotifier<List<InspectorKeyValueEntry>>` | Reactive entries                    |
-| `refresh()`         | `Future<void>`                                | Re-read all entries from the source |
-| `write(key, value)` | `Future<void>`                                | Write a value and refresh           |
-| `delete(key)`       | `Future<void>`                                | Delete a key and refresh            |
-| `clear()`           | `void`                                        | Delete all keys                     |
+| Member | Type | Description |
+| ------ | ---- | ----------- |
+| `title` | `String` | Taken from `source.title` |
+| `id` | `String` | Derived from the title unless you pass one |
+| `entriesNotifier` | `Watchable<List<InspectorKeyValueEntry>>` | Notifies listeners when the entries change |
+| `supportedTypes` | `List<XRayKeyValueType>` | Types a new key can be created with; empty when the source cannot create keys |
+| `refresh()` | `Future<void>` | Re-read all entries from the source |
+| `write(key, value)` | `Future<void>` | Write a value and refresh |
+| `writeTyped(key, value, type)` | `Future<void>` | Create or replace a key with a type and refresh |
+| `delete(key)` | `Future<void>` | Delete a key and refresh |
+| `clear()` | `void` | Delete all keys |
+
+### XRayKeyValueSource
+
+Implement this interface to add any key-value store:
+
+```dart
+abstract class XRayKeyValueSource {
+  String get title;
+  Future<Map<String, String?>> readAll();
+  Future<void> write(String key, String value);
+  Future<void> delete(String key);
+}
+```
+
+Also implement `XRayTypedKeyValueSource` (`readTypes()`) to show each value's type, and `XRayTypedWriteKeyValueSource` (`supportedTypes`, `writeTyped()`) to let the desktop app add keys. See [Typed values](/guides/key-value-inspection#typed-values).
+
+## XRayFileInspector
+
+```dart
+final fileInspector = XRayFileInspector(
+  roots: [XRayFileRoot(name: 'Documents', path: documentsPath)],
+);
+```
+
+Only the listed roots can be reached. See [File Inspection](/guides/file-inspection).
 
 ## XRayInspectorServer
 
@@ -86,8 +143,6 @@ final inspector = XRayKeyValueInspector(source: mySource);
 final server = XRayInspectorServer(
   config: XRayInspectorServerConfig(
     inspectors: [networkInspector, logInspector],
-    httpPort: 8080,
-    discoveryPort: 8081,
   ),
 );
 
@@ -95,15 +150,29 @@ await server.start();
 await server.stop();
 ```
 
-## XRayKeyValueSource
+| Member | Type | Description |
+| ------ | ---- | ----------- |
+| `start()` | `Future<void>` | Starts the server, discovery and the announcement. Does nothing in release and profile builds unless they are allowed |
+| `stop()` | `Future<void>` | Stops the server and disconnects every desktop app. It can be started again |
+| `isRunning` | `bool` | Whether the server runs |
+| `httpPort` | `int?` | The port it actually listens on while running |
+| `pairingCode` | `String?` | The pairing code while the server runs with one |
 
-Implement this interface to add any key-value store:
+### XRayInspectorServerConfig
 
-```dart
-abstract class XRayKeyValueSource {
-  String get title;
-  Future<Map<String, String>> readAll();
-  Future<void> write(String key, String value);
-  Future<void> delete(String key);
-}
-```
+| Option | Type | Description |
+| ------ | ---- | ----------- |
+| `inspectors` | `List<XRayInspector>` | The inspectors to serve. Their ids must be unique |
+| `deviceName` | `FutureOr<String> Function()?` | Shown in the desktop app so devices can be told apart |
+| `appName` | `FutureOr<String> Function()?` | Shown next to the device name |
+| `password` | `String?` | Everyone who connects types this password. `null` or empty means none. See [Password](/guides/protected-connections#password) |
+| `trustedDesktopKeys` | `List<String>` | Public keys of the desktop apps that may connect. Empty means none. See [Trusted desktops](/guides/protected-connections#trusted-desktops) |
+| `allowUnprotected` | `bool` | Turns the default pairing code and encryption off (default: `false`). Cannot be combined with a password or trusted desktops |
+| `allowInReleaseMode` | `bool` | Lets the server start in release and profile builds (default: `false`). Only works together with a `password` or `trustedDesktopKeys` |
+| `httpPort` | `int?` | Leave it out to use `7780`, or the next free port of `7782`–`7790`, or any free port. Set it to fix the port; `start()` then throws an `XRayInspectorPortInUseException` when it is taken |
+| `discoveryPort` | `int` | UDP discovery port (default: `7781`), shared by all apps on a device. Announcements go to `discoveryPort + 10` |
+| `announceOnStart` | `bool` | Announce the app on the network each time the server starts (default: `true`) |
+
+Without a `password` or `trustedDesktopKeys`, the server uses a [pairing code](/guides/protected-connections#pairing-code). `start()` throws an `ArgumentError` when both a password and trusted desktops are set, when `allowUnprotected` is combined with either, or when a trusted key is not valid.
+
+See [How it works](/guides/how-it-works) for ports, discovery, manual connections and release builds.

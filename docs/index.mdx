@@ -1,39 +1,80 @@
 ---
 title: xRay (inspector)
-description: A comprehensive Flutter debugging toolkit for inspecting network calls, logs, and key-value storage in development.
+description: xRay is a desktop inspector for Flutter teams. See a debug build's network calls, logs, storage and files on one timeline, act on the device, and hand a reproducible bug to a teammate.
 ---
 
-> **Disclaimer:** This is a commercial package. To use this package, you need
-> to have either a commercial xRay license or a free xRay Community License.
-> The xRay macOS, iOS, and Android apps are the authorized UI clients for this library.
-> For more details, please check the [LICENSE](https://xrayinspector.dev/license) file.
+**xRay is a desktop inspector for Flutter teams.** Developers, QA and product people connect the xRay desktop app (macOS, Windows, Linux) to a running debug build on the local network, and see its network calls, logs, key-value storage and files on one timeline. They can act on the device, and record a session to hand a reproducible bug to a teammate.
 
-## Architecture overview
+## What you can do
+
+- **Network**: every HTTP call with headers, bodies, timing and sizes, GraphQL operations by name, WebSocket messages, and Serverpod calls by endpoint and method. Credentials are masked by default.
+- **Logs**: entries with level, logger, error and stack trace, searchable and filterable.
+- **Key-value storage**: browse, edit and add keys in shared preferences, secure storage or your own store.
+- **Files**: browse, preview, save and delete your app's documents and caches.
+- **Timeline**: calls, logs and key-value changes in the order they happened.
+- **Device actions**: change appearance, locale and text size, open deep links, send simulated pushes and override feature flags.
+- **Sessions**: export what you captured as an `.xray` file or HAR, with secrets redacted, and open a teammate's session read-only. Export a single call as cURL or Markdown.
+
+## Why teams use it
+
+- **It stays on your network.** What the inspectors capture goes straight from your app to the xRay desktop apps that connect to it, never to a cloud. Only your sign-in goes to the xRay platform, and xRay sends no telemetry.
+- **Protected and encrypted by default.** Your app accepts a connection only with its pairing code, a password, or from a trusted desktop, and all traffic is encrypted.
+- **Debug builds only.** The inspector does not start in release or profile builds, unless you explicitly allow it in a protected internal build.
+- **Free during the alpha** for approved testers.
+
+## Get started
+
+1. Install the desktop app on [macOS](/app/install-macos), [Windows](/app/install-windows) or [Linux](/app/install-linux), and sign in. See [Account and access](/app/account-and-access).
+2. Add `xray_inspector` to your app: [Quick Start](/getting-started).
+3. Open **Add Connection** in xRay, pick your app and enter its pairing code.
+
+## How it fits together
 
 ```
-Your Flutter app
+Your Flutter app (debug build)
        │
-       ├── XRayNetworkInspector   ◄── XRayNetworkDioInterceptor
+       ├── XRayNetworkInspector   ◄── HTTP override, Dio, Serverpod
        ├── XRayLogInspector
-       ├── XRaySharedPreferencesInspector
-       └── XRaySecureStorageInspector
+       ├── XRaySharedPreferencesInspector / XRaySecureStorageInspector
+       ├── XRayFileInspector
+       └── XRayDeviceInspector    ◄── xray_device_actions
                         │
-              XRayInspectorServer  (HTTP + WebSocket + UDP discovery)
-                        │
-                  xRay Inspector App / Web App
+              XRayInspectorServer  (protected, encrypted; UDP discovery)
+                        │  local network
+                  xRay desktop app (macOS / Windows / Linux)
 ```
 
-The inspector server runs inside your app and broadcasts data over HTTP/WebSocket. Connect to it using the xRay app or web app.
+The inspector server runs inside your app. The desktop app finds it on the local network and connects to it directly. See [How it works](/guides/how-it-works).
 
 ## Design principles
 
-- **No singletons** — all dependencies are passed explicitly via constructors.
-- **No disk I/O** — all captured data lives in memory only.
-- **Composable** — add only the inspectors you need.
+- **No singletons**: all dependencies are passed explicitly via constructors.
+- **In memory**: captured calls, logs and changes live in your app's memory only, with limits so a long session cannot grow it without bound. The inspector only stores its pairing code on the device, and the file inspector only reads the folders you list.
+- **Composable**: add only the inspectors you need.
 
-## Quick links
+## Guides
 
-- [Quick Start](/getting-started)
+- [How it works](/guides/how-it-works): discovery, ports, release builds and troubleshooting
+- [Protected connections](/guides/protected-connections): pairing code, password and trusted desktops
 - [Network Inspection](/guides/network-inspection)
 - [Log Inspection](/guides/log-inspection)
 - [Key-Value Inspection](/guides/key-value-inspection)
+- [File Inspection](/guides/file-inspection)
+- [Using the desktop app](/app/desktop-app)
+- [Sessions and export](/app/sessions-and-export)
+
+## Packages
+
+| Package | What it adds |
+| ------- | ------------ |
+| [`xray_inspector`](/packages/xray-inspector) | The inspectors and the server. Start here |
+| [`xray_network_dio_interceptor`](/packages/xray-network-dio-interceptor) | Records Dio calls, including requests other interceptors stop |
+| [`xray_serverpod_interceptor`](/packages/xray-serverpod-interceptor) | Shows Serverpod calls by endpoint and method |
+| [`xray_shared_preferences_inspector`](/packages/xray-shared-preferences-inspector) | SharedPreferences in the Key-Value tab |
+| [`xray_secure_storage_inspector`](/packages/xray-secure-storage-inspector) | flutter_secure_storage in the Key-Value tab |
+| [`xray_device_actions`](/packages/xray-device-actions) | Device actions: appearance, locale, text size, animations, debug overlays |
+| [`xray_inspector_core`](/packages/xray-inspector-core) | Shared models, included with `xray_inspector` |
+
+<Info>
+xRay is a commercial product. To use these packages you need a commercial xRay license or a free xRay Community License. The xRay desktop apps for macOS, Windows and Linux are the authorized UI clients for these packages. See [License](/license) and [Terms & Conditions](/terms-and-conditions).
+</Info>

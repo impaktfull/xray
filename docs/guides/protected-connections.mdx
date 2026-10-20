@@ -1,0 +1,116 @@
+---
+title: Protected connections
+description: Decide who may connect to your app with a pairing code, a password or trusted desktops. All traffic is encrypted.
+---
+
+<Info>Available from `xray_inspector` 0.1.0.</Info>
+
+Anyone on your network can find your app. Protection decides who may connect to it. Without a setting of your own, your app uses a pairing code. A password or a list of trusted desktops replaces the code, for example when a whole team inspects the same build.
+
+With every kind of protection:
+
+- all traffic is encrypted and authenticated (X25519 key exchange, ChaCha20-Poly1305), including the request paths;
+- discovery only shows the device name, the app name and a lock, nothing else;
+- wrong attempts are limited, and a flood of connection attempts cannot slow your app down.
+
+## Pairing code
+
+The default. Without a `password` or `trustedDesktopKeys`, the app makes up a pairing code and prints it when the inspector starts:
+
+```
+[xray_inspector] Pairing code: k7q2-m9xa-4ftr. The xRay desktop app asks for it once and remembers it; it stays the same across restarts.
+```
+
+- The first time you connect, the desktop app shows **Pairing code required**. Enter the code from your app's console. Case, spaces and dashes do not matter.
+- The desktop app remembers the code for this app on this device, in your system's credential store.
+- The code is kept on the device, so it stays the same across hot restarts and app restarts. When the operating system clears the app's temporary folder or the app is reinstalled, the app prints a new code and the desktop app asks again.
+- `XRayInspectorServer.pairingCode` returns the code while the server runs, for example to show it in a debug menu.
+- A pairing code does not count for [release and profile builds](/guides/how-it-works#release-and-profile-builds): those need a password or trusted desktops.
+
+## Password
+
+A password of your own replaces the pairing code. Everyone who connects types the same password once, which is handy for a team. Keep it out of your source code by passing it at build time:
+
+```dart
+XRayInspectorServerConfig(
+  password: const String.fromEnvironment('XRAY_PASSWORD'),
+  deviceName: () => 'Pixel 8',
+  appName: () => 'Shop',
+  inspectors: [...],
+)
+```
+
+```sh
+flutter run --dart-define=XRAY_PASSWORD=<a long random password>
+```
+
+`null` or an empty string means no password, so this line falls back to a pairing code when you build without `--dart-define`.
+
+- The desktop app shows **Password required** the first time it connects, and remembers the password for this app on this device in your system's credential store (Keychain, Windows Credential Manager or the Secret Service on Linux). You can forget it from the connection's **Server Settings…**.
+- The password never travels over the network: both sides prove they know a key derived from it.
+- After 5 wrong attempts in a row from one address, that address has to wait, and longer after each further lockout.
+- Changing the password takes effect when the app restarts. Desktop apps that remembered the old one ask for the new one.
+
+Things to know:
+
+- **Use a long, random password**: at least 12 characters, or four or more random words. The app prints a warning when it starts with a shorter one.
+- The password protects the connection, not the build. Anyone who has your app binary or build configuration can read it.
+- Request sizes and timing remain visible on the network.
+
+## Trusted desktops
+
+Instead of a password, list exactly which xRay desktop apps may connect. Every desktop app installation has its own key pair. You add its **public** key to your app, and nothing secret is ever shared. Adding or removing a person means adding or removing one key.
+
+### Collect the keys
+
+Each person opens the xRay desktop app, goes to **Settings → Connections → Desktop key** and clicks **Copy public key**, then sends you the key. A desktop app that is refused shows **Not a trusted desktop** with the same **Copy public key** button. The settings show a short **Public key fingerprint** next to the key, so you can check with the person that the key you received is theirs.
+
+### List them in your app
+
+```dart
+XRayInspectorServerConfig(
+  trustedDesktopKeys: [
+    'xray-ed25519:OuEGiu_1uTQf4v0APaRfwkxiBX0kQgHPcSzbHQPBMGc', // Alex, MacBook
+    'xray-ed25519:YMtS94PruSXHC7X1IykcsH8dWQTcHTOBvVRx-waNY-s', // Sam, Linux laptop
+  ],
+  deviceName: () => 'Pixel 8',
+  appName: () => 'Shop',
+  inspectors: [...],
+)
+```
+
+A key is `xray-ed25519:` followed by 43 characters.
+
+- Listed desktop apps connect without being asked anything, also after a hot restart.
+- Every other desktop app is refused and gets no data.
+- `start()` throws an `ArgumentError` naming the entry when a key is not valid (cut off, or not copied from xRay).
+- An empty list means no list, so the app uses a pairing code.
+
+Things to know:
+
+- Public keys are not secret: they can live in your repository.
+- Each computer has its own key. Someone with two computers sends two keys.
+- Updating or reinstalling the desktop app on the same computer and user account keeps the key, because it lives in the system's credential store.
+- **Regenerate** under **Settings → Connections → Desktop key** creates a new key pair. The old key stops working wherever only it was listed, so send the new public key to the apps that should trust this computer.
+- Removing a key from the list blocks that desktop app the next time the app starts.
+
+## Password or trusted desktops, not both
+
+Use one or the other. Setting both `password` and `trustedDesktopKeys` makes `start()` throw an `ArgumentError`.
+
+## Turning protection off
+
+To serve the inspector unprotected and unencrypted, set `allowUnprotected`:
+
+```dart
+XRayInspectorServerConfig(
+  allowUnprotected: true,
+  inspectors: [...],
+)
+```
+
+Anyone on the same network can then connect to your app, and read and change what the inspectors capture, including `Authorization` headers and secure storage. The app prints a warning every time it starts. `allowUnprotected` together with a `password` or `trustedDesktopKeys` makes `start()` throw an `ArgumentError`.
+
+## When the protection changes
+
+The desktop app remembers whether an app was protected. If a remembered app suddenly asks for something else, or is no longer protected, the desktop app warns you with **App protection changed** or **App is no longer protected** before it connects. If nobody changed the app's setup, something else on the network may be answering in its place: only choose **Connect anyway** when you expected the change.

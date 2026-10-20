@@ -1,0 +1,65 @@
+---
+title: Sessions and export
+description: Hand a reproducible bug to a teammate. Export a session as an .xray file or HAR, open .xray files read-only, and export a single call as cURL or Markdown, with secrets redacted.
+---
+
+Found a bug? Record what your app did and hand it to a teammate: a developer, QA or someone on the backend team. They open it in their own xRay and see the same calls, logs and key-value changes, without running your build.
+
+## Export a session
+
+Open **Export Session** with the export button in the top bar, **Export session…** in the command menu, or ⌘⇧E (Ctrl+Shift+E on Windows and Linux).
+
+1. Choose what to **Include**:
+   - **Network calls · headers & bodies**
+   - **Logs**
+   - **Key-Value · snapshot + every change**
+   - **Files · listing only** (never file contents)
+   - **Device info & app version**
+2. Choose a **Time range**: **Whole session**, **Last 5 min**, or **Current filters**.
+3. Check **Redact sensitive data** (see [Redaction rules](#redaction-rules)).
+4. Click **Save .xray File…**, or **Export HAR** for the network calls only.
+
+A `.xray` file holds everything you included and opens in xRay. A HAR (HTTP Archive) opens in browser developer tools and many other tools, for people who don't use xRay.
+
+<Warning>
+Exports are not encrypted and may contain personal data of your app's users. Share them only with people who need them.
+</Warning>
+
+## Open a session
+
+Open a `.xray` file with **Open Session File…** (⌘O, or Ctrl+O on Windows and Linux), from the empty state, or by double-clicking it in Finder on macOS.
+
+The session opens in its own tab, marked **Shared session** and **Read-only**, with who recorded it. You can search, filter and browse it like a live connection, including the Timeline. A recorded session has no device to act on, so device actions and editing are not available, and file contents are not part of it.
+
+A session made by a newer version of xRay asks you to update xRay first.
+
+## Export a single call
+
+To hand over one call, for example to replay it in a terminal or paste it into a ticket:
+
+- click the export button in the call's summary bar, or press ⌘E (Ctrl+E on Windows and Linux);
+- right-click a call and choose **Export Call…**, **Copy as cURL…**, **Copy as Markdown…** or **Copy URL**;
+- or use **Export call…** in the command menu.
+
+**Export Call** shows a preview in the **Format** you pick:
+
+- **cURL**: a command you can paste in a terminal to send the call again. Parts that cannot be replayed, such as binary bodies, are listed in a comment above it.
+- **Markdown**: a summary table, the headers, and the bodies in code blocks, ready for a ticket, pull request or chat. GraphQL operations include their query and variables, and WebSocket messages are listed.
+
+**Copy** puts it on the clipboard; **Save to File…** saves a `.sh` or `.md` file. A WebSocket connection can't be replayed with one curl command, so it is exported as Markdown.
+
+## Redaction rules
+
+Every export starts redacted. Values of matching headers, keys and fields are replaced with `●●●●` before anything leaves your computer. The default rules are:
+
+`Authorization`, `Proxy-Authorization`, `*cookie*`, `*token*`, `*password*`, `*secret*`, `*api*key*`, `*session*`, `*jwt*`, `*credential*`, `*private*key*` and `code_verifier`. While any rule is on, Bearer tokens and JWTs are redacted under any name too.
+
+A rule matches a whole name, ignoring case, and `*` matches any text.
+
+- **Manage the rules** under **Settings → Privacy & data → Redact on export**: add, remove, or **Reset to defaults**.
+- **Turn a rule off for one export** by clicking it in the export. The next export starts with every rule on again.
+- **A rule you type in an export** (**+ Rule**) is saved to the list.
+
+When redaction is off, the export says so: tokens, cookies and passwords are then exported as captured.
+
+The SDK in your app also [masks credential headers](/guides/network-inspection#masking-credentials) before a call is stored, so `Authorization` and cookie values never reach xRay in full unless your app allows it.

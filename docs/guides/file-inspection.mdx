@@ -1,0 +1,51 @@
+---
+title: File Inspection
+description: Browse, preview, save and delete your app's files from the xRay desktop app.
+---
+
+<Info>Available from `xray_inspector` 0.1.0.</Info>
+
+The file inspector exposes directories of your app (documents, support files, caches) to the **Files** tab of the xRay desktop app on macOS, Windows and Linux. Browse folders, open JSON, text, HTML and images in a preview, save a file to your computer's Downloads folder, or delete files and folders.
+
+## Setup
+
+Name each directory you want to expose. Only these roots are reachable: the inspector refuses any path that would leave them.
+
+```dart
+import 'package:path_provider/path_provider.dart';
+import 'package:xray_inspector/xray_inspector.dart';
+
+final fileInspector = XRayFileInspector(
+  roots: [
+    XRayFileRoot(
+      name: 'Documents',
+      path: (await getApplicationDocumentsDirectory()).path,
+    ),
+    XRayFileRoot(
+      name: 'Support',
+      path: (await getApplicationSupportDirectory()).path,
+    ),
+    XRayFileRoot(
+      name: 'Cache',
+      path: (await getApplicationCacheDirectory()).path,
+    ),
+  ],
+);
+```
+
+Pass it to `XRayInspectorServerConfig` alongside your other inspectors. See [Quick Start](/getting-started) for full server setup.
+
+Root names must be unique and cannot contain `/`. Use `title` and `id` when an app registers more than one file inspector.
+
+## What the desktop app can do
+
+- **Browse** folders, with item counts, sizes and modification dates.
+- **Preview** a file: JSON as a tree, HTML and images rendered, other text as-is. Files up to 50 MB can be read.
+- **Save to Downloads** on your computer, without overwriting existing files.
+- **Delete** a file or a folder with everything in it. Roots themselves cannot be deleted.
+
+Exported sessions include the file listing only, never file contents.
+
+<Warning>
+Anyone who can connect to your app can read and delete the exposed files. Like every inspector, the file inspector only runs in debug builds, unless `allowInReleaseMode` is set together with a password or trusted desktops; it does not run in profile builds either. Keep the connection [protected](/guides/protected-connections) and never ship it to end users.
+</Warning>

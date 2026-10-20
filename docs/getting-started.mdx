@@ -1,9 +1,18 @@
 ---
 title: Quick Start
-description: Set up xray_inspector in your Flutter app in minutes.
+description: Set up xray_inspector in your Flutter app in minutes, in debug builds only and protected, and connect the xRay desktop app.
 ---
 
-This guide sets up full inspection — network, logs, and key-value storage.
+This guide sets up network, log and key-value inspection in debug builds, and connects the xRay desktop app to your app.
+
+<Warning>
+xRay is a development tool. Include it only in debug builds and internal test builds that don't handle real users' data. The inspector shows everything your app sends and stores, including tokens and secure storage, to the xRay desktop apps that connect to it. Never ship it in builds that reach end users or public beta testers.
+</Warning>
+
+## Before you start
+
+- Install the xRay desktop app on [macOS](/app/install-macos), [Windows](/app/install-windows) or [Linux](/app/install-linux).
+- Sign in with your impaktfull account. xRay is in alpha: your access has to be approved before you can connect to apps. See [Account and access](/app/account-and-access).
 
 ## 1. Add dependencies
 
@@ -11,75 +20,176 @@ Add the packages you need to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  xray_inspector: ^0.0.1
-  xray_network_dio_interceptor: ^0.0.1 # if you use Dio
-  xray_shared_preferences_inspector: ^0.0.1 # optional
-  xray_secure_storage_inspector: ^0.0.1 # optional
+  xray_inspector: ^0.1.0
+  xray_network_dio_interceptor: ^0.1.0 # if you use Dio
+  xray_shared_preferences_inspector: ^0.1.0 # optional
+  xray_secure_storage_inspector: ^0.1.0 # optional
 ```
 
-## 2. Create inspectors
+All xRay packages share one version. See [Packages](#more-packages) for the others.
 
-Create your inspectors at app startup (top-level, provider, or service locator):
+## 2. Set up xRay in debug builds only
+
+Put the whole xRay setup in one function and call it only when the app is not a release build. `kReleaseMode` is a compile-time constant, so in release builds the compiler drops the call and nothing from xRay runs.
 
 ```dart
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+
+XRayLogInspector? logInspector;
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final dio = Dio();
+
+  if (!kReleaseMode) {
+    await setUpXRay(dio);
+  }
+
+  runApp(MyApp(dio: dio));
+}
+```
+
+Profile builds pass this check, but the inspector server does not start in them either: see [Release and profile builds](/guides/how-it-works#release-and-profile-builds).
+
+The next steps fill in `setUpXRay`.
+
+## 3. Create inspectors
+
+```dart
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xray_inspector/xray_inspector.dart';
 import 'package:xray_network_dio_interceptor/xray_network_dio_interceptor.dart';
 import 'package:xray_shared_preferences_inspector/xray_shared_preferences_inspector.dart';
 import 'package:xray_secure_storage_inspector/xray_secure_storage_inspector.dart';
 
-// Network inspector
-final networkInspector = XRayNetworkInspector();
+Future<void> setUpXRay(Dio dio) async {
+  // Captures every HTTP call and WebSocket made through dart:io,
+  // including package:http.
+  final networkInspector = XRayNetworkInspector(enableHttpOverride: true);
 
-// Log inspector
-final logInspector = XRayLogInspector();
+  logInspector = XRayLogInspector();
 
-// Key-value inspectors (optional)
-final prefs = await SharedPreferences.getInstance();
-final sharedPrefsInspector = XRaySharedPreferencesInspector(prefs: prefs);
-final secureStorageInspector = XRaySecureStorageInspector(
-  secureStorage: const FlutterSecureStorage(),
-);
+  // Key-value inspectors (optional)
+  final prefs = await SharedPreferences.getInstance();
+  final sharedPrefsInspector = XRaySharedPreferencesInspector(prefs: prefs);
+  final secureStorageInspector = XRaySecureStorageInspector();
+
+  // Steps 4 and 5 continue here.
+}
 ```
 
-## 3. Wire up Dio
+`XRaySecureStorageInspector` uses a default `FlutterSecureStorage`. Pass your own with `storage:` if your app configures its options.
+
+## 4. Attach xRay to Dio
 
 ```dart
-import 'package:dio/dio.dart';
+  XRayNetworkDioInterceptor.attach(dio, inspector: networkInspector);
+```
 
-final dio = Dio()
-  ..interceptors.add(
-    XRayNetworkDioInterceptor(inspector: networkInspector),
+`attach` records every Dio request, including the ones another interceptor rejects or answers from a cache. Together with `enableHttpOverride`, each Dio call shows up once. Skip this step if you don't use Dio.
+
+## 5. Start the inspector server
+
+```dart
+  final inspectorServer = XRayInspectorServer(
+    config: XRayInspectorServerConfig(
+      deviceName: () => 'Pixel 8', // for example from device_info_plus
+      appName: () => 'Shop',
+      inspectors: [
+        networkInspector,
+        logInspector!,
+        sharedPrefsInspector,
+        secureStorageInspector,
+      ],
+    ),
   );
+
+  await inspectorServer.start();
 ```
 
-## 4. Start the inspector server
+`deviceName` and `appName` are shown in the desktop app, so you can tell devices and apps apart in a busy office.
 
-```dart
-final inspectorServer = XRayInspectorServer(
-  config: XRayInspectorServerConfig(
-    inspectors: [
-      networkInspector,
-      logInspector,
-      sharedPrefsInspector,
-      secureStorageInspector,
+Keep `inspectorServer` somewhere you can reach it if you want to stop it later (step 9).
+
+## 6. Connect from the desktop app
+
+1. Run your app. Its console shows the pairing code:
+
+   ```
+   [xray_inspector] Pairing code: k7q2-m9xa-4ftr. The xRay desktop app asks for it once and remembers it; it stays the same across restarts.
+   ```
+
+2. In the xRay desktop app, open **Add Connection**. Your app appears under **Discovered on your network**.
+3. Click it and enter the pairing code. xRay remembers it for this app on this device.
+
+If your app does not appear, see [Troubleshooting discovery](/guides/how-it-works#troubleshooting-discovery).
+
+## 7. Choose how the connection is protected
+
+The connection is protected and encrypted by default, with the pairing code from step 6. Leaving the inspector open needs `allowUnprotected: true`.
+
+To skip the pairing code, for example for a team that shares one build, use one of these:
+
+- **A password**, which every developer enters once in the desktop app. Keep it out of your source code by passing it at build time:
+
+  ```dart
+  XRayInspectorServerConfig(
+    password: const String.fromEnvironment('XRAY_PASSWORD'),
+    inspectors: [...],
+  )
+  ```
+
+  ```sh
+  flutter run --dart-define=XRAY_PASSWORD=<a long random password>
+  ```
+
+- **Trusted desktops**: the public key of each developer's desktop app (**Settings → Connections → Desktop key → Copy public key**). Listed desktop apps connect without a prompt, every other one is refused.
+
+  ```dart
+  XRayInspectorServerConfig(
+    trustedDesktopKeys: [
+      'xray-ed25519:…', // Alex, MacBook
     ],
-  ),
-);
+    inspectors: [...],
+  )
+  ```
 
-await inspectorServer.start();
-```
+See [Protected connections](/guides/protected-connections) for the details of both.
 
-## 5. Log messages
+### Internal release builds
+
+The inspector server doesn't start in release or profile builds unless you allow it. If you really need xRay in an internal build (for example a QA build), set `allowInReleaseMode: true` **and** a password or trusted desktops, and guard the setup with your own build flag instead of `kReleaseMode`, for example `const bool.fromEnvironment('XRAY_ENABLED')`. Never enable it in builds that reach end users or public beta testers.
+
+## 8. Log messages
 
 ```dart
-logInspector.info('App started');
-logInspector.debug('Loading user data');
-logInspector.warning('Cache miss');
-logInspector.error('Request failed: timeout');
+logInspector?.info('App started');
+logInspector?.debug('Loading user data');
+logInspector?.warning('Cache miss');
+logInspector?.error('Request failed', error: error, stackTrace: stackTrace);
 ```
 
-## 6. Tear down
+`logInspector` is `null` in release builds, so these calls do nothing there. See [Log Inspection](/guides/log-inspection) for levels and logger names.
+
+## 9. Tear down
 
 ```dart
 await inspectorServer.stop();
 ```
+
+## More packages
+
+- [`xray_device_actions`](/packages/xray-device-actions): change appearance, locale and text size, open deep links, simulate pushes and override feature flags from the desktop app.
+- [`xray_serverpod_interceptor`](/packages/xray-serverpod-interceptor): show Serverpod calls by endpoint and method.
+- [File Inspection](/guides/file-inspection): browse your app's files, with `XRayFileInspector` from `xray_inspector`.
+
+## Privacy and personal data
+
+- **The data stays with you.** What the inspector captures (network calls, logs, stored values, files) goes only to the xRay desktop apps on your network that connect to your app. It is never sent to impaktfull or to any other server.
+- **You are responsible for it.** If your app handles personal data of its users, that data can show up in xRay. Your company decides how it is handled, as the controller of that data.
+- **Use test accounts and test data** in builds with xRay, not real users' accounts.
+- **Credentials are masked by default.** `Authorization`, `Cookie` and other credential headers are masked before a call is stored. See [Masking credentials](/guides/network-inspection#masking-credentials).
+- **Redact before you share.** Exported sessions are files that can contain tokens and personal data. The desktop app redacts common secrets by default when exporting; check what an export contains before you share it, and share it only with people who need it.
+- **Keep xRay out of builds that reach end users** or public beta testers, and never enable `allowInReleaseMode` in them.

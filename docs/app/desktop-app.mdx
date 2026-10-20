@@ -1,0 +1,103 @@
+---
+title: Using the desktop app
+description: A tour of the xRay desktop app. Connection tabs, the timeline, the inspectors, the command menu, device actions, inspector settings, languages and keyboard shortcuts.
+---
+
+The xRay desktop app runs on macOS, Windows and Linux. It is the same app on all three; this page uses the macOS shortcuts. On Windows and Linux, use Ctrl where it says ⌘.
+
+## Connection tabs
+
+Every app you connect to gets its own tab, so you can inspect several apps or devices at once, for example the iOS and Android build of the same app side by side.
+
+- **Add a connection** with **Add Connection** or ⌘T. Apps on your network are listed under **Discovered on your network**; you can also connect by IP address and port under **Or connect manually**.
+- **Switch tabs** with ⌘⇧1 to ⌘⇧9, **reconnect** with ⌘R and **close** a tab with ⌘W.
+- Right-click a tab for **Close Connection**, **Copy Address** and **Server Settings…**.
+
+### Server settings
+
+**Server Settings…** of a connection controls what xRay does when that app on that device starts:
+
+- **Auto Connect**: open this connection automatically when xRay starts.
+- **Auto Reconnect**: connect again whenever this app on this device starts.
+- **Notify When Available**: show a notification when this app on this device starts.
+
+It also shows whether a password or pairing code is remembered for the app, and lets you forget it.
+
+### Reconnecting on its own
+
+xRay notices when your app restarts, or when the connection silently drops, for example after your computer slept. It reconnects as soon as the app is back. By default, a reconnect keeps everything the tab captured before; turn on **Settings → Inspectors → Clear when an app reconnects** to start empty instead.
+
+## Timeline
+
+The **Timeline** tab (⌘0) shows everything your app did on one time axis: network calls, log entries and key-value changes, in the order they happened. Use it to see which call came before a log line, or which response changed a stored value.
+
+- Pick a time range, from **Last 10 s** to **Last 1 h**, and zoom in or out.
+- Turn lanes on and off, and filter events.
+- Select an event to see what happened **Around this event**, then **Open in** its inspector for the details.
+- **Follow live** keeps the newest events in view; click it again to pause while you look.
+
+## Inspectors
+
+| Tab | Shortcut | What it shows | Guide |
+| --- | -------- | ------------- | ----- |
+| **Network** | ⌘1 | HTTP calls, GraphQL operations, WebSockets and Serverpod calls | [Network Inspection](/guides/network-inspection) |
+| **Logs** | ⌘2 | Log entries with level, logger, error and stack trace | [Log Inspection](/guides/log-inspection) |
+| **Key-Value** | ⌘3 | Shared preferences, secure storage and your own stores; edit and add keys | [Key-Value Inspection](/guides/key-value-inspection) |
+| **Files** | ⌘4 | Your app's files: browse, preview, save and delete | [File Inspection](/guides/file-inspection) |
+
+A tab your app did not register says so, with a link to the setup.
+
+### Network
+
+- **Filter** (⌘L) by method, status, host, response type, duration (**Slower than**) and size (**Larger than**), and search in URLs, headers or bodies. Use the presets **API only**, **Errors only**, **Images** and **Slow > 1s**, or save your own.
+- Each call shows its request and response headers and bodies, with JSON as a tree or as raw text, its timing and its payload sizes, also for large, binary, streamed and compressed bodies.
+- **GraphQL** operations are shown by name, with tabs for the **Operation**, **Variables**, **Data**, **Errors** and **Extensions**. Errors returned with a `200` are counted as failures. Filter on **Query**, **Mutation** or **Subscription**.
+- **WebSockets** show a **Messages** tab with every message in both directions, and how the connection closed.
+- **Serverpod** calls show their endpoint and method, the server, whether the call was signed in and the user id.
+- Calls from background isolates show which isolate made them.
+- Right-click a header or a JSON key to copy its name, value or both, or a call to export it. See [Export a single call](/app/sessions-and-export#export-a-single-call).
+
+## Command menu
+
+Press ⌘K, or click **Search or run a command…** in the top bar. The menu works on the connection tab you are looking at:
+
+- **Search** network calls (method, URL, status), log entries (message, logger, level) and key-value entries (key, value). Opening a result shows it in its inspector, and clears a filter that would hide it.
+- **Run commands**: clear calls or logs, filter, switch inspector or connection, export, open device actions, settings, the changelog and the roadmap. Type `>` to search commands only.
+
+Every shortcut the menu shows also works without opening it. **Settings → Shortcuts** lists them all.
+
+## Device actions
+
+The device button in the top bar, or ⌘⇧D, opens the **Device actions** drawer for the selected connection. Change appearance, locale, text size and animations, open deep links (⌘⇧L), send simulated push notifications and override feature flags, while you watch the effect in the inspector behind it. Your app needs [`xray_device_actions`](/packages/xray-device-actions).
+
+## Sessions and export
+
+Export what you captured as an `.xray` file or HAR, open `.xray` files from a teammate read-only, or export one call as cURL or Markdown, with secrets redacted. See [Sessions and export](/app/sessions-and-export).
+
+## Resizable panes
+
+Drag the dividers to resize the calls list, the request and response split and the Timeline detail. xRay remembers the sizes. You can also collapse the calls list to give a call's details the full width.
+
+## Inspector settings
+
+**Settings → Inspectors** changes how every tab shows what it captured. Changes apply to open tabs right away.
+
+- **Display**: **Row density** (**Comfortable** or **Compact**, which fits about a third more rows), **Wrap long lines**, how **JSON bodies** open (tree or raw), and **Timestamps** (clock time with milliseconds, or the time since the app connected).
+- **Network**: **Open a call on** (which response tab is selected first), **Detect GraphQL operations**, **Count GraphQL errors as failed calls**, and **Hide hosts**: calls to these hosts (`api.example.com`, or `*.example.com` for a domain and its subdomains) are still captured, and exported, but left out of lists and search.
+- **Captured data**: **Clear when an app reconnects**.
+- **Filter presets**: the presets you saved from the Network or Logs filter.
+
+## Languages
+
+xRay speaks 18 languages: English, Dutch, French, German, Spanish, Italian, Portuguese, Portuguese (Brazil), Polish, Turkish, Indonesian, Vietnamese, Russian, Ukrainian, Hindi, Japanese, Korean and Chinese.
+
+By default it follows your computer's language (**Match this computer**), and English when xRay doesn't speak it yet. Pick another one under **Settings → Language**; it applies right away. Captured data, such as headers, status codes and log levels, is always shown as your app sent it.
+
+## Roadmap and updates
+
+- **Roadmap** (in the command menu or **Settings → About**) shows what is **In progress**, **Up next** and **Planned**, and what was **Recently shipped**. Vote with a 👍 on the GitHub issue, or **Suggest a feature**.
+- xRay tells you when an update is available, and shows **What's new** after you update. **Settings → About → Changelog** lists every release.
+
+## Privacy
+
+What the inspectors capture stays on your computer, except in the exports you make. **Settings → Privacy & data** lists what xRay sends, and **Settings → Account** lets you clear local data or delete your account. See [Account and access](/app/account-and-access).

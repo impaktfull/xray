@@ -1,0 +1,28 @@
+---
+title: xray_inspector_core
+description: The shared models and protocol constants of xRay, such as XRayNetworkCall and XRayLogInspectorEntry. Pure Dart.
+---
+
+[![pub package](https://img.shields.io/pub/v/xray_inspector_core.svg)](https://pub.dev/packages/xray_inspector_core)
+
+The models and protocol constants that the xRay packages share. It is pure Dart, with no Flutter dependency.
+
+You don't need to add it yourself: [`xray_inspector`](/packages/xray-inspector) depends on it and exports everything in it. Add it directly only when you write code that works with xRay's models without running an inspector, for example tests or tooling around captured calls.
+
+## Installation
+
+```yaml
+dependencies:
+  xray_inspector_core: ^0.1.0
+```
+
+## What's included
+
+- **Network:** `XRayNetworkCall`, `XRayNetworkCallStatus`, `XRayBodySize`, `XRayWebSocketMessage`, `XRayRpcInfo`. See the [network call model](/guides/network-inspection#network-call-model).
+- **Logs:** `XRayLogInspectorEntry` and the level constants in `XRayLogInpectorLevel`. See the [log entry model](/guides/log-inspection#log-entry-model).
+- **Key-value:** `InspectorKeyValueEntry` and `XRayKeyValueType`. See the [key-value entry model](/guides/key-value-inspection#key-value-entry-model).
+- **Files:** `XRayFileEntry`.
+- **Device actions:** `XRayFeatureFlag`, `XRayFeatureFlagType`, `XRayDeepLinkResult`, `XRayRoute`, `XRayPushNotification`, `XRayQuickSettings` and related types. See [`xray_device_actions`](/packages/xray-device-actions).
+- **Protocol:** `XRayInspectorProtocol` with the default ports (`7780` for HTTP, `7781` for discovery), and the types behind protected connections.
+
+The data models have `fromJson` and `toJson`.

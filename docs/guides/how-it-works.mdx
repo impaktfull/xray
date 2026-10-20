@@ -1,52 +1,132 @@
 ---
 title: How it works
-description: Understand xRay's local-network architecture, production build implications, and how to run multiple apps simultaneously.
+description: How the xRay desktop app finds and connects to your app on the local network, how connections are protected, why release and profile builds are blocked, and what to check when an app is not found.
 ---
 
-xRay is a local network debugging tool. All data stays on your device and local network — nothing is sent to any external server.
+xRay works on your own network. What the inspectors capture goes straight from your app to the xRay desktop apps that connect to it. It is never sent to impaktfull or to any other server.
 
 ## Local network only
 
-The xRay SDK runs a small HTTP server and a UDP discovery listener inside your app. The xRay macOS app discovers your device via a UDP broadcast on the local network, then connects directly to the HTTP server in your app to read inspection data. No cloud, no relay.
+The xRay SDK runs a small server inside your app:
 
-## Production builds
+- an **HTTP server** that serves the inspection data and accepts actions such as clearing calls or editing a key-value entry. It uses port `7780` when it is free (see [Ports](#ports));
+- a **WebSocket** on that same HTTP port that pushes new network calls, log entries and key-value changes to the desktop app as they happen;
+- a **UDP discovery listener** on port `7781` that answers when the desktop app looks for apps;
+- an **announcement** on UDP port `7791` each time the server starts, also after a hot restart, so the desktop app lists your app right away.
 
-**Do not include xRay in production or App Store builds.** The SDK starts a network server that accepts connections from any device on the same network. In a store build, this exposes your app internals to anyone on the same Wi-Fi network.
+The desktop app sends a UDP broadcast on the local network, and also asks every address of the network it is on directly. Every app running xRay answers with its HTTP port, device name and app name, and the desktop app then connects directly to that port. No cloud, no relay.
 
-Use Flutter's build modes (or a compile-time constant) to enable the SDK only in debug/internal builds:
+Announcements are sent as a broadcast and to `127.0.0.1`, a few times in the first seconds after start. Turn them off with `announceOnStart: false`; the desktop app still finds the app when it scans.
+
+## Security
+
+<Info>Available from `xray_inspector` 0.1.0.</Info>
+
+Connections are **protected and encrypted by default**. Your app picks one of three ways to decide who may connect:
+
+| Protection | How it works | Good for |
+| ---------- | ------------ | -------- |
+| **Pairing code** (default) | The app prints a code in its log when it starts. The desktop app asks for it once and remembers it. | One developer, one app |
+| **Password** | Everyone who connects types the same password once. | A team that shares one build |
+| **Trusted desktops** | The app lists the public key of each desktop app that may connect. Listed desktop apps connect without a prompt, all others are refused. | A known team, internal QA builds |
+
+With any of the three:
+
+- all traffic between your app and the desktop app is encrypted and authenticated (X25519 key exchange, ChaCha20-Poly1305), including the request paths;
+- discovery only shows the device name, the app name and a lock;
+- wrong attempts are limited, and a flood of connection attempts cannot slow your app down.
+
+See [Protected connections](/guides/protected-connections) to set up a password or trusted desktops.
+
+You can turn protection off with `allowUnprotected: true`. Anyone on the same network can then connect, read what the inspectors capture (including auth headers and secure storage) and change key-value entries, without encryption. Only do this on a network you fully trust.
+
+## Release and profile builds
+
+xRay is a development tool, so **the inspector server does not start in release or profile builds**. In those builds `XRayInspectorServer.start()` writes the reason to the device log and returns. It never throws, so a forgotten guard cannot crash a store build. Until a server starts, the inspectors record nothing.
+
+To inspect an internal build, such as a QA build, set `allowInReleaseMode: true` **together with** a `password` or `trustedDesktopKeys`. A pairing code is not enough for these builds.
 
 ```dart
-import 'package:flutter/foundation.dart';
-import 'package:xray_inspector/xray_inspector.dart';
-
-// Only enable in non-production builds
-if (!kReleaseMode) {
-  await XRayInspectorServer(
-    config: XRayInspectorServerConfig(inspectors: [...]),
-  ).start();
-}
+await XRayInspectorServer(
+  config: XRayInspectorServerConfig(
+    allowInReleaseMode: true, // only for your internal QA flavor
+    password: const String.fromEnvironment('XRAY_PASSWORD'),
+    inspectors: [...],
+  ),
+).start();
 ```
 
-The [Quick Start](/getting-started) guide already covers this — this section highlights why it matters.
+When it runs in a release or profile build, xRay writes a warning to the device log on every start.
+
+<Warning>
+Never ship a build with `allowInReleaseMode: true` to end users or public beta testers. It exposes your app's network traffic, logs and storage to anyone who knows the password or holds a trusted key.
+</Warning>
+
+Debug builds are not affected: the inspector starts as usual.
+
+## Ports
+
+Leave `httpPort` out of `XRayInspectorServerConfig` and the inspector picks a free port: `7780` when it is free, otherwise the first free port of `7782`–`7790`, and otherwise any free port. It prints the port it uses:
+
+```
+[xray_inspector] Inspector server listening on HTTP port 7782 (7780 is in use by another app).
+```
+
+While the server runs, `XRayInspectorServer.httpPort` is the port it actually listens on.
+
+Set `httpPort` yourself to fix the port. If another app already uses it, `start()` throws an `XRayInspectorPortInUseException` (a `SocketException`) that names the port. The inspector never moves to another port when you chose one.
+
+```dart
+XRayInspectorServerConfig(inspectors: inspectors);                 // automatic
+XRayInspectorServerConfig(httpPort: 7790, inspectors: inspectors); // exactly 7790
+```
 
 ## Multiple apps on the same device
 
-If you run two apps with xRay on the same device, each app must use a different HTTP port and UDP discovery port to avoid conflicts:
+Several apps with xRay can run on the same device at the same time. Leave `httpPort` out and each app gets its own port. All apps share the discovery port `7781`, so one scan in the desktop app lists each of them with its `appName`. Set `appName` and `deviceName` so they are easy to tell apart:
 
 ```dart
-// App 1 — default ports
 XRayInspectorServerConfig(
-  httpPort: 7780,
-  discoveryPort: 7781,
-  inspectors: [...],
-)
-
-// App 2 — custom ports
-XRayInspectorServerConfig(
-  httpPort: 7782,
-  discoveryPort: 7783,
+  deviceName: () => 'Pixel 8',
+  appName: () => 'Shop',
   inspectors: [...],
 )
 ```
 
-In the xRay macOS app, change the discovery port in the Connections panel to match the port used by the app you want to inspect.
+<Info>
+Sharing the discovery port relies on a socket option that Windows doesn't have. If an app running on Windows doesn't show up while another xRay app runs on the same machine, [connect manually](#connecting-manually) with its HTTP port.
+</Info>
+
+Leave `discoveryPort` at its default unless your network needs a different one. Changing it also moves the announcement port (`discoveryPort + 10`). If you change it, set the same port in the desktop app under **Settings → Connections → UDP discovery port**.
+
+## Android emulators and simulators
+
+Apps in an Android emulator on the same computer are found automatically: the desktop app talks to the emulator directly, so you don't need `adb forward`. Apps in the iOS Simulator and desktop apps on the same computer share its network and are found like any other app.
+
+## Troubleshooting discovery
+
+Discovery only works when your computer can reach the device directly on the local network. If your app does not show up in **Add Connection** after a scan, check the following, then [connect manually](#connecting-manually) if it still doesn't appear.
+
+**The app must be running and in the foreground.** The inspector only answers while your app runs in a debug build (or a release or profile build with `allowInReleaseMode` and protection). On Android, apps in the background lose network access shortly after you leave them, so bring the app to the front and scan again.
+
+**Your computer and the device must be on the same network.** Discovery cannot work when:
+
+- the device is only on mobile data, or the computer and the device are on different Wi-Fi networks;
+- they are on different subnets of the same network (for example a separate guest network, or Wi-Fi and wired networks that are routed rather than bridged);
+- the network isolates devices from each other ("client isolation" or "AP isolation", common on guest, hotel, conference and corporate Wi-Fi);
+- the computer or the device is connected to a VPN that routes local traffic;
+- a firewall on the computer blocks incoming UDP for the xRay desktop app.
+
+A phone sharing a hotspot with the computer usually works, because both are on the hotspot's own network. Some hotspots isolate their clients; if so, connect manually.
+
+**Android devices on large networks.** Many Android devices drop broadcast messages on Wi-Fi to save battery, so the desktop app also asks every address of its own network directly. It assumes that network has at most 254 addresses: the device is found when the first three numbers of its IP address match the computer's (for example `192.168.1.23` and `192.168.1.40`). On larger networks, such as many office networks, an Android device with a different third number (for example `10.0.42.7` while the computer is `10.0.5.20`) is not found by a scan; connect manually.
+
+**Several apps on one Android device.** Each app in the foreground is listed separately. An xRay app in the background cannot answer. Bring the app you want to inspect to the front and scan again.
+
+To find your device's IP address: on Android, open **Settings → Network & internet → Internet**, tap your Wi-Fi network and look for **IP address** (the path differs slightly between manufacturers); on iOS, open **Settings → Wi-Fi** and tap the **ⓘ** next to the network.
+
+## Connecting manually
+
+Connect manually when your app does not show up, for example when the network setup prevents discovery (see [Troubleshooting discovery](#troubleshooting-discovery)) or the app could not open its discovery port.
+
+In the xRay desktop app, open **Add Connection**, go to **Or connect manually** and enter the device's IP address and the app's **HTTP port**. The app prints the port it listens on when it starts (`7780` unless that port was taken or you set `httpPort`). Discovery is not needed for a manual connection; the desktop app only has to be able to reach that IP address and port.

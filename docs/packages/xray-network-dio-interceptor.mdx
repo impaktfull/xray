@@ -5,26 +5,76 @@ description: Dio HTTP interceptor for xray_inspector.
 
 [![pub package](https://img.shields.io/pub/v/xray_network_dio_interceptor.svg)](https://pub.dev/packages/xray_network_dio_interceptor)
 
-Dio interceptor that captures all HTTP requests, responses, and errors into an `XRayNetworkInspector`.
+Records every request your `Dio` clients make in an `XRayNetworkInspector`, including requests that other interceptors reject or answer from a cache.
 
 ## Installation
 
 ```yaml
 dependencies:
-  xray_inspector: ^0.0.1
-  xray_network_dio_interceptor: ^0.0.1
-  dio: ^5.0.0
+  xray_inspector: ^0.1.0
+  xray_network_dio_interceptor: ^0.1.0
+  dio: ^5.4.0
 ```
 
-For setup, see [Network Inspection](/guides/network-inspection).
+It is pure Dart, so it also works in Dart apps without Flutter.
 
-## How it works
+## Setup
 
-`XRayNetworkDioInterceptor` hooks into Dio's interceptor lifecycle:
+Attach xRay to each `Dio` instance:
 
-1. **`onRequest`** — Creates a new `XRayNetworkCall` with status `loading` and stores the call ID in Dio's request options `extra` map.
-2. **`onResponse`** — Finds the call by ID and updates it with the response status code, headers, and body. Status becomes `success`.
-3. **`onError`** — Finds the call by ID and updates it with the error details. Status becomes `error`.
+```dart
+import 'package:dio/dio.dart';
+import 'package:xray_inspector/xray_inspector.dart';
+import 'package:xray_network_dio_interceptor/xray_network_dio_interceptor.dart';
+
+final networkInspector = XRayNetworkInspector();
+
+final dio = Dio()
+  ..interceptors.addAll([
+    AuthInterceptor(),  // may call handler.reject(...)
+    CacheInterceptor(), // may call handler.resolve(...)
+  ]);
+XRayNetworkDioInterceptor.attach(dio, inspector: networkInspector);
+```
+
+The order does not matter: call `attach` before or after adding your own interceptors. xRay puts itself in front of `dio.interceptors` and runs your interceptors itself, once per request and in the same order, so it sees how every request ended:
+
+- A request another interceptor rejects shows as failed, with the error it was rejected with and the note "Rejected by interceptor".
+- A request another interceptor answers itself, for example from a cache, shows as successful, with that response and the note "Resolved by interceptor".
+- A cancelled request shows as failed with the note "Cancelled".
+- Every other request is recorded as it went over the network, with the headers and body your interceptors actually sent.
+
+An interceptor that retries with `dio.fetch(...)` sends a new request, which shows up as a call of its own.
+
+Keep in mind:
+
+- Interceptors you insert in front of xRay after attaching (`dio.interceptors.insert(0, ...)`) run before xRay sees the request.
+- `dio.clone()` copies xRay's interceptor, and the clone's requests would then run through the original Dio's interceptors and adapter. Clone before attaching, and attach xRay to each clone separately.
+
+## Credentials are masked
+
+The headers your interceptors add, such as `Authorization`, are recorded masked: the network inspector keeps only the scheme and the last 4 characters of a long token (`Bearer …a1b2`), and does the same for `Proxy-Authorization`, `Cookie`, `Set-Cookie` and `X-Api-Key`. Choose other headers, or record them in full, with `redactHeaders` on the `XRayNetworkInspector` you pass to `attach`. Bodies are recorded as they are unless you pass `redactBody`. See [Masking credentials](/guides/network-inspection#masking-credentials).
+
+## Using it together with `enableHttpOverride`
+
+Dio's default adapter sends requests through `HttpClient`. When an `XRayNetworkInspector` also has `enableHttpOverride: true`, the Dio interceptor tells the override to skip the requests it already records, so every Dio call shows up once. Requests are matched on method and URL; no header or other marker is added to the request.
+
+## Adding the interceptor yourself
+
+You can also add the interceptor to the list like any other:
+
+```dart
+final dio = Dio()
+  ..interceptors.addAll([
+    AuthInterceptor(),                                      // runs first
+    XRayNetworkDioInterceptor(inspector: networkInspector), // sees the auth headers
+    LogInterceptor(),
+  ]);
+```
+
+Its place in the list decides which version of the request xRay records: interceptors before it have already changed the request, interceptors after it haven't yet.
+
+This works for apps without interceptors that stop requests. When another interceptor ends a request in `onRequest` with `handler.reject(...)` or `handler.resolve(...)`, Dio skips the response and error steps of **every** interceptor, wherever xRay is in the list. xRay then shows that request as loading forever, or not at all. Use `attach` instead.
 
 ## Lifecycle states
 
@@ -32,17 +82,4 @@ For setup, see [Network Inspection](/guides/network-inspection).
 | --------- | -------------------------------------- |
 | `loading` | Request sent, waiting for response     |
 | `success` | Response received with any status code |
-| `error`   | Network error or Dio error             |
-
-## Combining with other Dio interceptors
-
-Add `XRayNetworkDioInterceptor` alongside other interceptors. Order matters — place it where you want the captured request/response to reflect the transformation state:
-
-```dart
-final dio = Dio()
-  ..interceptors.addAll([
-    AuthInterceptor(),                                        // runs first
-    XRayNetworkDioInterceptor(inspector: inspector),   // captures after auth headers added
-    LogInterceptor(),
-  ]);
-```
+| `error`   | Network error, Dio error, or a request another interceptor rejected or cancelled |
