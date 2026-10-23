@@ -76,7 +76,8 @@
       "group": "Legal",
       "pages": [
         { "title": "📝 License", "href": "/license" },
-        { "title": "📝 Terms & Conditions", "href": "/terms-and-conditions" }
+        { "title": "📝 Terms & Conditions", "href": "https://xrayinspector.dev/terms" },
+        { "title": "🔒 Privacy Policy", "href": "https://xrayinspector.dev/privacy" }
       ]
     }
   ]
