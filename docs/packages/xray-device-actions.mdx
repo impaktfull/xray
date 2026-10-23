@@ -15,6 +15,7 @@ Everything is opt-in: the desktop app only offers what your app registers.
 | **Deep Links** | Open a link, see whether it was handled, list your routes | A `deepLinkHandler` |
 | **Push** | Send a simulated notification to your foreground, background or opened handler | A `pushHandler` |
 | **Flags** | See and override feature flags and remote config values | One or more `featureFlagAdapters` |
+| **Your own pages** | Toggles, buttons, text inputs, sliders and pickers you define, one tab per page | One or more `pages` |
 
 `XRayDeviceInspector`, the handlers and the flag adapters are part of `xray_inspector`. This package adds the widget that applies the quick settings.
 
@@ -141,6 +142,66 @@ final deviceInspector = XRayDeviceInspector(
 ```
 
 Your app reads the override first and falls back to the remote value. Flag types are `boolean`, `integer`, `decimal`, `string` and `json`; the desktop app shows a matching control and checks the value you enter. Adapter names must be unique.
+
+## Custom pages
+
+Add pages of your own controls to the drawer: debug switches, an environment picker, a button that clears a cache. Each page becomes a tab after Flags, and the desktop app draws the controls, so you write no UI. Every control takes a getter for its current value and a callback for changes:
+
+```dart
+final debugPage = XRayDevicePage(
+  id: 'debug',
+  title: 'Debug',
+  icon: XRayPageIcon.bug,
+  onReset: config.resetDebugOptions,
+  controls: [
+    const XRaySectionHeader('Backend'),
+    XRaySelect(
+      id: 'environment',
+      label: 'Environment',
+      options: const [
+        XRayOption('dev', 'Development'),
+        XRayOption('prd', 'Production'),
+      ],
+      value: () => config.environment,
+      overridden: () => config.environment != 'prd',
+      onChanged: config.switchEnvironment,
+    ),
+    XRayToggle(
+      id: 'mock-api',
+      label: 'Use mock API',
+      value: () => config.mockApi,
+      overridden: () => config.mockApi,
+      onChanged: (value) => config.mockApi = value,
+    ),
+    XRayInfo(label: 'User id', value: () => session.userId ?? '—'),
+    XRayButton(
+      id: 'clear-cache',
+      label: 'Clear image cache',
+      confirm: 'Remove every cached image?',
+      onPressed: () async => '${await cache.clear()} files removed',
+    ),
+  ],
+);
+
+final deviceInspector = XRayDeviceInspector(pages: [debugPage]);
+```
+
+| Control | Value | Sent to your callback |
+|---|---|---|
+| `XRayToggle` | `bool` | on every flip |
+| `XRayTextInput` | `String` (`hint`, `isMultiline`) | on Enter or when the field loses focus, only when it changed |
+| `XRaySlider` | `double` from `min` to `max` (`divisions`, `unit`) | when the drag ends |
+| `XRaySegmentedControl` | an option value, 2 to 5 options | on select |
+| `XRaySelect` | an option value, any number of options | on select |
+| `XRayButton` | none (`confirm`, `isDestructive`) | on press; return a message to show it as a toast |
+| `XRayInfo` | `String`, read-only | never |
+| `XRaySectionHeader` | none; groups the controls below it | never |
+
+- **Overridden.** Pass `overridden` to say when a value differs from your app's own. The control then shows **Overridden**, and the drawer's footer counts it with the quick settings and flags.
+- **Reset all** calls each page's `onReset`, which puts every value of that page back. A page without `onReset` is left alone.
+- **Values that change in the app.** When your app changes one of these values itself, call `debugPage.notifyChanged()`. A connected desktop app reads the page again. Calls within 100 ms count as one.
+- **Refusing a value.** The inspector checks types, slider ranges and option values before your callback runs. To refuse a value with a message of your own, throw `XRayDeviceActionException.invalid('Must start with https://')`. Anything a callback throws is shown next to the control.
+- **Ids.** Page ids are unique per inspector and control ids are unique per page. Use letters, digits, `_` and `-`. Getters and callbacks may be async. Store the values yourself if they should survive a restart.
 
 ## In the desktop app
 
