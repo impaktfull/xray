@@ -69,6 +69,15 @@ MaterialApp(
 - Quick settings live in memory: restarting the app brings back its own values.
 - Every override shows an **Overridden** badge in the drawer, and **Reset all** returns the app to its own values.
 
+### Screenshots
+
+The wrapper also lets xRay take a screenshot of your app: the camera button in the drawer, **Take screenshot** in the command menu, or [`take_screenshot`](/app/mcp#actions) for an AI assistant. It needs no code of its own.
+
+- It captures what Flutter draws below `XRayDeviceOverrides`, including dialogs, sheets and snackbars, at the device's pixel ratio. The status bar, the keyboard, system dialogs and other apps are never in it.
+- The app must be on screen. In the background, or with the screen off, xRay says so instead of showing an old or black image.
+- The image is shown as it is: redaction rules don't apply to screenshots. Use test accounts when the screen shows personal data.
+- Copy puts it on the clipboard, and Save to Downloads saves it as a PNG. xRay keeps nothing once the dialog closes.
+
 ## Deep links
 
 ```dart
@@ -205,4 +214,4 @@ final deviceInspector = XRayDeviceInspector(pages: [debugPage]);
 
 ## In the desktop app
 
-Open the drawer with the device button in the top bar, **Device actions** in the command menu, or ⌘⇧D (Ctrl+Shift+D on Windows and Linux). It acts on the connection tab you are looking at, so you can watch the effect in Network and Logs behind it. When your app has not registered something, the drawer shows how to enable it.
+Open the drawer with the device button in the top bar, **Device actions** in the command menu, or ⌘⇧D (Ctrl+Shift+D on Windows and Linux). The camera button in its header takes a screenshot of the app. It acts on the connection tab you are looking at, so you can watch the effect in Network and Logs behind it. When your app has not registered something, the drawer shows how to enable it.
