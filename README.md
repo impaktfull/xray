@@ -8,16 +8,16 @@
 </p>
 
 <p align="center">
-  <a href="https://docs.page/impaktfull/xray">Documentation</a> •
-  <a href="https://docs.page/impaktfull/xray/getting-started">Quick Start</a> •
-  <a href="https://docs.page/impaktfull/xray/app/desktop-app">Desktop app</a> •
+  <a href="https://docs.xrayinspector.dev">Documentation</a> •
+  <a href="https://docs.xrayinspector.dev/getting-started">Quick Start</a> •
+  <a href="https://docs.xrayinspector.dev/app/desktop-app">Desktop app</a> •
   <a href="https://xrayinspector.dev">Website</a>
 </p>
 
 <p align="center">
-  <a href="https://docs.page/impaktfull/xray/app/install-macos">macOS</a> •
-  <a href="https://docs.page/impaktfull/xray/app/install-windows">Windows</a> •
-  <a href="https://docs.page/impaktfull/xray/app/install-linux">Linux</a>
+  <a href="https://docs.xrayinspector.dev/app/install-macos">macOS</a> •
+  <a href="https://docs.xrayinspector.dev/app/install-windows">Windows</a> •
+  <a href="https://docs.xrayinspector.dev/app/install-linux">Linux</a>
 </p>
 
 # xRay (inspector)
@@ -27,7 +27,7 @@
 - **It stays on your network.** What the inspectors capture goes straight from your app to the desktop app, never to a cloud. Only your sign-in goes to the xRay platform.
 - **Protected and encrypted by default**, with a pairing code, a password or trusted desktops.
 - **Debug builds only**, unless you explicitly allow a protected internal build.
-- **Free during the alpha** for approved testers. The desktop app needs an impaktfull account with approved access: see [Account and access](https://docs.page/impaktfull/xray/app/account-and-access).
+- **Free during the alpha** for approved testers. The desktop app needs an impaktfull account with approved access: see [Account and access](https://docs.xrayinspector.dev/app/account-and-access).
 
 ## Quick start
 
@@ -59,15 +59,15 @@ Future<void> main() async {
 }
 ```
 
-Run your app, open **Add Connection** in the xRay desktop app, pick your app and enter the pairing code it printed in its console. See the [Quick Start guide](https://docs.page/impaktfull/xray/getting-started) for the full setup.
+Run your app, open **Add Connection** in the xRay desktop app, pick your app and enter the pairing code it printed in its console. See the [Quick Start guide](https://docs.xrayinspector.dev/getting-started) for the full setup.
 
 ## Desktop apps
 
 | Platform | Install |
 | -------- | ------- |
-| macOS 12 or later | [Homebrew or DMG](https://docs.page/impaktfull/xray/app/install-macos) |
-| Windows 10 or 11 | [Installer](https://docs.page/impaktfull/xray/app/install-windows) |
-| Linux (x86_64) | [AppImage](https://docs.page/impaktfull/xray/app/install-linux) |
+| macOS 12 or later | [Homebrew or DMG](https://docs.xrayinspector.dev/app/install-macos) |
+| Windows 10 or 11 | [Installer](https://docs.xrayinspector.dev/app/install-windows) |
+| Linux (x86_64) | [AppImage](https://docs.xrayinspector.dev/app/install-linux) |
 
 Downloads are on the [releases page](https://github.com/impaktfull/xray/releases).
 
@@ -92,5 +92,5 @@ Planned features are [issues labelled `roadmap`](https://github.com/impaktfull/x
 > **Disclaimer:** This is a commercial package. To use it, you need either a
 > commercial xRay license or a free xRay Community License. The xRay desktop
 > apps for macOS, Windows and Linux are the authorized UI clients for this
-> library. See the [License](https://docs.page/impaktfull/xray/license) and the
-> [Terms & Conditions](https://docs.page/impaktfull/xray/terms-and-conditions).
+> library. See the [License](https://docs.xrayinspector.dev/license) and the
+> [Terms & Conditions](https://docs.xrayinspector.dev/terms-and-conditions).

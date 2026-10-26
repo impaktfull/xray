@@ -2,7 +2,7 @@ blank_issues_enabled: false
 contact_links:
   - name: Question or help with setup
     url: https://discord.gg/C3trkJKdXX
-    about: Ask in the xRay Discord. The docs at https://docs.page/impaktfull/xray cover setup and every package.
+    about: Ask in the xRay Discord. The docs at https://docs.xrayinspector.dev cover setup and every package.
   - name: Security problem
     url: mailto:xray@impaktfull.com
     about: Please mail security problems to us instead of opening a public issue.
