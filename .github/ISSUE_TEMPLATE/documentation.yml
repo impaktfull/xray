@@ -7,7 +7,7 @@ body:
     attributes:
       label: Which page?
       description: The link to the page, or "missing" if there is no page for it yet.
-      placeholder: https://docs.page/impaktfull/xray/getting-started
+      placeholder: https://docs.xrayinspector.dev/getting-started
     validations:
       required: true
   - type: textarea
