@@ -188,7 +188,7 @@ Use **Other** in xRay: the URL `http://127.0.0.1:7799/mcp` with the header `Auth
 
 ## What the assistant can read
 
-xRay's MCP server has 27 tools: 18 that are always available and 9 actions. **Settings → MCP → Tools → View tools** lists them all in your language, with what each one does and a question to ask your assistant that makes it use the tool.
+xRay's MCP server has 30 tools: 19 that are always available and 11 actions. **Settings → MCP → Tools → View tools** lists them all in your language, with what each one does and a question to ask your assistant that makes it use the tool.
 
 The assistant sees the connection tabs open in xRay's window, live and recorded, as you see them, including tabs that disconnected and still hold their data.
 
@@ -208,6 +208,7 @@ The assistant sees the connection tabs open in xRay's window, live and recorded,
 | `read_text_file` | A text file of the app, up to 1 MiB. Binary files are refused. |
 | `get_timeline` | Calls, logs and key-value changes merged by time, as the Timeline tab shows them, for one app or several. |
 | `get_device_state` | The quick settings, feature flags and routes from the Device actions drawer. |
+| `list_device_pages` | Your app's own [custom pages](/packages/xray-device-actions#custom-pages) in the Device actions drawer, with every control and its value. |
 | `export_network_call` | One call as a cURL command or as Markdown, redacted. |
 | `show_in_xray` | Selects the app's tab in xRay and shows a call, log entry or key-value entry, so you can look at it. |
 | `wait_for` | Waits up to 30 seconds for the next network call or log entry that matches, for example right after an action. |
@@ -252,11 +253,13 @@ With **Allow actions** on, the assistant can also change the app. While it is of
 | `open_deep_link` | Opens a deep link or a route in the app. |
 | `send_push` | Hands a simulated push notification to the app's push handlers. It is not sent through APNs or FCM. |
 | `set_feature_flag` | Overrides a feature flag, or resets it. |
+| `set_device_control` | Changes a control on one of your app's custom pages, or presses a button. |
 | `set_quick_settings` | Changes appearance, locale, text scale, animations and the other quick settings, or resets them all. |
 | `set_key_value_entry` | Writes one key-value entry. |
 | `delete_key_value_entry` | Deletes one key-value entry. |
 | `delete_file` | Deletes a file, or a folder with everything in it. |
 | `clear_inspector` | Clears the network calls or the logs of the app. |
+| `take_screenshot` | Takes a screenshot of the app, as you would with the camera button in the Device actions drawer. The image is not redacted. |
 | `export_session` | Saves the session as a `.xray` file or a HAR in your Downloads folder, redacted. |
 
 Device actions need [`xray_device_actions`](/packages/xray-device-actions) in your app, as for the drawer. Actions only work on a connected app, never on a recorded session.
@@ -265,7 +268,8 @@ Actions run without asking you first, so an assistant can work while you look el
 
 ## Privacy
 
-- **Redaction always applies.** Everything an assistant reads, and every export it makes, goes through your redaction rules (**Settings → Privacy & data → Redact on export**, see [Redaction rules](/app/sessions-and-export#redaction-rules)), on top of the SDK's own masking. Hidden values show as `●●●●`. An assistant cannot turn a rule off: to show it a value, remove the rule.
+- **Redaction always applies to what an assistant reads.** Everything it reads, and every export it makes, goes through your redaction rules (**Settings → Privacy & data → Redact on export**, see [Redaction rules](/app/sessions-and-export#redaction-rules)), on top of the SDK's own masking. Hidden values show as `●●●●`. An assistant cannot turn a rule off: to show it a value, remove the rule.
+- **Screenshots are not redacted.** Rules can't apply to pixels, so `take_screenshot` returns what the app shows, as it is. That is why it is an action: an assistant can only take one while **Allow actions** is on.
 - **xRay sends nothing anywhere.** The server only answers the assistant on your computer. xRay does not call any AI service.
 - **The assistant may send what it reads to its AI provider**, such as Anthropic, OpenAI, Cursor or GitHub. That depends on the assistant and how your team set it up.
 - **Captured data can contain personal data of your app's users.** Connect only assistants your team is allowed to use for that data, and prefer test accounts and test data.
