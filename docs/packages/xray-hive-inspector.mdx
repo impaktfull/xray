@@ -39,7 +39,15 @@ Lazy boxes work too: only the values of the visible page are read, unless a sear
 
 ## Custom objects
 
-Primitives, lists and maps show as JSON. A custom object stored through a `TypeAdapter` shows with its `toString()` and is **read-only**, unless you give xRay a codec for its type:
+Primitives, lists and maps show as JSON and can be edited. A custom object stored through a `TypeAdapter` shows in one of three ways, and you decide which one fits:
+
+| Your model has | xRay shows | Editable |
+|---|---|---|
+| An `XRayHiveCodec` registered | Its JSON, with field names | Yes |
+| A `toJson()` method (most models written for an API do) | Its JSON, with field names | No |
+| Neither | Its `toString()` | No |
+
+No setup is needed to see your objects: a model with a `toJson()` already shows its fields. Register a codec only for the types you want to **edit** from xRay:
 
 ```dart
 XRayHiveInspector(
@@ -50,10 +58,15 @@ XRayHiveInspector(
       fromJson: User.fromJson,
     ),
   ],
+  allowWrites: true,
 )
 ```
 
-The object then shows as the JSON of `toJson`, and an edited value goes back through `fromJson`. When `fromJson` throws, the desktop app shows its message and the value is left as it was.
+An edited value goes back through `fromJson` and is stored with your own `TypeAdapter`. When `fromJson` throws, the desktop app shows its message and the value is left as it was.
+
+### Why not just your TypeAdapter?
+
+Your adapter is still what stores the object; xRay never replaces it. But an adapter writes fields as numbers (field 0, field 1, …): the names only exist in your source code, so xRay could show `{"0": "Ada", "1": 36}` at best. And `hive_ce` has no public way to find the adapter registered for a value. `toJson()` and `fromJson` speak in field names, which is what you want to read and edit.
 
 ## Allowing edits
 

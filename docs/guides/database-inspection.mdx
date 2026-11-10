@@ -57,7 +57,15 @@ A database often holds personal data. Only include these inspectors in debug bui
 
 ## Hive objects and codecs
 
-Hive primitives, lists and maps show as JSON. A custom object stored through a `TypeAdapter` shows with its `toString()` and is **read-only**, unless you register an `XRayHiveCodec` for its type:
+Hive primitives, lists and maps show as JSON and can be edited. A custom object stored through a `TypeAdapter` shows in one of three ways:
+
+| Your model has | xRay shows | Editable |
+|---|---|---|
+| An `XRayHiveCodec` registered | Its JSON, with field names | Yes |
+| A `toJson()` method | Its JSON, with field names | No |
+| Neither | Its `toString()` | No |
+
+So you see your objects without any setup when they have a `toJson()`, and you register a codec only for the types you want to edit from xRay:
 
 ```dart
 XRayHiveInspector(
@@ -69,7 +77,19 @@ XRayHiveInspector(
 )
 ```
 
+An edited value goes back through `fromJson` and is stored by your own `TypeAdapter`, which xRay never replaces. xRay can't use the adapter by itself to show or edit an object: an adapter writes fields by number, not by name, and `hive_ce` has no public way to look up the adapter registered for a value.
+
 Only [`hive_ce`](https://pub.dev/packages/hive_ce) is supported; the original `hive` package is unmaintained. See [`xray_hive_inspector`](/packages/xray-hive-inspector).
+
+## Encrypted databases
+
+Encrypted databases work without extra setup, because xRay reads through the connection your app already unlocked and never sees the key:
+
+- **SQLCipher with sqflite** (`sqflite_sqlcipher`): pass the `Database` its `openDatabase(path, password: …)` returns to `XRaySqfliteInspector`.
+- **SQLCipher with drift** (`sqlcipher_flutter_libs` and `PRAGMA key` in the database's `setup`): pass your database to `XRayDriftInspector` as usual.
+- **Encrypted Hive boxes** (`encryptionCipher: HiveAesCipher(key)`): pass the opened box. xRay shows decrypted values, and its edits are encrypted by the box like your app's.
+
+The inspector shows the decrypted rows to whoever connects, so keep the connection protected (a pairing code by default, or a password). With `allowWrites: true`, a query such as `PRAGMA rekey` can change the database's key; with writes off, every `PRAGMA` is refused.
 
 ## Another engine
 
