@@ -51,7 +51,7 @@ A body that is malformed is decoded up to the first bad byte, with a note such a
 
 ### With a schema
 
-Once a message type applies (see [Choosing the message type](#choosing-the-message-type)), the tree shows field names, enum value names, nested and repeated fields, maps as key and value, and `oneof` members under their own name. Well-known types are built in: a `Timestamp` is shown as a date, a `Duration` as `1.5s`, wrappers as their value, `Struct` as JSON and `Any` decoded when its type is in your schema.
+Once a message type applies (see [Choosing the message type](/guides/protobuf#choosing-the-message-type)), the tree shows field names, enum value names, nested and repeated fields, maps as key and value, and `oneof` members under their own name. Well-known types are built in: a `Timestamp` is shown as a date, a `Duration` as `1.5s`, wrappers as their value, `Struct` as JSON and `Any` decoded when its type is in your schema.
 
 - Turn on **Field numbers** in the toolbar to see `name (3)` next to every field.
 - A field the schema doesn't know is still shown, by number, marked **Not in the schema**.
@@ -116,10 +116,10 @@ See [Sessions and export](/app/sessions-and-export) for how to export.
 
 ## Troubleshooting
 
-- **The body shows `<binary body, N bytes>`.** The content type isn't one of the [protobuf types](#what-is-captured) (often `application/octet-stream`), or the app uses an `xray_inspector` without protobuf support. Check the call's `Content-Type` header and update the packages.
+- **The body shows `<binary body, N bytes>`.** The content type isn't one of the [protobuf types](/guides/protobuf#what-is-captured) (often `application/octet-stream`), or the app uses an `xray_inspector` without protobuf support. Check the call's `Content-Type` header and update the packages.
 - **The body shows a long `data:…;base64,…` text.** The desktop app is older than the SDK in your app. Update xRay.
 - **Only field numbers, no names.** No folder is pinned for this app, or no type applies. Check the schema line: pin a folder, or choose a type with **Decode as…**.
 - **My pin doesn't apply to another build.** Pins follow the app name your app announces (`appName` in `XRayInspectorServerConfig`). Builds with another name, such as a staging flavor, need their own pin.
 - **A type is missing from Decode as….** Open **Protobuf schemas…** and look for schema problems: the file may not parse, or an import may be missing from your pinned folders.
 - **Values look wrong.** The schema may not match what the server sends, for example an old checkout. Fields that don't match are marked; pull the latest schemas and they reload.
-- **My gRPC calls don't show up at all.** Native gRPC over HTTP/2 isn't captured, see [What isn't captured](#what-isnt-captured).
+- **My gRPC calls don't show up at all.** Native gRPC over HTTP/2 isn't captured, see [What isn't captured](/guides/protobuf#what-isnt-captured).

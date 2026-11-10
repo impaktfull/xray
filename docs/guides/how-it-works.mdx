@@ -9,7 +9,7 @@ xRay works on your own network. What the inspectors capture goes straight from y
 
 The xRay SDK runs a small server inside your app:
 
-- an **HTTP server** that serves the inspection data and accepts actions such as clearing calls or editing a key-value entry. It uses port `7780` when it is free (see [Ports](#ports));
+- an **HTTP server** that serves the inspection data and accepts actions such as clearing calls or editing a key-value entry. It uses port `7780` when it is free (see [Ports](/guides/how-it-works#ports));
 - a **WebSocket** on that same HTTP port that pushes new network calls, log entries and key-value changes to the desktop app as they happen;
 - a **UDP discovery listener** on port `7781` that answers when the desktop app looks for apps;
 - an **announcement** on UDP port `7791` each time the server starts, also after a hot restart, so the desktop app lists your app right away.
@@ -94,7 +94,7 @@ XRayInspectorServerConfig(
 ```
 
 <Info>
-Sharing the discovery port relies on a socket option that Windows doesn't have. If an app running on Windows doesn't show up while another xRay app runs on the same machine, [connect manually](#connecting-manually) with its HTTP port.
+Sharing the discovery port relies on a socket option that Windows doesn't have. If an app running on Windows doesn't show up while another xRay app runs on the same machine, [connect manually](/guides/how-it-works#connecting-manually) with its HTTP port.
 </Info>
 
 Leave `discoveryPort` at its default unless your network needs a different one. Changing it also moves the announcement port (`discoveryPort + 10`). If you change it, set the same port in the desktop app under **Settings → Connections → UDP discovery port**.
@@ -105,7 +105,7 @@ Apps in an Android emulator on the same computer are found automatically: the de
 
 ## Troubleshooting discovery
 
-Discovery only works when your computer can reach the device directly on the local network. If your app does not show up in **Add Connection** after a scan, check the following, then [connect manually](#connecting-manually) if it still doesn't appear.
+Discovery only works when your computer can reach the device directly on the local network. If your app does not show up in **Add Connection** after a scan, check the following, then [connect manually](/guides/how-it-works#connecting-manually) if it still doesn't appear.
 
 **The app must be running and in the foreground.** The inspector only answers while your app runs in a debug build (or a release or profile build with `allowInReleaseMode` and protection). On Android, apps in the background lose network access shortly after you leave them, so bring the app to the front and scan again.
 
@@ -127,6 +127,6 @@ To find your device's IP address: on Android, open **Settings → Network & inte
 
 ## Connecting manually
 
-Connect manually when your app does not show up, for example when the network setup prevents discovery (see [Troubleshooting discovery](#troubleshooting-discovery)) or the app could not open its discovery port.
+Connect manually when your app does not show up, for example when the network setup prevents discovery (see [Troubleshooting discovery](/guides/how-it-works#troubleshooting-discovery)) or the app could not open its discovery port.
 
 In the xRay desktop app, open **Add Connection**, go to **Or connect manually** and enter the device's IP address and the app's **HTTP port**. The app prints the port it listens on when it starts (`7780` unless that port was taken or you set `httpPort`). Discovery is not needed for a manual connection; the desktop app only has to be able to reach that IP address and port.

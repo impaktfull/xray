@@ -28,6 +28,33 @@
       "href": "/app/install-macos"
     }
   ],
+  "redirects": {
+    "/impaktfull/xray": "/",
+    "/impaktfull/xray/app/account-and-access": "/app/account-and-access",
+    "/impaktfull/xray/app/desktop-app": "/app/desktop-app",
+    "/impaktfull/xray/app/install-linux": "/app/install-linux",
+    "/impaktfull/xray/app/install-macos": "/app/install-macos",
+    "/impaktfull/xray/app/install-windows": "/app/install-windows",
+    "/impaktfull/xray/app/mcp": "/app/mcp",
+    "/impaktfull/xray/app/sessions-and-export": "/app/sessions-and-export",
+    "/impaktfull/xray/getting-started": "/getting-started",
+    "/impaktfull/xray/guides/file-inspection": "/guides/file-inspection",
+    "/impaktfull/xray/guides/how-it-works": "/guides/how-it-works",
+    "/impaktfull/xray/guides/key-value-inspection": "/guides/key-value-inspection",
+    "/impaktfull/xray/guides/log-inspection": "/guides/log-inspection",
+    "/impaktfull/xray/guides/network-inspection": "/guides/network-inspection",
+    "/impaktfull/xray/guides/protected-connections": "/guides/protected-connections",
+    "/impaktfull/xray/guides/protobuf": "/guides/protobuf",
+    "/impaktfull/xray/license": "/license",
+    "/impaktfull/xray/packages/xray-device-actions": "/packages/xray-device-actions",
+    "/impaktfull/xray/packages/xray-inspector": "/packages/xray-inspector",
+    "/impaktfull/xray/packages/xray-inspector-core": "/packages/xray-inspector-core",
+    "/impaktfull/xray/packages/xray-network-dio-interceptor": "/packages/xray-network-dio-interceptor",
+    "/impaktfull/xray/packages/xray-secure-storage-inspector": "/packages/xray-secure-storage-inspector",
+    "/impaktfull/xray/packages/xray-serverpod-interceptor": "/packages/xray-serverpod-interceptor",
+    "/impaktfull/xray/packages/xray-shared-preferences-inspector": "/packages/xray-shared-preferences-inspector",
+    "/impaktfull/xray/terms-and-conditions": "/terms-and-conditions"
+  },
   "sidebar": [
     {
       "group": "Getting Started",
