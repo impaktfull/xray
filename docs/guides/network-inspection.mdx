@@ -24,8 +24,8 @@ final networkInspector = XRayNetworkInspector(enableHttpOverride: true);
 ```
 
 - Each call is recorded with its method, URL, request and response headers and bodies, status code, duration and error.
-- WebSockets opened through `dart:io` are recorded too, see [WebSockets](#websockets).
-- It covers the main isolate only, see [Background isolates](#background-isolates).
+- WebSockets opened through `dart:io` are recorded too, see [WebSockets](/guides/network-inspection#websockets).
+- It covers the main isolate only, see [Background isolates](/guides/network-inspection#background-isolates).
 - Only one `XRayNetworkInspector` can have `enableHttpOverride: true` at a time. Enabling it on a second inspector throws a `StateError`.
 - It is ignored on web, where `dart:io` is not available.
 

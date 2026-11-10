@@ -35,7 +35,7 @@ The status row then shows **Running on http://127.0.0.1:7799/mcp**. The server:
 
 Two more switches decide what an assistant may do:
 
-- **Allow actions**: let it change the app, see [Actions](#actions). Off by default.
+- **Allow actions**: let it change the app, see [Actions](/app/mcp#actions). Off by default.
 - **Include hidden hosts**: off, an assistant sees the calls the network table shows; on, it also sees calls to the hosts you hid under **Settings → Inspectors → Hide hosts**, in reads and exports. Off by default.
 
 ## Connect an assistant
@@ -195,7 +195,7 @@ The assistant sees the connection tabs open in xRay's window, live and recorded,
 | Tool | What it does |
 | --- | --- |
 | `list_connections` | The apps open in xRay, with their inspectors, how many items each holds, and the app and OS version when the app uses [`xray_device_actions`](/packages/xray-device-actions). |
-| `list_available_apps` | Apps that are not open yet: the ones you connected before and the ones that announced themselves since xRay started, and whether the assistant can connect them. See [Connecting apps](#connecting-apps). |
+| `list_available_apps` | Apps that are not open yet: the ones you connected before and the ones that announced themselves since xRay started, and whether the assistant can connect them. See [Connecting apps](/app/mcp#connecting-apps). |
 | `connect_app` | Opens a tab for an app you trusted before, without asking you anything. |
 | `search` | Searches network calls, logs and key-value entries, like the command menu, in one app or in several. |
 | `list_network_calls` | Network calls, newest first, filtered by method, status (`failed` too), host, URL, text, GraphQL operation and time. |
