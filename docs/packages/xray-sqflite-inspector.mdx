@@ -1,0 +1,52 @@
+---
+title: xray_sqflite_inspector
+description: Database inspector for sqflite and sqflite_common_ffi. Browse tables, run SQL and, when you allow it, edit rows from the xRay desktop app.
+---
+
+[![pub package](https://img.shields.io/pub/v/xray_sqflite_inspector.svg)](https://pub.dev/packages/xray_sqflite_inspector)
+
+Shows your app's sqflite database in the **Database** tab of the xRay desktop app: tables and views with their row counts, rows page by page, and a Query view for SQL. Works with `sqflite` and `sqflite_common_ffi`.
+
+## Installation
+
+```yaml
+dependencies:
+  xray_inspector: ^0.1.0
+  xray_sqflite_inspector: ^0.1.0
+  sqflite: ^2.3.0
+```
+
+## Usage
+
+Pass the database your app already opened:
+
+```dart
+import 'package:sqflite/sqflite.dart';
+import 'package:xray_sqflite_inspector/xray_sqflite_inspector.dart';
+
+final db = await openDatabase('app.db');
+final inspector = XRaySqfliteInspector(database: db);
+```
+
+Then pass it to `XRayInspectorServerConfig`. See [Quick Start](/getting-started) for the full server setup, and [Database Inspection](/guides/database-inspection) for what the tab does.
+
+## Allowing edits
+
+The inspector is read-only by default: browsing, and queries that only read (`SELECT`, `WITH … SELECT`, `EXPLAIN`). Turn on adding, editing and deleting rows, and queries that change data, with `allowWrites`:
+
+```dart
+XRaySqfliteInspector(database: db, allowWrites: true)
+```
+
+A row is addressed by its primary key, or by `rowid` in a table without one. Views, and `WITHOUT ROWID` tables without a primary key, stay read-only.
+
+## One connection, the app's own
+
+xRay never opens the database file a second time. Its statements run on the `Database` you pass, so they queue with your app's own and wait while your app holds a transaction.
+
+sqflite has no change notifications: if your app keeps rows in memory, it sees an edit from xRay on its next read.
+
+## Notes
+
+- The inspector is titled with the database's file name. Pass `title:` to name it yourself, and `id:` when two databases share a title.
+- Register one inspector per database. Several databases, of any engine, show in one Database tab.

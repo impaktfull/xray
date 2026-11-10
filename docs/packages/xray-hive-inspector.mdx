@@ -1,0 +1,77 @@
+---
+title: xray_hive_inspector
+description: Database inspector for hive_ce boxes. Browse entries and, when you allow it, edit, add and delete them from the xRay desktop app.
+---
+
+[![pub package](https://img.shields.io/pub/v/xray_hive_inspector.svg)](https://pub.dev/packages/xray_hive_inspector)
+
+Shows your app's Hive boxes in the **Database** tab of the xRay desktop app, one collection per box with a `key` and a `value` column.
+
+<Warning>
+Only [`hive_ce`](https://pub.dev/packages/hive_ce) is supported. The original `hive` package is unmaintained; migrate to `hive_ce` first, which is a drop-in change.
+</Warning>
+
+## Installation
+
+```yaml
+dependencies:
+  xray_inspector: ^0.1.0
+  xray_hive_inspector: ^0.1.0
+  hive_ce: ^2.10.0
+```
+
+## Usage
+
+Pass the boxes your app already opened:
+
+```dart
+import 'package:hive_ce/hive_ce.dart';
+import 'package:xray_hive_inspector/xray_hive_inspector.dart';
+
+final settings = await Hive.openBox('settings');
+final users = await Hive.openBox<User>('users');
+final inspector = XRayHiveInspector(boxes: [settings, users]);
+```
+
+Then pass it to `XRayInspectorServerConfig`. See [Quick Start](/getting-started) for the full server setup, and [Database Inspection](/guides/database-inspection) for what the tab does.
+
+Lazy boxes work too: only the values of the visible page are read, unless a search or a sort by value needs them all. Only the boxes you pass are listed, because Hive cannot list boxes without opening them.
+
+## Custom objects
+
+Primitives, lists and maps show as JSON. A custom object stored through a `TypeAdapter` shows with its `toString()` and is **read-only**, unless you give xRay a codec for its type:
+
+```dart
+XRayHiveInspector(
+  boxes: [users],
+  codecs: [
+    XRayHiveCodec<User>(
+      toJson: (user) => user.toJson(),
+      fromJson: User.fromJson,
+    ),
+  ],
+)
+```
+
+The object then shows as the JSON of `toJson`, and an edited value goes back through `fromJson`. When `fromJson` throws, the desktop app shows its message and the value is left as it was.
+
+## Allowing edits
+
+The inspector is read-only by default. Turn on adding, editing and deleting entries with `allowWrites`:
+
+```dart
+XRayHiveInspector(boxes: [settings, users], allowWrites: true)
+```
+
+- **Edit** replaces the whole value. It is decoded with the codec of the value it replaces, or kept as JSON for a primitive, list or map.
+- **Add** takes an `int` or `String` key, or none to let Hive pick the next `int` key as `box.add` does. A key that exists is refused. A custom object is added through its codec's `fromJson`.
+- **Delete** removes the selected keys.
+
+## One handle, the app's own
+
+xRay never opens a box itself: a second handle on a box file would corrupt it. Its writes go through the `put` and `delete` of the boxes you pass, so `box.watch()` and `ValueListenableBuilder`s fire as they do for your app's own writes.
+
+## Notes
+
+- The inspector is titled `Hive`. Pass `title:` to name it yourself, and `id:` when you register more than one.
+- Hive has no query language, so a Hive inspector has no Query view. Search matches the key and the JSON of the value.
