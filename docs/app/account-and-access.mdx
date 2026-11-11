@@ -1,9 +1,9 @@
 ---
 title: Account and access
-description: Sign in to the xRay desktop app with your impaktfull account, get approved alpha access, and see what the xRay platform receives and how to clear or delete your data.
+description: Sign in to the xRay desktop app with your impaktfull account, get access with a promo code or an alpha request, see your license and when it ends, and see what the xRay platform receives and how to clear or delete your data.
 ---
 
-The xRay desktop app needs an impaktfull account with approved access. Sign-in is the only thing that goes to the xRay platform: what the inspectors capture in your app stays on your network.
+The xRay desktop app needs an impaktfull account with a license. Sign-in is the only thing that goes to the xRay platform: what the inspectors capture in your app stays on your network.
 
 ## Sign in
 
@@ -13,29 +13,45 @@ The xRay desktop app needs an impaktfull account with approved access. Sign-in i
 
 You stay signed in until you choose **Sign out** under **Settings → Account**. **Manage impaktfull account** there opens your impaktfull account, for your name, password and sign-in methods.
 
-## Alpha access
+## Get access
 
-xRay is in alpha and open to approved testers. There are two ways to ask for access:
+You need a license to use xRay. There are two ways to get one:
 
-- **In the app:** after signing in for the first time, click **Request access**.
-- **On the website:** enter your email address under **Request access** on [xrayinspector.dev](https://xrayinspector.dev). Use the email address of your impaktfull account.
+- **A promo code.** Got a code at a meetup or a conference? Enter it under **Promo code** on the screen xRay shows after you sign in, and click **Redeem**. If the code is valid, xRay opens straight away.
+- **Request access** (only during the alpha). Click **Request access** in the app, or enter your email address under **Request access** on [xrayinspector.dev](https://xrayinspector.dev); use the email address of your impaktfull account. An admin reviews your request and you get an email with the outcome:
+  - While you wait, xRay shows **Waiting for approval**. Once you have the approval email, click **Check again**.
+  - If your request is not approved, xRay shows **Access not granted**. You can ask again, sometimes only from a later date that xRay shows.
 
-An admin reviews your request, and you get an email with the outcome:
+Requesting access stops when the alpha ends. After that, you get xRay with a promo code, from impaktfull, or later by subscribing.
 
-- While you wait, xRay shows **Waiting for approval**. Once you have the approval email, click **Check again**.
-- If your request is not approved, xRay shows **Access not granted**. You can ask again, sometimes only from a later date that xRay shows.
+## Promo codes
 
-**Settings → Account** shows your **xRay access** and your **License**.
+A promo code adds a license to your account. You can also redeem one when you already have access: open **Settings → Account → Redeem a code**.
 
-## The alpha license
+- Case, spaces and dashes don't matter: `xray 7k4m q2pd` is the same code as `XRAY-7K4M-Q2PD`.
+- A code works once per person. Some codes can only be redeemed once in total, or only between two dates.
+- If xRay refuses a code, it tells you why: not a valid code, already used, already redeemed by you, not valid yet, expired, or no longer available.
+- After several wrong codes in a row, xRay asks you to wait before trying again.
 
-During the alpha, approved testers get the **Alpha Tester License**: you can use xRay for free while it is in alpha. Paid licenses come later; their subscription and invoices will show under **Settings → Account**. See [License](/license) for the license terms of the packages.
+## Your license
+
+**Settings → Account** shows your **xRay access** and your **License**: its name, what it is, and **Valid until** with the date when it has an end.
+
+You can hold more than one license, for example the Alpha Tester License and a year from a promo code. You have access as long as any of them is valid, and xRay shows the one that lasts longest. Redeeming a code never shortens a license you already have.
+
+During the alpha, approved testers get the **Alpha Tester License**: xRay is free for them while it is in alpha. Paid licenses come later; their subscription and invoices will show under **Settings → Account**. See [License](/license) for the license terms of the packages.
+
+## When your license ends
+
+- In the last 14 days, xRay shows when your license ends, with **Redeem a code**.
+- You get an email 14 days before the end, and another the day before the last day.
+- When your last license ends, xRay shows the access screen, where you can redeem a code (or request access, during the alpha). Nothing on your computer is deleted.
 
 ## What the xRay platform receives
 
 **Settings → Privacy & data → What xRay sends** lists it in the app:
 
-- **Sign-in and access checks**, to the xRay platform, with your impaktfull account. The platform keeps your email address, name and account identifier, when you signed in and from which installation (the device name of your computer, often its host name, the platform and the xRay version), and your access requests with their decisions.
+- **Sign-in and access checks**, to the xRay platform, with your impaktfull account. The platform keeps your email address, name and account identifier, when you signed in and from which installation (the device name of your computer, often its host name, the platform and the xRay version), your access requests with their decisions, your licenses and the promo codes you redeemed. A wrong promo code is kept for 30 days with your IP address and only its first four characters, to stop people from guessing codes.
 - **Update checks**: your xRay version, to tell you about new releases.
 - **Roadmap and changelog**: read from GitHub's public API. Nothing about you or your apps is sent.
 - **Your app's data**: network calls, logs, keys and files never leave your computer, except in the [exports](/app/sessions-and-export) you make yourself.
