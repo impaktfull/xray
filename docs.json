@@ -80,6 +80,7 @@
       "pages": [
         { "title": "⚙️ How it works", "href": "/guides/how-it-works" },
         { "title": "🔒 Protected connections", "href": "/guides/protected-connections" },
+        { "title": "🛡️ Security model", "href": "/guides/security" },
         { "title": "🌐 Network Inspection", "href": "/guides/network-inspection" },
         { "title": "🧬 Protocol Buffers", "href": "/guides/protobuf" },
         { "title": "📋 Log Inspection", "href": "/guides/log-inspection" },

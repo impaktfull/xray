@@ -34,9 +34,11 @@ With any of the three:
 
 - all traffic between your app and the desktop app is encrypted and authenticated (X25519 key exchange, ChaCha20-Poly1305), including the request paths;
 - discovery only shows the device name, the app name and a lock;
-- wrong attempts are limited, and a flood of connection attempts cannot slow your app down.
+- wrong attempts are limited, and a flood of connection attempts cannot slow your app down;
+- the desktop app warns you before it connects to an app that is suddenly no longer protected, and never drops to an unprotected connection on its own;
+- web pages in your browser cannot reach the inspector: it refuses browser requests and host names that are not local.
 
-See [Protected connections](/guides/protected-connections) to set up a password or trusted desktops.
+See [Protected connections](/guides/protected-connections) to set up a password or trusted desktops, and the [Security model](/guides/security) for what this protects against, including someone else on your network.
 
 You can turn protection off with `allowUnprotected: true`. Anyone on the same network can then connect, read what the inspectors capture (including auth headers and secure storage) and change key-value entries, without encryption. Only do this on a network you fully trust.
 
@@ -129,4 +131,4 @@ To find your device's IP address: on Android, open **Settings → Network & inte
 
 Connect manually when your app does not show up, for example when the network setup prevents discovery (see [Troubleshooting discovery](/guides/how-it-works#troubleshooting-discovery)) or the app could not open its discovery port.
 
-In the xRay desktop app, open **Add Connection**, go to **Or connect manually** and enter the device's IP address and the app's **HTTP port**. The app prints the port it listens on when it starts (`7780` unless that port was taken or you set `httpPort`). Discovery is not needed for a manual connection; the desktop app only has to be able to reach that IP address and port.
+In the xRay desktop app, open **Add Connection**, go to **Or connect manually** and enter the device's IP address (or a local name such as `my-phone.local`) and the app's **HTTP port**. The inspector refuses a public DNS name, so that a web page cannot reach it. The app prints the port it listens on when it starts (`7780` unless that port was taken or you set `httpPort`). Discovery is not needed for a manual connection; the desktop app only has to be able to reach that IP address and port.

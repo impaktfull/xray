@@ -23,7 +23,7 @@ The default. Without a `password` or `trustedDesktopKeys`, the app makes up a pa
 
 - The first time you connect, the desktop app shows **Pairing code required**. Enter the code from your app's console. Case, spaces and dashes do not matter.
 - The desktop app remembers the code for this app on this device, in your system's credential store.
-- The code is kept on the device, so it stays the same across hot restarts and app restarts. When the operating system clears the app's temporary folder or the app is reinstalled, the app prints a new code and the desktop app asks again.
+- The code is kept on the device in a file only your app's user can read, so it stays the same across hot restarts and app restarts. When the operating system clears the app's temporary folder or the app is reinstalled, the app prints a new code and the desktop app asks again.
 - `XRayInspectorServer.pairingCode` returns the code while the server runs, for example to show it in a debug menu.
 - A pairing code does not count for [release and profile builds](/guides/how-it-works#release-and-profile-builds): those need a password or trusted desktops.
 
@@ -114,3 +114,5 @@ Anyone on the same network can then connect to your app, and read and change wha
 ## When the protection changes
 
 The desktop app remembers whether an app was protected. If a remembered app suddenly asks for something else, or is no longer protected, the desktop app warns you with **App protection changed** or **App is no longer protected** before it connects. If nobody changed the app's setup, something else on the network may be answering in its place: only choose **Connect anyway** when you expected the change.
+
+Within a connection, once the app answered protected, the desktop app keeps expecting that protection: if the network claims the session ended and the app is no longer protected, the desktop app refuses instead of continuing unprotected. A password or pairing code you type is remembered the same way for the next connection. See the [Security model](/guides/security).

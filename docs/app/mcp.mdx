@@ -69,7 +69,7 @@ claude mcp add --transport http --scope user xray http://127.0.0.1:7799/mcp --he
 Claude Desktop's config file only starts programs on your computer; it has no setting for a local HTTP server. Its **Connectors** settings don't help either: those connect from Anthropic's cloud, which can't reach your computer. So the setup starts [`mcp-remote`](https://www.npmjs.com/package/mcp-remote), a community npm package that passes MCP between Claude Desktop and xRay's HTTP server.
 
 <Info>
-`mcp-remote` is a third-party package, not part of xRay. It needs [Node.js](https://nodejs.org); `npx` downloads the package the first time Claude Desktop starts it.
+`mcp-remote` is a third-party package, not part of xRay. It needs [Node.js](https://nodejs.org); `npx` checks for the latest version of the package each time Claude Desktop starts it.
 </Info>
 
 Add this to Claude Desktop's config file and restart Claude Desktop:
@@ -216,7 +216,7 @@ The assistant sees the connection tabs open in xRay's window, live and recorded,
 
 Most tools work on the tab selected in xRay unless the assistant names another connection. Lists are newest first and paged, and long bodies are paged too, so the assistant reads only what it asks for.
 
-A protobuf body is decoded the way the call's tab shows it: with the type from the gRPC path or your **Decode as…** choice and the app's pinned schemas, or by field number without them. Name rules hide matching fields, and text search in `list_network_calls` and `wait_for` matches the decoded text, not the bytes. The bytes themselves, as base64, are only sent when the assistant asks for them, redacted too.
+A protobuf body is decoded the way the call's tab shows it: with the type from the gRPC path or your **Decode as…** choice and the app's pinned schemas, or by field number without them. Name rules hide matching fields, and text search in `list_network_calls` and `wait_for` matches the decoded text, not the bytes. The bytes themselves, as base64, are only sent when the assistant asks for them, redacted too. Compressed messages cannot be redacted, so their bytes are never sent. gRPC-web trailers and Connect end-of-stream metadata are redacted like headers.
 
 There is also a prompt, `debug_with_xray`, that tells the assistant how to start (in Claude Code: `/mcp__xray__debug_with_xray`).
 
@@ -268,7 +268,7 @@ Actions run without asking you first, so an assistant can work while you look el
 
 ## Privacy
 
-- **Redaction always applies to what an assistant reads.** Everything it reads, and every export it makes, goes through your redaction rules (**Settings → Privacy & data → Redact on export**, see [Redaction rules](/app/sessions-and-export#redaction-rules)), on top of the SDK's own masking. Hidden values show as `●●●●`. An assistant cannot turn a rule off: to show it a value, remove the rule.
+- **Redaction always applies to what an assistant reads.** Everything it reads, and every export it makes, goes through your redaction rules (**Settings → Privacy & data → Redact on export**, see [Redaction rules](/app/sessions-and-export#redaction-rules)), on top of the SDK's own masking. Hidden values show as `●●●●`. An assistant cannot turn a rule off: to show it a value, remove the rule. In `read_database_rows`, a row key that holds a hidden column comes back as hidden, and the assistant cannot sort by a hidden column or search a table that has one, so it cannot guess hidden values one character at a time.
 - **Screenshots are not redacted.** Rules can't apply to pixels, so `take_screenshot` returns what the app shows, as it is. That is why it is an action: an assistant can only take one while **Allow actions** is on.
 - **xRay sends nothing anywhere.** The server only answers the assistant on your computer. xRay does not call any AI service.
 - **The assistant may send what it reads to its AI provider**, such as Anthropic, OpenAI, Cursor or GitHub. That depends on the assistant and how your team set it up.

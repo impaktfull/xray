@@ -54,7 +54,14 @@ Every export starts redacted. Values of matching headers, keys and fields are re
 
 `Authorization`, `Proxy-Authorization`, `*cookie*`, `*token*`, `*password*`, `*secret*`, `*api*key*`, `*session*`, `*jwt*`, `*credential*`, `*private*key*` and `code_verifier`. While any rule is on, Bearer tokens and JWTs are redacted under any name too.
 
-A rule matches a whole name, ignoring case, and `*` matches any text.
+A rule matches a whole name, ignoring case, and `*` matches any text. `*password*` also matches `user[password]` and `auth:password`.
+
+Besides headers, keys and fields, redaction also hides:
+
+- the password in a URL such as `https://user:password@host` (and a user name on its own, which is often a token);
+- matching query parameters in URLs inside header values, such as `Location` and `Link`;
+- matching keys in JSON inside a query parameter, such as GraphQL `variables` in a GET request;
+- gRPC-web trailers and Connect end-of-stream metadata of [protobuf](/guides/protobuf) calls.
 
 - **Manage the rules** under **Settings → Privacy & data → Redact on export**: add, remove, or **Reset to defaults**.
 - **Turn a rule off for one export** by clicking it in the export. The next export starts with every rule on again.
