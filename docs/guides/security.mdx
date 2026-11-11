@@ -1,0 +1,67 @@
+---
+title: Security model
+description: What protects your app's data on its way to xRay, against someone else on your network, a web page in your browser, a tampered update, an AI assistant and a shared export, and what it cannot protect.
+---
+
+xRay moves sensitive data around: your app's network calls with their tokens, its logs, its storage and its databases. This page explains what protects that data, from whom, and where the limits are.
+
+## Where your data goes
+
+What the inspectors capture goes straight from your app to the xRay desktop apps that connect to it, over your local network. It never passes through impaktfull or any other server. The xRay platform only knows your account, your access and your devices (see [Account and access](/app/account-and-access)).
+
+## Someone else on your network
+
+Think of anyone who can see or change your network traffic: another device on the same Wi-Fi, a hotel or conference network, a captive portal, or a compromised router. This is called a man-in-the-middle.
+
+With [protection](/guides/protected-connections) on, which is the default:
+
+- **They cannot read or change anything.** Every request and answer between your app and the desktop app is encrypted and authenticated (X25519 key exchange, ChaCha20-Poly1305), including the request paths. A changed message is refused.
+- **They cannot learn the pairing code or password.** It never travels over the network: both sides prove they know a key derived from it.
+- **They cannot make the desktop app drop encryption.** The desktop app remembers how each app was protected. If an app it knows suddenly answers without protection, or with a different kind, it warns you with **App protection changed** or **App is no longer protected** and sends nothing until you choose. Within a connection, once an app answered protected, the desktop app never falls back to an unprotected connection, whatever the network answers.
+- **They still see** that an xRay app runs on a device, its device and app name, and the size and timing of the traffic.
+
+Someone pretending to be your app can announce itself under your app's name, but cannot pass the handshake without the pairing code or password, so the desktop app gets nothing from it. With a password, such an impostor can try guesses offline, so use a long, random password. A pairing code is long enough. With [trusted desktops](/guides/protected-connections#trusted-desktops), your app checks the desktop's key, but the desktop app has no key of the app to check: only connect to apps you recognise.
+
+The desktop app also limits how much it accepts from an app, so an impostor cannot exhaust it with huge or compressed answers or images.
+
+With `allowUnprotected: true`, none of this applies: anyone on the network can read and change what the inspectors capture. Only use it on a network you fully trust.
+
+## Web pages in your browser
+
+A website you visit runs in your browser, on the same network as your app. The inspector refuses every request a browser sends with an `Origin`, and every request for a host name that is not local, so a web page cannot reach it, also not by pointing its own domain at your device's address (DNS rebinding).
+
+When you [connect manually](/guides/how-it-works#connecting-manually), use the device's IP address or a local name such as `my-phone.local`. A public DNS name is refused.
+
+## Updates and downloads
+
+- **macOS:** the app is signed with impaktfull's Developer ID and notarized by Apple. Before an update replaces xRay, the desktop app checks that the new copy is signed by impaktfull's Apple team and accepted by Gatekeeper, and checks it again right before it swaps the app. A copy that fails is never installed, and the old version stays.
+- **All platforms:** updates are only downloaded from the [impaktfull/xray releases](https://github.com/impaktfull/xray/releases) on GitHub, over HTTPS, and checked against the release's `.sha256` file.
+- **Windows and Linux:** the installers are not code-signed yet, so the checksum comes from the same release as the installer. Only install xRay from the official releases page or Homebrew.
+
+## Signing in and the platform
+
+- The desktop app talks to the xRay platform and impaktfull sign-in over HTTPS only.
+- You sign in in your browser, with your impaktfull account. The desktop app never sees your password.
+- Its sign-in tokens, the passwords and pairing codes of your apps, your desktop key and the MCP token are kept in your system's credential store (Keychain, Windows Credential Manager or the Secret Service on Linux).
+- [xrayinspector.dev](https://xrayinspector.dev) tells browsers to only use HTTPS for it.
+
+## AI assistants
+
+The [MCP server](/app/mcp) is off until you switch it on. When it runs:
+
+- it listens on `127.0.0.1` only, so nothing else on your network can reach it;
+- every request needs its token, and requests from a web page are refused;
+- everything an assistant reads goes through your [redaction rules](/app/sessions-and-export#redaction-rules), and it cannot turn them off. It cannot sort or search by a hidden database column either, so it cannot guess a hidden value bit by bit;
+- it can only change your app when you switch on **Allow actions**.
+
+What an assistant reads goes to that assistant and its model provider. Keep the redaction rules on for anything you would not paste into a chat.
+
+## Exports
+
+[Exports](/app/sessions-and-export) start redacted: tokens, cookies, passwords and the values your rules name are replaced with `●●●●`, also in URLs, in URLs inside headers, and in GraphQL variables. A cURL export is safe to paste into a terminal: text captured from your app always stays inside quotes or on its comment line.
+
+## On your computer
+
+- The desktop app's settings file can only be read by your user. **Clear local data** removes the remembered apps, deep links, push presets and filters, including any backup of a damaged settings file.
+- Your app keeps its pairing code in a file only its own user can read, in the app's own temporary folder. If that folder can be written by others, the code is not stored, and the app prints a new one on every start.
+- The inspector server does not start in [release and profile builds](/guides/how-it-works#release-and-profile-builds) unless you allow it, and then only with a password or trusted desktops.
