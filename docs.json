@@ -84,6 +84,7 @@
         { "title": "🧬 Protocol Buffers", "href": "/guides/protobuf" },
         { "title": "📋 Log Inspection", "href": "/guides/log-inspection" },
         { "title": "🗄️ Key-Value Inspection", "href": "/guides/key-value-inspection" },
+        { "title": "🛢️ Database Inspection", "href": "/guides/database-inspection" },
         { "title": "📁 File Inspection", "href": "/guides/file-inspection" }
       ]
     },
@@ -95,6 +96,9 @@
         { "title": "🛰️ xray_serverpod_interceptor", "href": "/packages/xray-serverpod-interceptor" },
         { "title": "💾 xray_shared_preferences_inspector", "href": "/packages/xray-shared-preferences-inspector" },
         { "title": "🔐 xray_secure_storage_inspector", "href": "/packages/xray-secure-storage-inspector" },
+        { "title": "🛢️ xray_sqflite_inspector", "href": "/packages/xray-sqflite-inspector" },
+        { "title": "🎯 xray_drift_inspector", "href": "/packages/xray-drift-inspector" },
+        { "title": "🐝 xray_hive_inspector", "href": "/packages/xray-hive-inspector" },
         { "title": "📱 xray_device_actions", "href": "/packages/xray-device-actions" },
         { "title": "🧩 xray_inspector_core", "href": "/packages/xray-inspector-core" }
       ]

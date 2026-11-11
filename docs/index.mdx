@@ -10,6 +10,7 @@ description: xRay is a desktop inspector for Flutter teams. See a debug build's 
 - **Network**: every HTTP call with headers, bodies, timing and sizes, GraphQL operations by name, WebSocket messages, protobuf, gRPC-web and Connect bodies decoded with your own `.proto` files, and Serverpod calls by endpoint and method. Credentials are masked by default.
 - **Logs**: entries with level, logger, error and stack trace, searchable and filterable.
 - **Key-value storage**: browse, edit and add keys in shared preferences, secure storage or your own store.
+- **Databases**: browse sqflite and drift tables and Hive boxes, run SQL and, when you allow it, edit rows.
 - **Files**: browse, preview, save and delete your app's documents and caches.
 - **Timeline**: calls, logs and key-value changes in the order they happened.
 - **Device actions**: change appearance, locale and text size, open deep links, send simulated pushes and override feature flags.
@@ -37,6 +38,7 @@ Your Flutter app (debug build)
        ├── XRayNetworkInspector   ◄── HTTP override, Dio, Serverpod
        ├── XRayLogInspector
        ├── XRaySharedPreferencesInspector / XRaySecureStorageInspector
+       ├── XRaySqfliteInspector / XRayDriftInspector / XRayHiveInspector
        ├── XRayFileInspector
        └── XRayDeviceInspector    ◄── xray_device_actions
                         │
@@ -60,6 +62,7 @@ The inspector server runs inside your app. The desktop app finds it on the local
 - [Network Inspection](/guides/network-inspection)
 - [Log Inspection](/guides/log-inspection)
 - [Key-Value Inspection](/guides/key-value-inspection)
+- [Database Inspection](/guides/database-inspection)
 - [File Inspection](/guides/file-inspection)
 - [Using the desktop app](/app/desktop-app)
 - [Sessions and export](/app/sessions-and-export)
@@ -74,6 +77,9 @@ The inspector server runs inside your app. The desktop app finds it on the local
 | [`xray_serverpod_interceptor`](/packages/xray-serverpod-interceptor) | Shows Serverpod calls by endpoint and method |
 | [`xray_shared_preferences_inspector`](/packages/xray-shared-preferences-inspector) | SharedPreferences in the Key-Value tab |
 | [`xray_secure_storage_inspector`](/packages/xray-secure-storage-inspector) | flutter_secure_storage in the Key-Value tab |
+| [`xray_sqflite_inspector`](/packages/xray-sqflite-inspector) | sqflite databases in the Database tab |
+| [`xray_drift_inspector`](/packages/xray-drift-inspector) | drift databases in the Database tab |
+| [`xray_hive_inspector`](/packages/xray-hive-inspector) | hive_ce boxes in the Database tab |
 | [`xray_device_actions`](/packages/xray-device-actions) | Device actions: appearance, locale, text size, animations, debug overlays |
 | [`xray_inspector_core`](/packages/xray-inspector-core) | Shared models, included with `xray_inspector` |
 

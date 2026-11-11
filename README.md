@@ -80,6 +80,9 @@ Downloads are on the [releases page](https://github.com/impaktfull/xray/releases
 | [`xray_serverpod_interceptor`](https://pub.dev/packages/xray_serverpod_interceptor) | Shows Serverpod calls by endpoint and method |
 | [`xray_shared_preferences_inspector`](https://pub.dev/packages/xray_shared_preferences_inspector) | SharedPreferences in the Key-Value tab |
 | [`xray_secure_storage_inspector`](https://pub.dev/packages/xray_secure_storage_inspector) | flutter_secure_storage in the Key-Value tab |
+| [`xray_sqflite_inspector`](https://pub.dev/packages/xray_sqflite_inspector) | sqflite databases in the Database tab |
+| [`xray_drift_inspector`](https://pub.dev/packages/xray_drift_inspector) | drift databases in the Database tab |
+| [`xray_hive_inspector`](https://pub.dev/packages/xray_hive_inspector) | hive_ce boxes in the Database tab |
 | [`xray_device_actions`](https://pub.dev/packages/xray_device_actions) | Device actions: appearance, locale, text size, animations, debug overlays |
 | [`xray_inspector_core`](https://pub.dev/packages/xray_inspector_core) | Shared models, included with `xray_inspector` |
 

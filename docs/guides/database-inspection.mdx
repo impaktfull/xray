@@ -1,0 +1,96 @@
+---
+title: Database Inspection
+description: Browse tables and Hive boxes, run SQL and, when you allow it, edit rows of your app's sqflite, drift and Hive databases from the xRay desktop app.
+---
+
+Database inspectors show your app's databases in the **Database** tab of the xRay desktop app: tables, views and Hive boxes with their row counts, rows page by page, and a Query view for SQL. Pass the database your app already opened; that is all.
+
+```dart
+XRayInspectorServerConfig(inspectors: [
+  XRaySqfliteInspector(database: db),
+]);
+```
+
+## Engines
+
+| Package | Pass | Query view | Your app hears xRay's edits |
+| ------- | ---- | ---------- | --------------------------- |
+| [`xray_sqflite_inspector`](/packages/xray-sqflite-inspector) | the `Database` from `sqflite` or `sqflite_common_ffi` | yes | on its next read (sqflite has no notifications) |
+| [`xray_drift_inspector`](/packages/xray-drift-inspector) | your `GeneratedDatabase` | yes | `watch()` streams re-run |
+| [`xray_hive_inspector`](/packages/xray-hive-inspector) | the open boxes, `hive_ce` only | no, search instead | `box.watch()` and `ValueListenableBuilder`s fire |
+
+Register one inspector per database. Several databases, of any engine, show in one Database tab with a switcher. Give each a `title:` when the default (file name, class name or `Hive`) does not tell them apart, and an `id:` when two share a title.
+
+```dart
+XRayInspectorServerConfig(inspectors: [
+  XRaySqfliteInspector(database: appDb, allowWrites: true),
+  XRayDriftInspector(database: cacheDb, title: 'cache.db'),
+  XRayHiveInspector(boxes: [settings, users]),
+]);
+```
+
+## The app's own handle
+
+xRay never opens a database file a second time. Its reads and writes run on the handle you pass, so they queue with your app's own statements and wait out its transactions, instead of fighting over the file. For Hive it matters even more: a second handle on a box file would corrupt it.
+
+Because the edits go through your app's handle, your app sees them like its own:
+
+- **drift**: your `watch()` streams re-run after every edit from xRay.
+- **Hive**: `box.watch()` and `ValueListenableBuilder`s fire.
+- **sqflite**: has no change notifications. If your app keeps rows in memory, it sees the edit on its next read.
+
+The Database tab is not live the other way around: it reads when you look, and **Refresh** shows what your app changed since.
+
+## Read-only by default
+
+Without `allowWrites`, the desktop app can browse and run queries that only read (`SELECT`, `WITH … SELECT`, `EXPLAIN`); anything else is refused by your app, not just hidden in the desktop. Turn on adding, editing and deleting rows, and queries that change data, per database:
+
+```dart
+XRaySqfliteInspector(database: db, allowWrites: true)
+```
+
+With writes on, the desktop asks before it runs a query that changes data. A row is addressed by its primary key, or by `rowid` in a table without one. Views, and `WITHOUT ROWID` tables without a primary key, stay read-only.
+
+<Warning>
+A database often holds personal data. Only include these inspectors in debug builds, keep the connection [protected](/guides/protected-connections), and only allow writes where you need them.
+</Warning>
+
+## Hive objects and codecs
+
+Hive primitives, lists and maps show as JSON and can be edited. A custom object stored through a `TypeAdapter` shows in one of three ways:
+
+| Your model has | xRay shows | Editable |
+|---|---|---|
+| An `XRayHiveCodec` registered | Its JSON, with field names | Yes |
+| A `toJson()` method | Its JSON, with field names | No |
+| Neither | Its `toString()` | No |
+
+So you see your objects without any setup when they have a `toJson()`, and you register a codec only for the types you want to edit from xRay:
+
+```dart
+XRayHiveInspector(
+  boxes: [users],
+  codecs: [
+    XRayHiveCodec<User>(toJson: (user) => user.toJson(), fromJson: User.fromJson),
+  ],
+  allowWrites: true,
+)
+```
+
+An edited value goes back through `fromJson` and is stored by your own `TypeAdapter`, which xRay never replaces. xRay can't use the adapter by itself to show or edit an object: an adapter writes fields by number, not by name, and `hive_ce` has no public way to look up the adapter registered for a value.
+
+Only [`hive_ce`](https://pub.dev/packages/hive_ce) is supported; the original `hive` package is unmaintained. See [`xray_hive_inspector`](/packages/xray-hive-inspector).
+
+## Encrypted databases
+
+Encrypted databases work without extra setup, because xRay reads through the connection your app already unlocked and never sees the key:
+
+- **SQLCipher with sqflite** (`sqflite_sqlcipher`): pass the `Database` its `openDatabase(path, password: …)` returns to `XRaySqfliteInspector`.
+- **SQLCipher with drift** (`sqlcipher_flutter_libs` and `PRAGMA key` in the database's `setup`): pass your database to `XRayDriftInspector` as usual.
+- **Encrypted Hive boxes** (`encryptionCipher: HiveAesCipher(key)`): pass the opened box. xRay shows decrypted values, and its edits are encrypted by the box like your app's.
+
+The inspector shows the decrypted rows to whoever connects, so keep the connection protected (a pairing code by default, or a password). With `allowWrites: true`, a query such as `PRAGMA rekey` can change the database's key; with writes off, every `PRAGMA` is refused.
+
+## Another engine
+
+`XRayDatabaseInspector` takes any `XRayDatabaseSource`. For another SQLite wrapper, extend `XRaySqliteSource` and implement `select` and `execute`; schema reading, paging, search and edits come with it.

@@ -17,6 +17,9 @@ body:
         - xray_network_dio_interceptor
         - xray_shared_preferences_inspector
         - xray_secure_storage_inspector
+        - xray_sqflite_inspector
+        - xray_drift_inspector
+        - xray_hive_inspector
         - xray_device_actions
         - xray_serverpod_interceptor
         - Not sure

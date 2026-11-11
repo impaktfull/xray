@@ -1,0 +1,51 @@
+---
+title: xray_drift_inspector
+description: Database inspector for drift. Browse tables, run SQL and, when you allow it, edit rows from the xRay desktop app; your watch() streams see the edits.
+---
+
+[![pub package](https://img.shields.io/pub/v/xray_drift_inspector.svg)](https://pub.dev/packages/xray_drift_inspector)
+
+Shows your app's drift database in the **Database** tab of the xRay desktop app: tables and views with their row counts, rows page by page, and a Query view for SQL.
+
+## Installation
+
+```yaml
+dependencies:
+  xray_inspector: ^0.1.0
+  xray_drift_inspector: ^0.1.0
+  drift: ^2.14.0
+```
+
+## Usage
+
+Pass the database your app already opened:
+
+```dart
+import 'package:xray_drift_inspector/xray_drift_inspector.dart';
+
+final database = AppDatabase();
+final inspector = XRayDriftInspector(database: database);
+```
+
+Then pass it to `XRayInspectorServerConfig`. See [Quick Start](/getting-started) for the full server setup, and [Database Inspection](/guides/database-inspection) for what the tab does.
+
+## Allowing edits
+
+The inspector is read-only by default: browsing, and queries that only read (`SELECT`, `WITH … SELECT`, `EXPLAIN`). Turn on adding, editing and deleting rows, and queries that change data, with `allowWrites`:
+
+```dart
+XRayDriftInspector(database: database, allowWrites: true)
+```
+
+A row is addressed by its primary key, or by `rowid` in a table without one. Views, and `WITHOUT ROWID` tables without a primary key, stay read-only.
+
+## One connection, the app's own
+
+xRay never opens the database file a second time. Its statements run through your `GeneratedDatabase` (`customSelect` and `customUpdate`), so they queue with your app's own and wait while your app holds a transaction.
+
+Your `watch()` streams re-run after every edit from xRay: a row edit tells drift which table changed, and a query that changes data tells it every table changed, because xRay does not work out which tables a statement touches.
+
+## Notes
+
+- The inspector is titled with the database's class name. Pass `title:` to name it yourself, and `id:` when two databases share a title.
+- Tables drift has no class for, created with `customStatement`, show too: xRay reads the schema from SQLite itself.
