@@ -46,6 +46,10 @@ XRayNetworkDioInterceptor.attach(dio, inspector: networkInspector);
 
 You can use the Dio interceptor and the HTTP override together. Each Dio call is recorded **once**, by the Dio interceptor: it tells the HTTP override to skip the requests it already records. Requests are matched on method and URL; nothing is added to the request itself.
 
+## Mock responses
+
+The xRay desktop app can answer requests in your server's place, to test errors, slow servers and unusual data. Turn it on with `allowMockResponses: true`, see [Mock Responses](/guides/mock-responses).
+
 ## Masking credentials
 
 Credential headers are masked before a call is stored, so tokens and session cookies never reach a connected desktop app or an exported session file. By default these are `Authorization`, `Proxy-Authorization`, `Cookie`, `Set-Cookie` and `X-Api-Key`, matched case-insensitively. A masked value keeps its scheme and, for long secrets, the last 4 characters, so you can still tell two tokens apart: `Bearer …a1b2`.
