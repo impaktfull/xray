@@ -24,7 +24,9 @@ Someone pretending to be your app can announce itself under your app's name, but
 
 The desktop app also limits how much it accepts from an app, so an impostor cannot exhaust it with huge or compressed answers or images.
 
-With `allowUnprotected: true`, none of this applies: anyone on the network can read and change what the inspectors capture. Only use it on a network you fully trust.
+With `allowUnprotected: true`, there is no pairing code or password: anyone on the network with an xRay license can read and change what the inspectors capture, and an impostor app is not caught. The connection stays encrypted. Only use it on a network you fully trust.
+
+Every connection also needs a valid xRay license: the app checks the license pass the desktop app presents, on the device, without contacting anyone. See [Account and access](/app/account-and-access#how-apps-check-your-license).
 
 ## Web pages in your browser
 

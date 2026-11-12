@@ -41,6 +41,22 @@ You can hold more than one license, for example the Alpha Tester License and a y
 
 During the alpha, approved testers get the **Alpha Tester License**: xRay is free for them while it is in alpha. Paid licenses come later; their subscription and invoices will show under **Settings → Account**. See [License](/license) for the license terms of the packages.
 
+## One computer at a time
+
+A license is for one person, and works on one computer at a time.
+
+- When you sign in on another computer while xRay is signed in on the first one, xRay asks **Use xRay on this computer?** and shows which computer it is on now. **Use xRay here** moves your license to this computer and signs the other one out. When you open xRay on the other computer, it says where your license went and offers to move it back.
+- Moving between computers is limited per day. When you reach the limit, xRay says when you can move it again.
+- Signing out on a computer makes room: signing in on the next one does not ask.
+
+## How apps check your license
+
+Every app you inspect checks your license, on top of its pairing code, password or trusted desktops. xRay gets a license pass from the xRay platform and renews it on its own while your computer is online. The app checks it on the device itself and never contacts the platform.
+
+- When xRay hasn't reached the internet for 7 days, apps stop accepting it until it can renew the pass: connect to the internet.
+- When an app doesn't accept the pass, check that the date and time on the device are right.
+- An app with an xRay package from before this check can't be inspected: update `xray_inspector` and the other xRay packages in the app.
+
 ## When your license ends
 
 - In the last 14 days, xRay shows when your license ends, with **Redeem a code**.
@@ -51,7 +67,7 @@ During the alpha, approved testers get the **Alpha Tester License**: xRay is fre
 
 **Settings → Privacy & data → What xRay sends** lists it in the app:
 
-- **Sign-in and access checks**, to the xRay platform, with your impaktfull account. The platform keeps your email address, name and account identifier, when you signed in and from which installation (the device name of your computer, often its host name, the platform and the xRay version), your access requests with their decisions, your licenses and the promo codes you redeemed. A wrong promo code is kept for 30 days with your IP address and only its first four characters, to stop people from guessing codes.
+- **Sign-in and access checks**, to the xRay platform, with your impaktfull account. The platform keeps your email address, name and account identifier, when you signed in and from which installation (the device name of your computer, often its host name, the platform and the xRay version), when your license moved between computers, the version of the terms you accepted, your access requests with their decisions, your licenses and the promo codes you redeemed. A wrong promo code is kept for 30 days with your IP address and only its first four characters, to stop people from guessing codes.
 - **Update checks**: your xRay version, to tell you about new releases.
 - **Roadmap and changelog**: read from GitHub's public API. Nothing about you or your apps is sent.
 - **Your app's data**: network calls, logs, keys and files never leave your computer, except in the [exports](/app/sessions-and-export) you make yourself.

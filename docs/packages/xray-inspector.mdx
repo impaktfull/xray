@@ -167,7 +167,7 @@ await server.stop();
 | `appName` | `FutureOr<String> Function()?` | Shown next to the device name |
 | `password` | `String?` | Everyone who connects types this password. `null` or empty means none. See [Password](/guides/protected-connections#password) |
 | `trustedDesktopKeys` | `List<String>` | Public keys of the desktop apps that may connect. Empty means none. See [Trusted desktops](/guides/protected-connections#trusted-desktops) |
-| `allowUnprotected` | `bool` | Turns the default pairing code and encryption off (default: `false`). Cannot be combined with a password or trusted desktops |
+| `allowUnprotected` | `bool` | Turns the default pairing code off (default: `false`). The connection stays encrypted and still needs an xRay license. Cannot be combined with a password or trusted desktops |
 | `allowInReleaseMode` | `bool` | Lets the server start in release and profile builds (default: `false`). Only works together with a `password` or `trustedDesktopKeys` |
 | `httpPort` | `int?` | Leave it out to use `7780`, or the next free port of `7782`–`7790`, or any free port. Set it to fix the port; `start()` then throws an `XRayInspectorPortInUseException` when it is taken |
 | `discoveryPort` | `int` | UDP discovery port (default: `7781`), shared by all apps on a device. Announcements go to `discoveryPort + 10` |

@@ -40,7 +40,7 @@ With any of the three:
 
 See [Protected connections](/guides/protected-connections) to set up a password or trusted desktops, and the [Security model](/guides/security) for what this protects against, including someone else on your network.
 
-You can turn protection off with `allowUnprotected: true`. Anyone on the same network can then connect, read what the inspectors capture (including auth headers and secure storage) and change key-value entries, without encryption. Only do this on a network you fully trust.
+You can turn the pairing code off with `allowUnprotected: true`. Anyone on the same network with an xRay license can then connect, read what the inspectors capture (including auth headers and secure storage) and change key-value entries. The connection stays encrypted. Only do this on a network you fully trust.
 
 ## Release and profile builds
 
