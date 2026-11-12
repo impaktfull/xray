@@ -100,7 +100,7 @@ Use one or the other. Setting both `password` and `trustedDesktopKeys` makes `st
 
 ## Turning protection off
 
-To serve the inspector unprotected and unencrypted, set `allowUnprotected`:
+To connect without a pairing code, set `allowUnprotected`:
 
 ```dart
 XRayInspectorServerConfig(
@@ -109,7 +109,7 @@ XRayInspectorServerConfig(
 )
 ```
 
-Anyone on the same network can then connect to your app, and read and change what the inspectors capture, including `Authorization` headers and secure storage. The app prints a warning every time it starts. `allowUnprotected` together with a `password` or `trustedDesktopKeys` makes `start()` throw an `ArgumentError`.
+Anyone on the same network with an xRay license can then connect to your app, and read and change what the inspectors capture, including `Authorization` headers and secure storage. The connection stays encrypted. The app prints a warning every time it starts. `allowUnprotected` together with a `password` or `trustedDesktopKeys` makes `start()` throw an `ArgumentError`.
 
 ## When the protection changes
 
