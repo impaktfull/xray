@@ -261,6 +261,9 @@ With **Allow actions** on, the assistant can also change the app. While it is of
 | `clear_inspector` | Clears the network calls or the logs of the app. |
 | `take_screenshot` | Takes a screenshot of the app, as you would with the camera button in the Device actions drawer. The image is not redacted. |
 | `export_session` | Saves the session as a `.xray` file or a HAR in your Downloads folder, redacted. |
+| `list_mock_rules` | Lists the app's [mock rules](/guides/mock-responses): what each matches and answers, and how many calls it answered. Header values and bodies are left out. |
+| `add_mock_rule` | Adds a mock rule that answers matching requests with a status, headers, a body and a delay, without contacting the server. |
+| `remove_mock_rule` | Removes one mock rule, or all of them. |
 
 Device actions need [`xray_device_actions`](/packages/xray-device-actions) in your app, as for the drawer. Actions only work on a connected app, never on a recorded session.
 

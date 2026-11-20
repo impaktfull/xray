@@ -1,0 +1,57 @@
+---
+title: Mock Responses
+description: Answer your app's requests from the xRay desktop app with your own status, headers, body and delay, to test error handling, slow servers and unusual data without touching the backend.
+---
+
+Mock responses let the xRay desktop app answer requests in your server's place. Make a call return a 500, wait two seconds, or come back with an empty list, and see what your app does, without changing the backend or adding a temporary interceptor.
+
+## Turn it on
+
+Mocking is off until your app turns it on, so a build can never answer differently by accident. Pass `allowMockResponses: true` to the network inspector:
+
+```dart
+final networkInspector = XRayNetworkInspector(
+  enableHttpOverride: true,
+  allowMockResponses: true,
+);
+```
+
+- It covers Dio through [`xray_network_dio_interceptor`](/packages/xray-network-dio-interceptor) and every request through the HTTP override (`enableHttpOverride`), including `package:http` and [Serverpod](/packages/xray-serverpod-interceptor).
+- **Release and profile builds never mock**, whatever this flag or `allowInReleaseMode` says.
+- Apps that do not turn it on behave exactly as before. The desktop app then shows the one line to add when you try to mock a call.
+
+## Mock a call
+
+1. In the network inspector, right-click a call and choose **Mock response…**.
+2. The editor starts from that call: its method, its URL without the query string, its GraphQL operation, and the response it actually got.
+3. Change what you want to test: the status (one click for 200, 401, 404, 429, 500 or 503), the headers, the body and a delay of up to 60 seconds. The line under the URL says how many calls in the list the rule would match.
+4. **Add rule**. From now on, matching requests get your answer and never reach the server.
+
+A mocked call shows a flask instead of the status dot in the call list. Its detail has a **MOCK** badge and a banner that names the rule that answered, with **Edit rule** and **Turn off**.
+
+## Which requests a rule matches
+
+- **Method**: one method, or **Any**.
+- **URL**: `*` matches any text, everything else must be exactly the same. Without a `?` in the URL, the query string is ignored: `https://api.example.com/v1/users/*` matches `…/users/42?expand=true`. With a `?`, the whole URL must match.
+- **GraphQL operation**: for a GraphQL endpoint, a rule can answer only one operation, such as `GetCart`. xRay reads the operation name the way GraphQL clients send it. Leave it empty to answer every operation on that URL. A batch of several operations never matches a rule with an operation.
+
+When several rules match one request, the most specific one answers: the one with fewer `*`, then one with an operation, then one with a method, then the longer URL, then the newest.
+
+## Manage your rules
+
+While a rule is on, a strip above the call list says how many are on. **Manage** opens the rules of that app. Switch each rule on or off, edit it or delete it, start a new one, or turn them all off at once. Each rule shows how many calls it answered.
+
+Rules live in your app's memory, never on disk. They are removed when the desktop app disconnects, so a forgotten rule can't stay in the app. When a rule is turned off or removed while a mocked request is still waiting out its delay, that request goes to the real server.
+
+## How the app sees a mocked response
+
+The app can't tell a mocked response from a real one:
+
+- **Dio**: your interceptors still run, `response.data` is parsed from the body like a real one, and an error status throws the same `DioException` a real one would. With `XRayNetworkDioInterceptor.attach` the mock answers where the server would. Added to `dio.interceptors` by hand, it answers at xRay's place in the chain, so interceptors after it don't run for a mocked request.
+- **`dart:io` and `package:http`**: the request is held back until it is sent, then answered with your status, headers and body.
+
+Bodies are text, such as JSON, XML or HTML. Binary and streamed responses can't be mocked.
+
+## With an AI assistant
+
+With **Allow actions** on in [MCP](/app/mcp), an assistant can list, add and remove mock rules to test your app's error handling itself, for example: "Make GET /v1/users/* answer 500 after 2 seconds and tell me what the app shows."
